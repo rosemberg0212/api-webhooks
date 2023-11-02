@@ -80,10 +80,6 @@ const enviarCertificados = async (req, res) => {
 
 // Llamar a la función para obtener la información del tablero
 
-
-
-
-
 module.exports = {
     enviarCertificados
 }
