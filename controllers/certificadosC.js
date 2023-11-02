@@ -8,7 +8,6 @@ const enviarCertificados = async (req, res) => {
 
     const id = 5443630188;
 
-
     const query = `query { boards(ids: 4279283510) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
