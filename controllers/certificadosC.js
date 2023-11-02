@@ -1,4 +1,6 @@
 
+const fetch = require('node-fetch');
+
 const enviarCertificados = async (req, res) => {
     const challenge = req.body.challenge;
     res.send({ challenge });
