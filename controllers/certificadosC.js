@@ -6,7 +6,7 @@ const enviarCertificados = async (req, res) => {
     console.log(req.body);
     // console.log('hola rous')
     res.status(200).end();
-    const id = req.body.event.pulseId;
+    const id = 5443630188;
     async function getBoardInfo(id) {
 
         const query = `query { boards(ids: 4279283510) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
