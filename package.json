@@ -6,6 +6,7 @@
     "scripts": {
         "start": "node app"
     },
+    "type": "commonjs",
     "keywords": [],
     "author": "rous",
     "license": "ISC",
