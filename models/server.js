@@ -8,6 +8,7 @@ class Server {
 
         this.paths = {
             certificado:   '/hook/certificado',
+            horario:       '/hook/horario'
         }
 
         //Middlewares
@@ -35,6 +36,7 @@ class Server {
     
     routes(){
         this.app.use(this.paths.certificado, require('../routes/certificado'));
+        this.app.use(this.paths.horario, require('../routes/horarios'));
     }
 
     listem(){
