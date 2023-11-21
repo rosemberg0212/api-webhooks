@@ -5,7 +5,7 @@ const enviarFormPQRS = async (req, res) => {
 
   const id = req.body.event.pulseId;
 
-  const query = `query { boards(ids: 5469236502) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
+  const query = `query { boards(ids: 5543310272) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
   const response = await fetch("https://api.monday.com/v2", {
     method: "POST",
     headers: {
