@@ -6,8 +6,8 @@ const calcularNomina = async (req, res) => {
     res.send({ challenge });
     const apikey = process.env.APIKEY_MONDAY;
 
-    // const id = req.body.event.pulseId;
-    const id = '5567378603';
+    const id = req.body.event.pulseId;
+    // const id = '5567378603';
 
     const query = `query { boards(ids: 5474798239) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
