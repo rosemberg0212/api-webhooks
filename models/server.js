@@ -9,6 +9,7 @@ class Server {
     this.paths = {
       certificado: "/hook/certificado",
       horario: "/hook/horario",
+      taskRyver: "/hook/taskRyver",
     };
 
     //Middlewares
@@ -36,6 +37,7 @@ class Server {
   routes() {
     this.app.use(this.paths.certificado, require("../routes/certificado"));
     this.app.use(this.paths.horario, require("../routes/horarios"));
+    this.app.use(this.paths.taskRyver, require("../routes/taskRyver"));
   }
 
   listem() {
