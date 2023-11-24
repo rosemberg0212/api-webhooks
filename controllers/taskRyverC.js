@@ -10,10 +10,12 @@ const infoRyver = async (req, res) => {
   const servicio = desc.split(" - ")[0];
 
   try {
-    await enviarWhatsAppBotmaker(
-      telefono,
-      `Hola, tu servicio de ${servicio} ha pasado a ${category}`
-    );
+    if (category !== "Uncategorized") {
+      await enviarWhatsAppBotmaker(
+        telefono,
+        `Hola, tu servicio de ${servicio} ha pasado a ${category}`
+      );
+    }
   } catch (error) {
     console.log(error);
   }
