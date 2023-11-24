@@ -5,11 +5,10 @@ const infoRyver = async (req, res) => {
   res.send({ challenge });
   const { data } = req.body;
   const desc = data.entity.subject;
-  const category = data.entity.category.descriptor;
+  const category = data.entity.category.__descriptor;
   const telefono = desc.split(" - ")[1];
   const servicio = desc.split(" - ")[0];
 
-  console.log(data.entity);
   try {
     await enviarWhatsAppBotmaker(
       telefono,
