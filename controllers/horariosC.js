@@ -1,5 +1,5 @@
 const { traerTurnosAixo, traerTurnos1525} = require('../middleware/turnos')
-const { enviarHorarioWhatsApp } = require('../helpers/apiBotmaker')
+const { enviarWhatsAppBotmaker } = require('../helpers/apiBotmaker')
 
 const enviarHorarios = async (req, res) => {
 
@@ -56,7 +56,7 @@ const enviarHorarios = async (req, res) => {
             const descripcionesConcatenadas = descripciones.join('\n');
             console.log(descripcionesConcatenadas)
 
-            await enviarHorarioWhatsApp(telefono, descripcionesConcatenadas)
+            await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -126,7 +126,7 @@ const enviarHorariosReservas = async (req, res) => {
             const descripcionesConcatenadas = descripciones.join('\n');
             console.log(descripcionesConcatenadas)
 
-            await enviarHorarioWhatsApp(telefono, descripcionesConcatenadas)
+            await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -196,7 +196,7 @@ const enviarHorariosMantenimiento = async (req, res) => {
             const descripcionesConcatenadas = descripciones.join('\n');
             console.log(descripcionesConcatenadas)
 
-            await enviarHorarioWhatsApp(telefono, descripcionesConcatenadas)
+            await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -271,7 +271,7 @@ const enviarHorariosSantaM = async (req, res) => {
             const descripcionesConcatenadas = descripciones.join('\n');
             console.log(descripcionesConcatenadas)
 
-            // await enviarHorarioWhatsApp(telefono, descripcionesConcatenadas)
+            // await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
 
         } else {
             console.error('Hubo un error en la solicitud.');

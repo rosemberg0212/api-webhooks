@@ -1,4 +1,4 @@
-const enviarHorarioWhatsApp = async (telefono, descripcionesConcatenadas) => {
+const enviarWhatsAppBotmaker = async (telefono, descripcionesConcatenadas) => {
   const url = "https://go.botmaker.com/api/v1.0/message/v3";
   const accessToken = process.env.APIKEY_BOTMAKER;
 
@@ -39,5 +39,5 @@ const enviarHorarioWhatsApp = async (telefono, descripcionesConcatenadas) => {
 };
 
 module.exports = {
-  enviarHorarioWhatsApp,
+  enviarWhatsAppBotmaker,
 };
