@@ -1,4 +1,4 @@
-const { enviarHorarioWhatsApp } = require("../helpers/apiBotmaker");
+const { enviarWhatsAppBotmaker } = require("../helpers/apiBotmaker");
 
 const infoRyver = async (req, res) => {
   const challenge = req.body.challenge;
@@ -9,7 +9,7 @@ const infoRyver = async (req, res) => {
   const telefono = desc.split(" - ")[1];
   const servicio = desc.split(" - ")[0];
   try {
-    await enviarHorarioWhatsApp(
+    await enviarWhatsAppBotmaker(
       telefono,
       `Hola, tu servicio de ${servicio} ha pasado a ${category}`
     );

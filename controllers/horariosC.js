@@ -271,7 +271,7 @@ const enviarHorariosSantaM = async (req, res) => {
             const descripcionesConcatenadas = descripciones.join('\n');
             console.log(descripcionesConcatenadas)
 
-            // await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
+            await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
 
         } else {
             console.error('Hubo un error en la solicitud.');
