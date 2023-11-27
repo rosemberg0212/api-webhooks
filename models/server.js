@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const { dbConnection } = require('../db/config');
 
 class Server {
   constructor() {
@@ -12,6 +13,9 @@ class Server {
       taskRyver: "/hook/taskRyver",
       nomina: "/hook/nomina",
     };
+
+    //conectar BD
+    this.conectarDB()
 
     //Middlewares
     this.Middlewares();
