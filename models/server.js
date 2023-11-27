@@ -12,6 +12,7 @@ class Server {
       horario: "/hook/horario",
       taskRyver: "/hook/taskRyver",
       nomina: "/hook/nomina",
+      usuarios: "/api/user",
     };
 
     //conectar BD
@@ -44,6 +45,7 @@ class Server {
     this.app.use(this.paths.horario, require("../routes/horarios"));
     this.app.use(this.paths.taskRyver, require("../routes/taskRyver"));
     this.app.use(this.paths.nomina, require("../routes/nominaR"));
+    this.app.use(this.paths.usuarios, require("../routes/userR"));
   }
 
   listem() {
