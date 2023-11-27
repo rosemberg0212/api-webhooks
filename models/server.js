@@ -15,9 +15,6 @@ class Server {
       usuarios: "/api/user",
     };
 
-    //conectar BD
-    this.conectarDB()
-
     //Middlewares
     this.Middlewares();
 
@@ -25,9 +22,6 @@ class Server {
     this.routes();
   }
 
-  async conectarDB() {
-    await dbConnection();
-  }
 
   Middlewares() {
     //CORS
