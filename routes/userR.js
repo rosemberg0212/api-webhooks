@@ -13,6 +13,6 @@ const router = Router();
 router.get("/", validateToken, usuariosGet);
 router.post("/", validateToken, usuariosPost);
 // router.post("/token", createToken);
-router.put("/", validateToken, switchCheckIn);
+router.put("/:id", validateToken, switchCheckIn);
 
 module.exports = router;

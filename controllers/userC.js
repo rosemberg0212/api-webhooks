@@ -35,11 +35,11 @@ const usuariosPost = async (req, res = response) => {
 
   try {
     await db.connect();
-    //Guardar usuario
+    //Guardar huesped
     await usuario.save();
     await db.disconnect();
     res.status(200).json({
-      usuario,
+      msg: "El huesped fue guardado de manera exitosa",
     });
   } catch ({ errors }) {
     await db.disconnect();
@@ -58,8 +58,8 @@ const createToken = (req, res = response) => {
 };
 
 // PUT
-const switchCheckIn = async (req, res = response) => {
-  const { id } = req.body;
+const switchCheckIn = async (req = request, res = response) => {
+  const { id } = req.params;
 
   try {
     const user = await db.checkIdUsers(id);

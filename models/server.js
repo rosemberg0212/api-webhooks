@@ -12,7 +12,7 @@ class Server {
       horario: "/hook/horario",
       taskRyver: "/hook/taskRyver",
       nomina: "/hook/nomina",
-      usuarios: "/api/user",
+      usuarios: "/api/v1/romi-guess",
     };
 
     //Middlewares
