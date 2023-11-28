@@ -1,10 +1,18 @@
 const { Router } = require("express");
 
-const { usuariosPost, usuariosGet } = require("../controllers/userC");
+const { validateToken } = require("../middleware");
+const {
+  usuariosPost,
+  usuariosGet,
+  switchCheckIn,
+  createToken,
+} = require("../controllers/userC");
 
 const router = Router();
 
-router.post("/", usuariosPost);
-router.get("/", usuariosGet);
+router.get("/", validateToken, usuariosGet);
+router.post("/", validateToken, usuariosPost);
+// router.post("/token", createToken);
+router.put("/", validateToken, switchCheckIn);
 
-module.exports = router
+module.exports = router;
