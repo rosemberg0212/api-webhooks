@@ -12,11 +12,8 @@ class Server {
       horario: "/hook/horario",
       taskRyver: "/hook/taskRyver",
       nomina: "/hook/nomina",
-      usuarios: "/api/user",
+      usuarios: "/api/v1/romi-guess",
     };
-
-    //conectar BD
-    this.conectarDB()
 
     //Middlewares
     this.Middlewares();
@@ -25,9 +22,6 @@ class Server {
     this.routes();
   }
 
-  async conectarDB() {
-    await dbConnection();
-  }
 
   Middlewares() {
     //CORS

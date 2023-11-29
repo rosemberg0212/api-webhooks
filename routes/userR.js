@@ -1,9 +1,18 @@
 const { Router } = require("express");
 
-const { usuariosPost } = require("../controllers/userC");
+const { validateToken } = require("../middleware");
+const {
+  usuariosPost,
+  usuariosGet,
+  switchCheckIn,
+  createToken,
+} = require("../controllers/userC");
 
 const router = Router();
 
-router.post("/", usuariosPost);
+router.get("/", validateToken, usuariosGet);
+router.post("/", validateToken, usuariosPost);
+// router.post("/token", createToken);
+router.put("/:id", validateToken, switchCheckIn);
 
-module.exports = router
+module.exports = router;
