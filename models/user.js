@@ -9,10 +9,6 @@ const UsuarioSchema = Schema({
     type: String,
     required: [true, "El Hotel es obligatorio"],
   },
-  habitacion: {
-    type: String,
-    required: [true, "La Habitacion es obligatorio"],
-  },
   ciudad: {
     type: String,
     required: [true, "La ciudad es obligatorio"],
@@ -30,8 +26,12 @@ const UsuarioSchema = Schema({
     required: [true, "El codigo de reserva es requerido"],
   },
   checkin: {
-    type: Boolean,
-    default: true,
+    type: String,
+    required: [true, "La fecha de checkin es requerida"],
+  },
+  checkout: {
+    type: String,
+    required: [true, "La fecha de checkout es requerida"],
   },
   estado: {
     type: Boolean,
