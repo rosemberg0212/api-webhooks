@@ -67,6 +67,108 @@ const novedades = () => {
                 text: 'Luto',
             },
             { id: 'etiquetas9', text: 'Luto' }]
+        },
+        {
+            id: '5482465117',
+            name: 'Novedad 5',
+            column_values: [{
+                id: 'hora',
+                text: 'Suspension',
+            },
+            {
+                id: 'hora2',
+                text: 'Suspension',
+            },
+            {
+                id: 'estado',
+                text: 'Suspension',
+            },
+            { id: 'etiquetas9', text: 'Suspension' }]
+        },
+        {
+            id: '5482465117',
+            name: 'Novedad 6',
+            column_values: [{
+                id: 'hora',
+                text: 'Permisos no remunerados',
+            },
+            {
+                id: 'hora2',
+                text: 'Permisos no remunerados',
+            },
+            {
+                id: 'estado',
+                text: 'Permisos no remunerados',
+            },
+            { id: 'etiquetas9', text: 'Permisos no remunerados' }]
+        },
+        {
+            id: '5482465117',
+            name: 'Novedad 7',
+            column_values: [{
+                id: 'hora',
+                text: 'Ajustar salario',
+            },
+            {
+                id: 'hora2',
+                text: 'Ajustar salario',
+            },
+            {
+                id: 'estado',
+                text: 'Ajustar salario',
+            },
+            { id: 'etiquetas9', text: 'Ajustar salario' }]
+        },
+        {
+            id: '5482465117',
+            name: 'Novedad 8',
+            column_values: [{
+                id: 'hora',
+                text: 'Liquidaciones',
+            },
+            {
+                id: 'hora2',
+                text: 'Liquidaciones',
+            },
+            {
+                id: 'estado',
+                text: 'Liquidaciones',
+            },
+            { id: 'etiquetas9', text: 'Liquidaciones' }]
+        },
+        {
+            id: '5482465117',
+            name: 'Novedad 9',
+            column_values: [{
+                id: 'hora',
+                text: 'Vacaciones',
+            },
+            {
+                id: 'hora2',
+                text: 'Vacaciones',
+            },
+            {
+                id: 'estado',
+                text: 'Vacaciones',
+            },
+            { id: 'etiquetas9', text: 'Vacaciones' }]
+        },
+        {
+            id: '5482465117',
+            name: 'Novedad 10',
+            column_values: [{
+                id: 'hora',
+                text: 'Licencia Maternidad',
+            },
+            {
+                id: 'hora2',
+                text: 'Licencia Maternidad',
+            },
+            {
+                id: 'estado',
+                text: 'Licencia Maternidad',
+            },
+            { id: 'etiquetas9', text: 'Licencia Maternidad' }]
         }
     ]
 
