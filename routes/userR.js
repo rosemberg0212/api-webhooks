@@ -2,17 +2,18 @@ const { Router } = require("express");
 
 const { validateToken } = require("../middleware");
 const {
-  usuariosPost,
+  saveHusped,
   usuariosGet,
-  switchCheckIn,
+  changeCheckin,
   createToken,
 } = require("../controllers/userC");
 
 const router = Router();
 
 router.get("/", validateToken, usuariosGet);
-router.post("/", validateToken, usuariosPost);
+router.post("/", validateToken, saveHusped);
+router.put("/estado/:id", validateToken, changeCheckin);
+router.put("/update/:id", validateToken, changeCheckin);
 // router.post("/token", createToken);
-router.put("/:id", validateToken, switchCheckIn);
 
 module.exports = router;
