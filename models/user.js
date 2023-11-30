@@ -9,27 +9,19 @@ const UsuarioSchema = Schema({
     type: String,
     required: [true, "El Hotel es obligatorio"],
   },
-  ciudad: {
-    type: String,
-    required: [true, "La ciudad es obligatorio"],
-  },
   id: {
     type: String,
     required: [true, "La ID del usuario es obligatoria"],
   },
-  telefono: {
+  cell: {
     type: String,
     required: [true, "El telefono es obligatorio"],
   },
-  codeReserva: {
-    type: Number,
-    required: [true, "El codigo de reserva es requerido"],
-  },
-  checkin: {
+  checkIn_date: {
     type: String,
     required: [true, "La fecha de checkin es requerida"],
   },
-  checkout: {
+  checkOut_date: {
     type: String,
     required: [true, "La fecha de checkout es requerida"],
   },
