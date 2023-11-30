@@ -17,6 +17,10 @@ const UsuarioSchema = Schema({
     type: String,
     required: [true, "El telefono es obligatorio"],
   },
+  code_reserva: {
+    type: Number,
+    required: [true, "Codigo de reserva es obligatorio"],
+  },
   checkIn_date: {
     type: String,
     required: [true, "La fecha de checkin es requerida"],
