@@ -5,9 +5,17 @@ const UsuarioSchema = Schema({
     type: String,
     required: [true, "El nombre es obligatorio"],
   },
+  primerApellido: {
+    type: String,
+    required: [true, "El apellido es obligatorio"],
+  },
   hotel: {
     type: String,
     required: [true, "El Hotel es obligatorio"],
+  },
+  habitacion: {
+    type: String,
+    required: [true, "La habitacion es obligatoria"],
   },
   id: {
     type: String,

@@ -22,11 +22,22 @@ const usuariosGet = async (req, res = response) => {
 
 // Guardar huesped
 const saveHusped = async (req, res = response) => {
-  const { nombre, hotel, cell, id, code_reserva, checkIn_date, checkOut_date } =
-    req.body;
+  const {
+    nombre,
+    primerApellido,
+    hotel,
+    habitacion,
+    cell,
+    id,
+    code_reserva,
+    checkIn_date,
+    checkOut_date,
+  } = req.body;
   const usuario = new Usuario({
     nombre,
+    primerApellido,
     hotel,
+    habitacion,
     cell,
     id,
     code_reserva,
@@ -57,14 +68,16 @@ const createToken = (req, res = response) => {
   const accessClientId = jwt.sign(userName, process.env.ACCES_TOKEN_SECRET);
   return res.status(200).json({ accessClientId });
 };
+
+// Updatear huesped
 const updateHuesped = async (req = request, res = response) => {
-  const { code_reserva } = req.params;
+  const { id } = req.params;
   const { body } = req;
-  const huesped = await db.checkIdUsers(code_reserva);
+  const huesped = await db.checkIdUsers(id);
   if (!huesped) {
     return res.status(404).json({
       code: 404,
-      errors: `El huesped con code_reserva ${code_reserva} no fue encontrado.`,
+      errors: `El huesped con id ${id} no fue encontrado.`,
     });
   }
 
@@ -98,9 +111,33 @@ const updateHuesped = async (req = request, res = response) => {
   }
 };
 
+// ? Rutas para desarrollo
+
+const findOneHuesped = async (req, res) => {
+  const { id } = req.params;
+  console.log(id);
+  try {
+    const huesped = await db.checkIdUsers(id);
+    if (!huesped) {
+      return res.status(404).json({
+        code: 404,
+        errors: `El huesped con id ${id} no fue encontrado.`,
+      });
+    }
+    return res.status(200).json({ huesped });
+  } catch ({ errors }) {
+    return res.status(400).json({
+      code: 400,
+      errors,
+    });
+  }
+};
+
 module.exports = {
   usuariosGet,
   saveHusped,
   createToken,
   updateHuesped,
+  // ?Rutas de desarrollo
+  findOneHuesped,
 };
