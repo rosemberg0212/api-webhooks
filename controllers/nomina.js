@@ -7,7 +7,7 @@ const calcularNomina = async (req, res) => {
     const apikey = process.env.APIKEY_MONDAY;
 
     const id = req.body.event.pulseId;
-    // const id = '5482696345';
+    // const id = '5482696375';
 
     const query = `query { boards(ids: 5482696120) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -99,6 +99,14 @@ const calcularNomina = async (req, res) => {
                     recargosN += 6      
                 }else if(obj.text == 'RN1' && (obj.title)){
                     recargosN += 9
+                }else if(obj.text == 'RDF1' && (obj.title)){
+                    domingo += 8
+                }else if(obj.text == 'RNF1' && (obj.title)){
+                    domingo = 0
+                    domingoN += 3
+                    recargosN += 6 
+                }else if(obj.title == 'Viernes F' && (obj.text)){
+                    domingo += 8
                 }
             })
             
@@ -207,9 +215,10 @@ const calcularNominaReservas = async (req, res)=>{
             filtrarNovedades.map(obj => {
                 if((obj.text == 'RS4' || obj.text == 'RS5' || obj.text == 'RS6' || obj.text == 'RS7' || obj.text == 'RS8') && obj.title == 'Domingo'){
                     domingo += 5
+                }else if(obj.title == 'Viernes F' && (obj.text)){
+                    domingo += 5
                 }
-            })
-            
+            })     
 
             await mandarNomina(diasDescontados, nombre, novedad, domingo, recargosN, domingoN)
             console.log(contador2)
