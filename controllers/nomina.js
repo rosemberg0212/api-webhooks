@@ -7,7 +7,7 @@ const calcularNomina = async (req, res) => {
     const apikey = process.env.APIKEY_MONDAY;
 
     const id = req.body.event.pulseId;
-    // const id = '5482696240';
+    // const id = '5482696345';
 
     const query = `query { boards(ids: 5482696120) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -78,18 +78,32 @@ const calcularNomina = async (req, res) => {
             console.log(domingo)
 
             let recargosN = 0;
+            let domingoN = 0;
             const filtrarDias = filtro.filter(obj => {
                 return obj.title !== 'Domingo'
             })
-            filtrarDias.map(obj => {
-                if(obj.text == 'RN1' && (obj.title)){
+            // filtrarDias.map(obj => {
+            //     if(obj.text == 'RN1' && (obj.title)){
+            //         recargosN += 9
+            //     }
+            // })
+
+            filtrarNovedades.map(obj => {
+                if(obj.text == 'RN1' && obj.title == 'Sabado'){
+                    domingo = 0
+                    recargosN += 3
+                    domingoN += 6
+                }else if(obj.text == 'RN2' && obj.title == 'Domingo'){
+                    domingo = 0
+                    domingoN += 3
+                    recargosN += 6      
+                }else if(obj.text == 'RN1' && (obj.title)){
                     recargosN += 9
                 }
             })
-
             
 
-            await mandarNomina(diasDescontados, nombre, novedad, domingo,recargosN)
+            await mandarNomina(diasDescontados, nombre, novedad, domingo, recargosN, domingoN)
             console.log(contador2)
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -108,8 +122,8 @@ const calcularNominaReservas = async (req, res)=>{
     res.send({ challenge });
     const apikey = process.env.APIKEY_MONDAY;
 
-    // const id = req.body.event.pulseId;
-    const id = '5567378603';
+    const id = req.body.event.pulseId;
+    // const id = '5532254391';
 
     const query = `query { boards(ids: 5474798239) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -166,7 +180,38 @@ const calcularNominaReservas = async (req, res)=>{
             }else{
                 diasDescontados = contador2
             }
-            await mandarNomina(diasDescontados, nombre, novedad)
+
+            let domingo = 0;
+            const filtrarNovedades = filtro.filter(obj => {
+                return obj.text !== 'Novedad 1' && obj.text !== 'Novedad 2' && obj.text !== 'Novedad 3' && obj.text !== 'Novedad 4' && obj.text !== 'Novedad 5' && obj.text !== 'Novedad 6' && obj.text !== 'Novedad 7' && obj.text !== 'Novedad 8' && obj.text !== 'Novedad 9' && obj.text !== 'Novedad 10'
+            })
+            
+            // filtrarNovedades.map(horas=>{
+            //     if(horas.title == 'Domingo' && (horas.text)){
+            //         domingo += 8;
+            //     }
+            // })
+            console.log(domingo)
+
+            let recargosN = 0;
+            let domingoN = 0;
+            const filtrarDias = filtro.filter(obj => {
+                return obj.title !== 'Domingo'
+            })
+            // filtrarDias.map(obj => {
+            //     if(obj.text == 'RN1' && (obj.title)){
+            //         recargosN += 9
+            //     }
+            // })
+
+            filtrarNovedades.map(obj => {
+                if((obj.text == 'RS4' || obj.text == 'RS5' || obj.text == 'RS6' || obj.text == 'RS7' || obj.text == 'RS8') && obj.title == 'Domingo'){
+                    domingo += 5
+                }
+            })
+            
+
+            await mandarNomina(diasDescontados, nombre, novedad, domingo, recargosN, domingoN)
             console.log(contador2)
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -180,9 +225,9 @@ const calcularNominaReservas = async (req, res)=>{
     res.status(200).end();
 }
 
-const mandarNomina = async (dias, nombre, novedades,domingo, recargosN) => {
+const mandarNomina = async (dias, nombre, novedades,domingo, recargosN, domingoN) => {
 
-    const query = `mutation {create_item (board_id: 5567451793, group_id: \"topics\", item_name: \"${nombre}\", column_values: \"{\\\"n_meros6\\\":\\\"${dias}\\\",\\\"n_meros68\\\":\\\"${dias - novedades}\\\",\\\"n_meros60\\\":\\\"${recargosN}\\\",\\\"n_meros06\\\":\\\"${domingo}\\\"}\") {id}}`
+    const query = `mutation {create_item (board_id: 5567451793, group_id: \"topics\", item_name: \"${nombre}\", column_values: \"{\\\"n_meros6\\\":\\\"${dias}\\\",\\\"n_meros68\\\":\\\"${dias - novedades}\\\",\\\"n_meros60\\\":\\\"${recargosN}\\\",\\\"n_meros06\\\":\\\"${domingo}\\\", \\\"n_meros56\\\":\\\"${domingoN}\\\"}\") {id}}`
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
         headers: {
