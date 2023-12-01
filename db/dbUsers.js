@@ -1,9 +1,9 @@
 const Usuario = require("../models/user");
 const db = require("./config");
 
-const checkIdUsers = async (code_reserva) => {
+const checkIdUsers = async (id) => {
   await db.connect();
-  const user = await Usuario.findOne({ code_reserva });
+  const user = await Usuario.findOne({ id });
   await db.disconnect();
 
   if (!user) {
