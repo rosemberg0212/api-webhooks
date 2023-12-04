@@ -149,6 +149,18 @@ const findOneHuesped = async (req, res) => {
   }
 };
 
+const gethuespedEstado = async (req = request, res) => {
+  const { id } = req.params;
+  try {
+    const huespedEstado = await db.checkEstadoHuesped(id);
+    res.status(200).json({ huespedEstado });
+  } catch ({ errors }) {
+    res.json({
+      errors,
+    });
+  }
+};
+
 module.exports = {
   usuariosGet,
   saveHusped,
@@ -157,4 +169,5 @@ module.exports = {
   checkOutHabitacion,
   // ?Rutas de desarrollo
   findOneHuesped,
+  gethuespedEstado
 };

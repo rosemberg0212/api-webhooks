@@ -1,4 +1,4 @@
 const { connect, disconnect } = require("./config");
-const { checkIdUsers } = require("./dbUsers");
-const db = { connect, disconnect, checkIdUsers };
+const { checkIdUsers, checkEstadoHuesped } = require("./dbUsers");
+const db = { connect, disconnect, checkIdUsers, checkEstadoHuesped };
 module.exports = db;
