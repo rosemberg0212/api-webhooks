@@ -8,7 +8,6 @@ const infoRyver = async (req, res) => {
   const category = data.entity.category.__descriptor;
   const servicio = desc.split(" - ")[2];
   const telefono = desc.split(" - ")[3];
-// TODO: Poner en el mensaje el hotel.
   try {
     if (category !== "Uncategorized") {
       await enviarWhatsAppBotmaker(

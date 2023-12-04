@@ -114,7 +114,7 @@ const checkOutHabitacion = async (req = request, res = response) => {
 
   try {
     db.connect();
-    const result = await Usuario.updateMany(
+    await Usuario.updateMany(
       { hotel, habitacion, estado: true },
       { $set: { estado: false } }
     );
