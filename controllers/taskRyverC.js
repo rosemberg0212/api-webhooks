@@ -6,8 +6,8 @@ const infoRyver = async (req, res) => {
   const { data } = req.body;
   const desc = data.entity.subject;
   const category = data.entity.category.__descriptor;
-  const telefono = desc.split(" - ")[1];
-  const servicio = desc.split(" - ")[0];
+  const servicio = desc.split(" - ")[2];
+  const telefono = desc.split(" - ")[3];
 // TODO: Poner en el mensaje el hotel.
   try {
     if (category !== "Uncategorized") {
