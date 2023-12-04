@@ -13,8 +13,7 @@ const usuariosGet = async (req, res = response) => {
     res.status(200).json({ huesped });
   } catch ({ errors }) {
     db.disconnect();
-    res.status(400).json({
-      code: 400,
+    res.json({
       errors,
     });
   }
@@ -55,8 +54,7 @@ const saveHusped = async (req, res = response) => {
     });
   } catch ({ errors }) {
     await db.disconnect();
-    return res.status(400).json({
-      code: 400,
+    return res.json({
       errors,
     });
   }
@@ -104,8 +102,28 @@ const updateHuesped = async (req = request, res = response) => {
     return res.sendStatus(200);
   } catch ({ errors }) {
     await db.disconnect();
-    return res.status(400).json({
-      code: 400,
+    return res.json({
+      errors,
+    });
+  }
+};
+
+const checkOutHabitacion = async (req = request, res = response) => {
+  const { hotel } = req.params;
+  const { habitacion } = req.query;
+
+  try {
+    db.connect();
+    await Usuario.updateMany(
+      { hotel, habitacion, estado: true },
+      { $set: { estado: false } }
+    );
+    db.disconnect();
+
+    res.sendStatus(200);
+  } catch ({ errors }) {
+    db.disconnect();
+    return res.json({
       errors,
     });
   }
@@ -115,7 +133,6 @@ const updateHuesped = async (req = request, res = response) => {
 
 const findOneHuesped = async (req, res) => {
   const { id } = req.params;
-  console.log(id);
   try {
     const huesped = await db.checkIdUsers(id);
     if (!huesped) {
@@ -126,8 +143,7 @@ const findOneHuesped = async (req, res) => {
     }
     return res.status(200).json({ huesped });
   } catch ({ errors }) {
-    return res.status(400).json({
-      code: 400,
+    return res.json({
       errors,
     });
   }
@@ -138,6 +154,7 @@ module.exports = {
   saveHusped,
   createToken,
   updateHuesped,
+  checkOutHabitacion,
   // ?Rutas de desarrollo
   findOneHuesped,
 };
