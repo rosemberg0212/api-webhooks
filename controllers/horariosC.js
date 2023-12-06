@@ -239,10 +239,10 @@ const enviarHorariosSantaM = async (req, res) => {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
-            const telefono = data.data.boards[0].items[0].column_values[8].text
+            const telefono = data.data.boards[0].items[0].column_values[16].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
             const datosT = datosMonday.data.boards[0].items[0].column_values;
-
+            // console.log(telefono)
             const datosTurnos = await traerTurnos1525()
 
             // console.log(datosTurnos)
@@ -250,9 +250,18 @@ const enviarHorariosSantaM = async (req, res) => {
             // Función para obtener la descripción de un turno
             function obtenerDescripcionTurno(turno) {
                 const descripcion = datosTurnos.filter((tur) => tur.name == turno.text)
+                const filtroDesc = descripcion.map(obj=>{
+                    const columF = obj.column_values.filter(o=>o.id !== 'subelementos')
+
+                    return {
+                        id: obj.id,
+                        name: obj.name,
+                        column_values: columF
+                    };
+                })
                 const novedades = datosTurnos.filter((tur) => tur.name == 'Novedad 1' || 'Novedad 2' || 'Novedad 3' || 'Novedad 4')
-                if (descripcion) {
-                    return `- El día *${turno.title}* su hora de entrada es a las *${descripcion.map(des => des.column_values[1].text)}*, su hora de salida es a las *${descripcion.map(des => des.column_values[2].text)}*, el hotel donde le toca laborar es *${descripcion.map(des => des.column_values[3].text)}* y sus tareas para este día son las de: *${descripcion.map(des => des.column_values[3].text)}*.`;
+                if (filtroDesc) {
+                    return `- El día *${turno.title}* su hora de entrada es a las *${filtroDesc.map(des => des.column_values[0].text)}*, su hora de salida es a las *${filtroDesc.map(des => des.column_values[1].text)}*, el hotel donde le toca laborar es *${filtroDesc.map(des => des.column_values[2].text)}* y sus tareas para este día son las de: *${filtroDesc.map(des => des.column_values[3].text)}*.`;
                 } else if (novedades) {
                     return `No se encontró una descripción para el código de turno ${turno.text}.`;
                 }
@@ -294,8 +303,8 @@ const enviarHorariosRodadero = async (req, res) => {
     // console.log(datosTurnos)
 
 
-    const id = '5609332573';
-    // const id = req.body.event.pulseId;
+    // const id = '5609332573';
+    const id = req.body.event.pulseId;
 
     const query = `query { boards(ids: 5551690311) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -314,10 +323,10 @@ const enviarHorariosRodadero = async (req, res) => {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
-            const telefono = data.data.boards[0].items[0].column_values[8].text
+            const telefono = data.data.boards[0].items[0].column_values[16].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
             const datosT = datosMonday.data.boards[0].items[0].column_values;
-
+            console.log(telefono)
             const datosTurnos = await traerTurnosRodadero()
 
             // console.log(datosTurnos)
@@ -325,9 +334,20 @@ const enviarHorariosRodadero = async (req, res) => {
             // Función para obtener la descripción de un turno
             function obtenerDescripcionTurno(turno) {
                 const descripcion = datosTurnos.filter((tur) => tur.name == turno.text)
+                const filtroDesc = descripcion.map(obj=>{
+                    const columF = obj.column_values.filter(o=>o.id !== 'subelementos')
+
+                    return {
+                        id: obj.id,
+                        name: obj.name,
+                        column_values: columF
+                    };
+                })
+                // console.log(filtroDesc)
+                // console.log(descripcion[0].column_values)
                 const novedades = datosTurnos.filter((tur) => tur.name == 'Novedad 1' || 'Novedad 2' || 'Novedad 3' || 'Novedad 4')
-                if (descripcion) {
-                    return `- El día *${turno.title}* su hora de entrada es a las *${descripcion.map(des => des.column_values[1].text)}*, su hora de salida es a las *${descripcion.map(des => des.column_values[2].text)}*, el hotel donde le toca laborar es *${descripcion.map(des => des.column_values[3].text)}* y sus tareas para este día son las de: *${descripcion.map(des => des.column_values[3].text)}*.`;
+                if (filtroDesc) {
+                    return `- El día *${turno.title}* su hora de entrada es a las *${filtroDesc.map(des => des.column_values[0].text)}*, su hora de salida es a las *${filtroDesc.map(des => des.column_values[1].text)}*, el hotel donde le toca laborar es *${filtroDesc.map(des => des.column_values[2].text)}* y sus tareas para este día son las de: *${filtroDesc.map(des => des.column_values[3].text)}*.`;
                 } else if (novedades) {
                     return `No se encontró una descripción para el código de turno ${turno.text}.`;
                 }
@@ -345,7 +365,8 @@ const enviarHorariosRodadero = async (req, res) => {
 
             const descripcionesConcatenadas = descripciones.join('\n');
             console.log(descripcionesConcatenadas)
-
+            const dia = new Date().getHours()
+            console.log(dia)
             await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
 
         } else {

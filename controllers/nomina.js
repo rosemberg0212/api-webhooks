@@ -240,8 +240,8 @@ const calcularNominaRodadero = async (req, res) => {
     res.send({ challenge });
     const apikey = process.env.APIKEY_MONDAY;
 
-    // const id = req.body.event.pulseId;
-    const id = '5609332737';
+    const id = req.body.event.pulseId;
+    // const id = '5609332737';
 
     const query = `query { boards(ids: 5551690311) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
