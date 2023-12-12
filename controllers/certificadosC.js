@@ -24,8 +24,8 @@ const enviarCertificados = async (req, res) => {
         if (response.ok) {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
-            const datosMonday = data.data.boards[0].items[0].column_values[13].text
-            const telefono = data.data.boards[0].items[0].column_values[13].text
+            const datosMonday = data.data.boards[0].items[0].column_values[12].text
+            const telefono = data.data.boards[0].items[0].column_values[12].text
             const certificado = data.data.boards[0].items[0].column_values[14].text
             // console.log(telefono)
             // console.log(certificado)

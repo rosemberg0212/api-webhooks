@@ -169,5 +169,5 @@ module.exports = {
   checkOutHabitacion,
   // ?Rutas de desarrollo
   findOneHuesped,
-  gethuespedEstado
+  gethuespedEstado,
 };
