@@ -37,7 +37,7 @@ const enviarHorarios = async (req, res) => {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
-            const telefono = data.data.boards[0].items[0].column_values[8].text
+            const telefono = data.data.boards[0].items[0].column_values[17].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
             const datosT = datosMonday.data.boards[0].items[0].column_values;
 
@@ -623,7 +623,7 @@ const enviarHorariosAbi = async (req, res) => {
             const descripciones = [];
             // Iterar sobre los turnos e imprimir las descripciones
             for (const turno of datosT) {
-                if (turno.id !== 'estado' && turno.id !== 'tel_fono' && turno.id !== 'bot_n' && turno.id !== 'men__desplegable' && turno.id !== 'cargo2') {
+                if (turno.id !== 'estado' && turno.id !== 'tel_fono2' && turno.id !== 'bot_n' && turno.id !== 'men__desplegable' && turno.id !== 'cargo8') {
 
                     const descripcion = obtenerDescripcionTurno(turno);
                     descripciones.push(descripcion)
@@ -655,8 +655,8 @@ const enviarHorariosBocagrande = async (req, res) => {
     // const datosTurnos = await traerTurnosBocagrande()
     
 
-    // const id = '5628654198';
-    const id = req.body.event.pulseId;
+    const id = '5628654198';
+    // const id = req.body.event.pulseId;
 
     const query = `query { boards(ids: 5628654082) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -825,8 +825,8 @@ const enviarHorariosMadisson = async (req, res) => {
     // const datosTurnos = await traerTurnosMadisson()
     
 
-    const id = '5628964006';
-    // const id = req.body.event.pulseId;
+    // const id = '5628964006';
+    const id = req.body.event.pulseId;
 
     const query = `query { boards(ids: 5628963944) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -888,7 +888,7 @@ const enviarHorariosMadisson = async (req, res) => {
             const descripcionesConcatenadas = descripciones.join('\n');
             console.log(descripcionesConcatenadas)
             
-            // await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
+            await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -910,10 +910,10 @@ const enviarHorariosMarina = async (req, res) => {
     const datosTurnos = await traerTurnosMarina()
     
 
-    // // const id = '5628964006';
-    // const id = req.body.event.pulseId;
+    // const id = '5640092879';
+    // // const id = req.body.event.pulseId;
 
-    // const query = `query { boards(ids: 5628963944) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
+    // const query = `query { boards(ids: 5640092760) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     // const response = await fetch("https://api.monday.com/v2", {
     //     method: 'POST',
     //     headers: {
@@ -973,7 +973,7 @@ const enviarHorariosMarina = async (req, res) => {
     //         const descripcionesConcatenadas = descripciones.join('\n');
     //         console.log(descripcionesConcatenadas)
             
-    //         await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
+    //         // await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
 
     //     } else {
     //         console.error('Hubo un error en la solicitud.');

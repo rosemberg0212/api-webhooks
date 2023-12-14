@@ -496,7 +496,7 @@ const traerTurnosBocagrande = async () => {
 const traerTurnosWindsor = async () => {
 
     // const query = 'query {boards(ids: 5628846354) { groups { id title }}}'
-    const query = `query { boards(ids: 5628846354) { groups(ids: topics) {  items { id  name  column_values {  id  text  value  }  } } another_group: groups(ids: group_title) {  items { id  name  column_values {  id  text  value  }  } } third_group: groups(ids: grupo_nuevo64039) {  items { id  name  column_values {  id  text  value  }  } } grupo_cuatro: groups(ids: grupo_nuevo6379) {  items { id  name  column_values {  id  text  value  }  } } grupo_sinco: groups(ids: grupo_nuevo80712) {  items { id  name  column_values {  id  text  value  }  } } grupo_seis: groups(ids: grupo_nuevo) {  items { id  name  column_values {  id  text  value  }  } } grupo_siete: groups(ids: grupo_nuevo55897) {  items { id  name  column_values {  id  text  value  }  } } } } `;
+    const query = `query { boards(ids: 5628846354) { groups(ids: grupo_nuevo55897) {  items { id  name  column_values {  id  text  value  }  } } another_group: groups(ids: grupo_nuevo6379) {  items { id  name  column_values {  id  text  value  }  } } third_group: groups(ids: topics) {  items { id  name  column_values {  id  text  value  }  } } grupo_cuatro: groups(ids: grupo_nuevo) {  items { id  name  column_values {  id  text  value  }  } } grupo_sinco: groups(ids: group_title) {  items { id  name  column_values {  id  text  value  }  } } grupo_seis: groups(ids: grupo_nuevo85030) {  items { id  name  column_values {  id  text  value  }  } } grupo_siete: groups(ids: grupo_nuevo44017) {  items { id  name  column_values {  id  text  value  }  } } grupo_ocho: groups(ids: grupo_nuevo1620) {  items { id  name  column_values {  id  text  value  }  } } grupo_nueve: groups(ids: grupo_nuevo19383) {  items { id  name  column_values {  id  text  value  }  } } grupo_dies: groups(ids: grupo_nuevo64039) {  items { id  name  column_values {  id  text  value  }  } } grupo_once: groups(ids: grupo_nuevo75846) {  items { id  name  column_values {  id  text  value  }  } } grupo_dose: groups(ids: grupo_nuevo43106) {  items { id  name  column_values {  id  text  value  }  } } grupo_trece: groups(ids: grupo_nuevo64982) {  items { id  name  column_values {  id  text  value  }  } } grupo_catorce: groups(ids: grupo_nuevo50140) {  items { id  name  column_values {  id  text  value  }  } } grupo_quince: groups(ids: grupo_nuevo53605) {  items { id  name  column_values {  id  text  value  }  } }} } `;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
         headers: {
@@ -522,7 +522,15 @@ const traerTurnosWindsor = async () => {
             let arreglo5 = data.data.boards[0].grupo_sinco[0].items
             let arreglo6 = data.data.boards[0].grupo_seis[0].items
             let arreglo7 = data.data.boards[0].grupo_siete[0].items
-            let arr = [arreglo1, arreglo2, arreglo3, arreglo4, arreglo5, arreglo6, arreglo7, arrNovedades].flat()
+            let arreglo8 = data.data.boards[0].grupo_ocho[0].items
+            let arreglo9 = data.data.boards[0].grupo_nueve[0].items
+            let arreglo10 = data.data.boards[0].grupo_dies[0].items
+            let arreglo11 = data.data.boards[0].grupo_once[0].items
+            let arreglo12 = data.data.boards[0].grupo_dose[0].items
+            let arreglo13 = data.data.boards[0].grupo_trece[0].items
+            let arreglo14 = data.data.boards[0].grupo_catorce[0].items
+            let arreglo15 = data.data.boards[0].grupo_quince[0].items
+            let arr = [arreglo1, arreglo2, arreglo3, arreglo4, arreglo5, arreglo6, arreglo7, arreglo8, arreglo9, arreglo10, arreglo11, arreglo12, arreglo13, arreglo14, arreglo15, arrNovedades].flat()
             // console.log(arr)
             
             return arr;
