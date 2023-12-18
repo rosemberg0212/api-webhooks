@@ -18,7 +18,8 @@ const enviarHorarios = async (req, res) => {
     res.send({ challenge });
     const apikey = process.env.APIKEY_MONDAY;
 
-    const id = req.body.event.pulseId;
+    const id = '5482696148';
+    // const id = req.body.event.pulseId;
 
     const query = `query { boards(ids: 5482696120) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -37,9 +38,11 @@ const enviarHorarios = async (req, res) => {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
-            const telefono = data.data.boards[0].items[0].column_values[17].text
+            const telefono = data.data.boards[0].items[0].column_values[33].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
-            const datosT = datosMonday.data.boards[0].items[0].column_values;
+            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
+            const datosT = primeros15.slice(0, 15)
+            console.log(telefono)
 
             const datosTurnos = await traerTurnosAixo()
 
@@ -57,7 +60,7 @@ const enviarHorarios = async (req, res) => {
             const descripciones = [];
             // Iterar sobre los turnos e imprimir las descripciones
             for (const turno of datosT) {
-                if (turno.id !== 'estado' && turno.id !== 'tel_fono' && turno.id !== 'bot_n' && turno.id !== 'men__desplegable' && turno.id !== 'cargo0') {
+                if (turno.id !== 'estado' && turno.id !== 'tel_fono' && turno.id !== 'bot_n' && turno.id !== 'men__desplegable' && turno.id !== 'cargo0' && turno.id !== 'bot_n_1') {
 
                     const descripcion = obtenerDescripcionTurno(turno);
                     descripciones.push(descripcion)
@@ -67,7 +70,7 @@ const enviarHorarios = async (req, res) => {
             const descripcionesConcatenadas = descripciones.join('\n');
             console.log(descripcionesConcatenadas)
 
-            await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
+            // await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
 
         } else {
             console.error('Hubo un error en la solicitud.');
