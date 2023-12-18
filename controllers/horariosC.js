@@ -749,8 +749,8 @@ const enviarHorariosWindsor = async (req, res) => {
     // const datosTurnos = await traerTurnosWindsor()
     
 
-    const id = '5628802926';
-    // const id = req.body.event.pulseId;
+    // const id = '5628802926';
+    const id = req.body.event.pulseId;
 
     const query = `query { boards(ids: 5628802846) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -814,7 +814,7 @@ const enviarHorariosWindsor = async (req, res) => {
             const descripcionesConcatenadas = descripciones.join('\n');
             console.log(descripcionesConcatenadas)
             
-            // await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
+            await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
 
         } else {
             console.error('Hubo un error en la solicitud.');
