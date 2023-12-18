@@ -233,8 +233,8 @@ const enviarHorariosSantaM = async (req, res) => {
     // console.log(datosTurnos)
 
 
-    // const id = '5482453565';
-    const id = req.body.event.pulseId;
+    const id = '5482453565';
+    // const id = req.body.event.pulseId;
 
     const query = `query { boards(ids: 5482452579) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -253,10 +253,12 @@ const enviarHorariosSantaM = async (req, res) => {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
-            const telefono = data.data.boards[0].items[0].column_values[16].text
+            const telefono = data.data.boards[0].items[0].column_values[32].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
-            const datosT = datosMonday.data.boards[0].items[0].column_values;
-            // console.log(telefono)
+            
+            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
+            const datosT = primeros15.slice(0, 15)
+            console.log(telefono)
             const datosTurnos = await traerTurnos1525()
 
             // console.log(datosTurnos)
@@ -294,7 +296,7 @@ const enviarHorariosSantaM = async (req, res) => {
             const descripcionesConcatenadas = descripciones.join('\n');
             console.log(descripcionesConcatenadas)
 
-            await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
+            // await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -317,8 +319,8 @@ const enviarHorariosRodadero = async (req, res) => {
     // console.log(datosTurnos)
 
 
-    // const id = '5609332573';
-    const id = req.body.event.pulseId;
+    const id = '5609332573';
+    // const id = req.body.event.pulseId;
 
     const query = `query { boards(ids: 5551690311) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -337,9 +339,11 @@ const enviarHorariosRodadero = async (req, res) => {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
-            const telefono = data.data.boards[0].items[0].column_values[16].text
+            const telefono = data.data.boards[0].items[0].column_values[32].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
-            const datosT = datosMonday.data.boards[0].items[0].column_values;
+           
+            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
+            const datosT = primeros15.slice(0, 15)
             console.log(telefono)
             const datosTurnos = await traerTurnosRodadero()
 
@@ -381,7 +385,7 @@ const enviarHorariosRodadero = async (req, res) => {
             console.log(descripcionesConcatenadas)
             const dia = new Date().getHours()
             console.log(dia)
-            await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
+            // await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -403,8 +407,8 @@ const enviarHorariosAvexi = async (req, res) => {
     // const datosTurnos = await traerTurnosAvexi()
     
 
-    // const id = '5624770732';
-    const id = req.body.event.pulseId;
+    const id = '5624770732';
+    // const id = req.body.event.pulseId;
 
     const query = `query { boards(ids: 5624770541) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -425,7 +429,9 @@ const enviarHorariosAvexi = async (req, res) => {
             const datosMonday = data
             const telefono = data.data.boards[0].items[0].column_values[17].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
-            const datosT = datosMonday.data.boards[0].items[0].column_values;
+            
+            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
+            const datosT = primeros15.slice(0, 15)
             console.log(telefono)
             const datosTurnos = await traerTurnosAvexi()
 
@@ -743,8 +749,8 @@ const enviarHorariosWindsor = async (req, res) => {
     // const datosTurnos = await traerTurnosWindsor()
     
 
-    // const id = '5628802926';
-    const id = req.body.event.pulseId;
+    const id = '5628802926';
+    // const id = req.body.event.pulseId;
 
     const query = `query { boards(ids: 5628802846) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -763,9 +769,11 @@ const enviarHorariosWindsor = async (req, res) => {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
-            const telefono = data.data.boards[0].items[0].column_values[17].text
+            const telefono = data.data.boards[0].items[0].column_values[33].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
-            const datosT = datosMonday.data.boards[0].items[0].column_values;
+            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
+            const datosT = primeros15.slice(0, 15)
+            
             console.log(telefono)
             const datosTurnos = await traerTurnosWindsor()
 
@@ -806,7 +814,7 @@ const enviarHorariosWindsor = async (req, res) => {
             const descripcionesConcatenadas = descripciones.join('\n');
             console.log(descripcionesConcatenadas)
             
-            await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
+            // await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -828,8 +836,8 @@ const enviarHorariosMadisson = async (req, res) => {
     // const datosTurnos = await traerTurnosMadisson()
     
 
-    // const id = '5628964006';
-    const id = req.body.event.pulseId;
+    const id = '5628964006';
+    // const id = req.body.event.pulseId;
 
     const query = `query { boards(ids: 5628963944) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -848,9 +856,11 @@ const enviarHorariosMadisson = async (req, res) => {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
-            const telefono = data.data.boards[0].items[0].column_values[17].text
+            const telefono = data.data.boards[0].items[0].column_values[33].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
-            const datosT = datosMonday.data.boards[0].items[0].column_values;
+            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
+            const datosT = primeros15.slice(0, 15)
+            
             console.log(telefono)
             const datosTurnos = await traerTurnosMadisson()
 
@@ -891,7 +901,7 @@ const enviarHorariosMadisson = async (req, res) => {
             const descripcionesConcatenadas = descripciones.join('\n');
             console.log(descripcionesConcatenadas)
             
-            await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
+            // await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
 
         } else {
             console.error('Hubo un error en la solicitud.');
