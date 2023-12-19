@@ -2,13 +2,13 @@ const {Router} = require('express');
 
 const { 
     enviarHorariosWindsorSMS,
-    probandoMail
+    enviarHorariosWindsorMail
 } = require('../controllers/horariosSMS');
 
 const router = Router();
 
 router.post('/WindsorSMS', enviarHorariosWindsorSMS);
-// router.post('/mail', probandoMail);
+router.post('/mail', enviarHorariosWindsorMail);
 
 
 

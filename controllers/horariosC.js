@@ -8,7 +8,7 @@ const {
     traerTurnosBocagrande,
     traerTurnosWindsor,
     traerTurnosMadisson,
-    traerTurnosMarina
+    traerTurnosMarina,
 } = require('../middleware/turnos')
 const { enviarWhatsAppBotmaker } = require('../helpers/apiBotmaker')
 
@@ -49,12 +49,20 @@ const enviarHorarios = async (req, res) => {
             // Función para obtener la descripción de un turno
             function obtenerDescripcionTurno(turno) {
                 const descripcion = datosTurnos.filter((tur) => tur.name == turno.text)
-                const novedades = datosTurnos.filter((tur) => tur.name == 'Novedad 1' || 'Novedad 2' || 'Novedad 3' || 'Novedad 2')
-                if (descripcion) {
-                    return `- El día ${turno.title} su hora de entrada es a las ${descripcion.map(des => des.column_values[0].text)}, su hora de salida es a las ${descripcion.map(des => des.column_values[1].text)}, el hotel donde le toca laborar es ${descripcion.map(des => des.column_values[2].text)} y sus tareas para este día son las de: ${descripcion.map(des => des.column_values[3].text)}.`;
-                } else if (novedades) {
-                    return `No se encontró una descripción para el código de turno ${turno.text}.`;
-                }
+                // if (descripcion) {
+                //     return `- El día ${turno.title} su hora de entrada es a las ${descripcion.map(des => des.column_values[0].text)}, su hora de salida es a las ${descripcion.map(des => des.column_values[1].text)}, el hotel donde le toca laborar es ${descripcion.map(des => des.column_values[2].text)} y sus tareas para este día son las de: ${descripcion.map(des => des.column_values[3].text)}.`;
+                // } else if (novedades) {
+                //     return `No se encontró una descripción para el código de turno ${turno.text}.`;
+                // }
+
+                const conca = descripcion.map(obj => {
+                    if(obj.name == "Novedad 1" || obj.name == "Novedad 2" || obj.name == "Novedad 3" || obj.name == "Novedad 4" || obj.name == "Novedad 5" || obj.name == "Novedad 6"){
+                        return `- El día ${turno.title} ${obj.column_values[0].text}.`;
+                    } else {
+                        return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
+                    }
+                })
+                return conca
             }
 
             const descripciones = [];
@@ -792,12 +800,21 @@ const enviarHorariosWindsor = async (req, res) => {
                 })
                 // console.log(filtroDesc)
                 // console.log(descripcion[0].column_values)
-                const novedades = datosTurnos.filter((tur) => tur.name == 'Novedad 1' || 'Novedad 2' || 'Novedad 3' || 'Novedad 4')
-                if (filtroDesc) {
-                    return `- El día *${turno.title}* su hora de entrada es a las *${filtroDesc.map(des => des.column_values[0].text)}*, su hora de salida es a las *${filtroDesc.map(des => des.column_values[1].text)}*, el hotel donde le toca laborar es *${filtroDesc.map(des => des.column_values[2].text)}* y sus tareas para este día son las de: *${filtroDesc.map(des => des.column_values[3].text)}*.`;
-                } else if (novedades) {
-                    return `No se encontró una descripción para el código de turno ${turno.text}.`;
-                }
+               
+                // if (filtroDesc) {
+                //     return `- El día *${turno.title}* su hora de entrada es a las *${filtroDesc.map(des => des.column_values[0].text)}*, su hora de salida es a las *${filtroDesc.map(des => des.column_values[1].text)}*, el hotel donde le toca laborar es *${filtroDesc.map(des => des.column_values[2].text)}* y sus tareas para este día son las de: *${filtroDesc.map(des => des.column_values[3].text)}*.`;
+                // } else if (novedades) {
+                //     return `No se encontró una descripción para el código de turno ${turno.text}.`;
+                // }
+
+                const conca = filtroDesc.map(obj => {
+                    if(obj.name == "Novedad 1" || obj.name == "Novedad 2" || obj.name == "Novedad 3" || obj.name == "Novedad 4" || obj.name == "Novedad 5" || obj.name == "Novedad 6"){
+                        return `- El día ${turno.title} ${obj.column_values[0].text}.`;
+                    } else {
+                        return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
+                    }
+                })
+                return conca
             }
 
             const descripciones = [];

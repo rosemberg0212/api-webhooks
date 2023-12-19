@@ -7,7 +7,7 @@ const apiSMS = async (telefono, cuerpo) => {
     .create({
         body: `${cuerpo}`,
         from: "+16293006240",
-        to: "+573015687156",
+        to: `+${telefono}`,
     })
     .then((message) => console.log(message.sid));
 };
