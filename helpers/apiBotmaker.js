@@ -38,16 +38,16 @@ const enviarWhatsAppBotmaker = async (telefono, descripcionesConcatenadas) => {
   }
 };
 
-const enviarWhatsTemplate = async (telefono, descripcionesConcatenadas) => {
+const enviarWhatsTemplate = async (userNum, botNum, templateName, params) => {
   const url = "https://go.botmaker.com/api/v1.0/intent/v2";
   const accessToken = process.env.APIKEY_BOTMAKER;
 
   const datos = {
     chatPlatform: "whatsapp",
-    chatChannelNumber: "573336025021",
-    platformContactId: telefono,
-    ruleNameOrId: "linkpago",
-    params: {name: "Rose", monto: 300000, url: "www.link.com"}
+    chatChannelNumber: botNum,
+    platformContactId: userNum,
+    ruleNameOrId: templateName,
+    params,
   };
 
   const headers = {
@@ -81,5 +81,5 @@ const enviarWhatsTemplate = async (telefono, descripcionesConcatenadas) => {
 
 module.exports = {
   enviarWhatsAppBotmaker,
-  enviarWhatsTemplate
+  enviarWhatsTemplate,
 };
