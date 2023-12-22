@@ -1,16 +1,17 @@
-const { 
-    traerTurnosAixo, 
-    traerTurnos1525, 
-    traerTurnosRodadero, 
-    traerTurnosAvexi, 
-    traerTurnosAzuan, 
-    traerTurnosAbi, 
+const {
+    traerTurnosAixo,
+    traerTurnos1525,
+    traerTurnosRodadero,
+    traerTurnosAvexi,
+    traerTurnosAzuan,
+    traerTurnosAbi,
     traerTurnosBocagrande,
     traerTurnosWindsor,
     traerTurnosMadisson,
     traerTurnosMarina,
+    novedades
 } = require('../middleware/turnos')
-const { enviarWhatsAppBotmaker } = require('../helpers/apiBotmaker')
+const { apiSMS, probandoMail, enviarWhatsAppBotmaker, enviarWhatsTemplate } = require('../helpers')
 
 const enviarHorarios = async (req, res) => {
 
@@ -18,7 +19,7 @@ const enviarHorarios = async (req, res) => {
     res.send({ challenge });
     const apikey = process.env.APIKEY_MONDAY;
 
-    // const id = '5482696148';
+    // const id = '5707679824';
     const id = req.body.event.pulseId;
 
     const query = `query { boards(ids: 5482696120) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
@@ -38,25 +39,23 @@ const enviarHorarios = async (req, res) => {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
-            const telefono = data.data.boards[0].items[0].column_values[33].text
-            // console.log(datosMonday.data.boards[0].items[0].column_values)
+            const telefono = data.data.boards[0].items[0].column_values[34].text
+            const mail = data.data.boards[0].items[0].column_values[35].text
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(0, 15)
+            const datosT = primeros15.slice(0, 16)
             console.log(telefono)
-
+            console.log(mail)
+            // console.log(datosT)
             const datosTurnos = await traerTurnosAixo()
+            const novedad = await novedades()
+            // console.log(novedad)
 
             // Función para obtener la descripción de un turno
             function obtenerDescripcionTurno(turno) {
                 const descripcion = datosTurnos.filter((tur) => tur.name == turno.text)
-                // if (descripcion) {
-                //     return `- El día ${turno.title} su hora de entrada es a las ${descripcion.map(des => des.column_values[0].text)}, su hora de salida es a las ${descripcion.map(des => des.column_values[1].text)}, el hotel donde le toca laborar es ${descripcion.map(des => des.column_values[2].text)} y sus tareas para este día son las de: ${descripcion.map(des => des.column_values[3].text)}.`;
-                // } else if (novedades) {
-                //     return `No se encontró una descripción para el código de turno ${turno.text}.`;
-                // }
 
                 const conca = descripcion.map(obj => {
-                    if(obj.name == "Novedad 1" || obj.name == "Novedad 2" || obj.name == "Novedad 3" || obj.name == "Novedad 4" || obj.name == "Novedad 5" || obj.name == "Novedad 6"){
+                    if (novedad.some(nov => nov.name === obj.name)) {
                         return `- El día ${turno.title} ${obj.column_values[0].text}.`;
                     } else {
                         return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
@@ -76,9 +75,32 @@ const enviarHorarios = async (req, res) => {
             }
 
             const descripcionesConcatenadas = descripciones.join('\n');
-            console.log(descripcionesConcatenadas)
+            // console.log(descripcionesConcatenadas)
 
-            await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
+            const mitadLongitud = Math.floor(descripcionesConcatenadas.length / 2);
+
+            // Busca el último salto de línea en la primera mitad de la cadena
+            const ultimoSaltoLinea = descripcionesConcatenadas.lastIndexOf('\n', mitadLongitud);
+
+            // Si se encuentra un salto de línea en la primera mitad, divide la cadena en consecuencia
+            let primeraMitad, segundaMitad;
+            if (ultimoSaltoLinea !== -1) {
+                primeraMitad = descripcionesConcatenadas.slice(0, ultimoSaltoLinea);
+                segundaMitad = descripcionesConcatenadas.slice(ultimoSaltoLinea + 1);
+            } else {
+                // Si no se encuentra un salto de línea, simplemente divide la cadena por la mitad
+                primeraMitad = descripcionesConcatenadas.slice(0, mitadLongitud);
+                segundaMitad = descripcionesConcatenadas.slice(mitadLongitud);
+            }
+
+            const arrS = [primeraMitad, segundaMitad]
+
+            // Imprime o utiliza las mitades según sea necesario
+            console.log(primeraMitad);
+            console.log(segundaMitad);
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail)
+
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -100,6 +122,7 @@ const enviarHorariosReservas = async (req, res) => {
     const apikey = process.env.APIKEY_MONDAY;
 
     const id = req.body.event.pulseId;
+    // const id = '5532254391';
 
     const query = `query { boards(ids: 5474798239) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -118,27 +141,32 @@ const enviarHorariosReservas = async (req, res) => {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
-            const telefono = data.data.boards[0].items[0].column_values[16].text
+            const telefono = data.data.boards[0].items[0].column_values[32].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
-            const datosT = datosMonday.data.boards[0].items[0].column_values;
-
+            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
+            const datosT = primeros15.slice(0, 15)
+            console.log(telefono)
             const datosTurnos = await traerTurnosAixo()
+            const novedad = await novedades()
 
             // Función para obtener la descripción de un turno
             function obtenerDescripcionTurno(turno) {
                 const descripcion = datosTurnos.filter((tur) => tur.name == turno.text)
-                const novedades = datosTurnos.filter((tur) => tur.name == 'Novedad 1' || 'Novedad 2' || 'Novedad 3' || 'Novedad 2')
-                if (descripcion) {
-                    return `- El día *${turno.title}* su hora de entrada es a las *${descripcion.map(des => des.column_values[0].text)}*, su hora de salida es a las *${descripcion.map(des => des.column_values[1].text)}*, el hotel donde le toca laborar es *${descripcion.map(des => des.column_values[2].text)}* y sus tareas para este día son las de: *${descripcion.map(des => des.column_values[3].text)}*.`;
-                } else if (novedades) {
-                    return `No se encontró una descripción para el código de turno ${turno.text}.`;
-                }
+
+                const conca = descripcion.map(obj => {
+                    if (novedad.some(nov => nov.name === obj.name)) {
+                        return `- El día ${turno.title} ${obj.column_values[0].text}.`;
+                    } else {
+                        return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
+                    }
+                })
+                return conca
             }
 
             const descripciones = [];
             // Iterar sobre los turnos e imprimir las descripciones
             for (const turno of datosT) {
-                if (turno.id !== 'estado' && turno.id !== 'tel_fono' && turno.id !== 'bot_n' && turno.id !== 'men__desplegable' && turno.id !== 'cargo0'  && turno.id !== 'bot_n_1') {
+                if (turno.id !== 'estado' && turno.id !== 'tel_fono' && turno.id !== 'bot_n' && turno.id !== 'men__desplegable' && turno.id !== 'cargo0' && turno.id !== 'bot_n_1') {
 
                     const descripcion = obtenerDescripcionTurno(turno);
                     descripciones.push(descripcion)
@@ -146,9 +174,31 @@ const enviarHorariosReservas = async (req, res) => {
             }
 
             const descripcionesConcatenadas = descripciones.join('\n');
-            console.log(descripcionesConcatenadas)
+            // console.log(descripcionesConcatenadas)
 
-            await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
+            const mitadLongitud = Math.floor(descripcionesConcatenadas.length / 2);
+
+            // Busca el último salto de línea en la primera mitad de la cadena
+            const ultimoSaltoLinea = descripcionesConcatenadas.lastIndexOf('\n', mitadLongitud);
+
+            // Si se encuentra un salto de línea en la primera mitad, divide la cadena en consecuencia
+            let primeraMitad, segundaMitad;
+            if (ultimoSaltoLinea !== -1) {
+                primeraMitad = descripcionesConcatenadas.slice(0, ultimoSaltoLinea);
+                segundaMitad = descripcionesConcatenadas.slice(ultimoSaltoLinea + 1);
+            } else {
+                // Si no se encuentra un salto de línea, simplemente divide la cadena por la mitad
+                primeraMitad = descripcionesConcatenadas.slice(0, mitadLongitud);
+                segundaMitad = descripcionesConcatenadas.slice(mitadLongitud);
+            }
+
+            const arrS = [primeraMitad, segundaMitad]
+
+            // Imprime o utiliza las mitades según sea necesario
+            console.log(primeraMitad);
+            console.log(segundaMitad);
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -263,19 +313,19 @@ const enviarHorariosSantaM = async (req, res) => {
             const datosMonday = data
             const telefono = data.data.boards[0].items[0].column_values[32].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
-            
+
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
             const datosT = primeros15.slice(0, 15)
             console.log(telefono)
             const datosTurnos = await traerTurnos1525()
-
+            const novedad = await novedades()
             // console.log(datosTurnos)
 
             // Función para obtener la descripción de un turno
             function obtenerDescripcionTurno(turno) {
                 const descripcion = datosTurnos.filter((tur) => tur.name == turno.text)
-                const filtroDesc = descripcion.map(obj=>{
-                    const columF = obj.column_values.filter(o=>o.id !== 'subelementos')
+                const filtroDesc = descripcion.map(obj => {
+                    const columF = obj.column_values.filter(o => o.id !== 'subelementos')
 
                     return {
                         id: obj.id,
@@ -283,12 +333,15 @@ const enviarHorariosSantaM = async (req, res) => {
                         column_values: columF
                     };
                 })
-                const novedades = datosTurnos.filter((tur) => tur.name == 'Novedad 1' || 'Novedad 2' || 'Novedad 3' || 'Novedad 4')
-                if (filtroDesc) {
-                    return `- El día *${turno.title}* su hora de entrada es a las *${filtroDesc.map(des => des.column_values[0].text)}*, su hora de salida es a las *${filtroDesc.map(des => des.column_values[1].text)}*, el hotel donde le toca laborar es *${filtroDesc.map(des => des.column_values[2].text)}* y sus tareas para este día son las de: *${filtroDesc.map(des => des.column_values[3].text)}*.`;
-                } else if (novedades) {
-                    return `No se encontró una descripción para el código de turno ${turno.text}.`;
-                }
+
+                const conca = filtroDesc.map(obj => {
+                    if (novedad.some(nov => nov.name === obj.name)) {
+                        return `- El día ${turno.title} ${obj.column_values[0].text}.`;
+                    } else {
+                        return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
+                    }
+                })
+                return conca
             }
 
             const descripciones = [];
@@ -302,9 +355,31 @@ const enviarHorariosSantaM = async (req, res) => {
             }
 
             const descripcionesConcatenadas = descripciones.join('\n');
-            console.log(descripcionesConcatenadas)
+            // console.log(descripcionesConcatenadas)
 
-            await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
+            const mitadLongitud = Math.floor(descripcionesConcatenadas.length / 2);
+
+            // Busca el último salto de línea en la primera mitad de la cadena
+            const ultimoSaltoLinea = descripcionesConcatenadas.lastIndexOf('\n', mitadLongitud);
+
+            // Si se encuentra un salto de línea en la primera mitad, divide la cadena en consecuencia
+            let primeraMitad, segundaMitad;
+            if (ultimoSaltoLinea !== -1) {
+                primeraMitad = descripcionesConcatenadas.slice(0, ultimoSaltoLinea);
+                segundaMitad = descripcionesConcatenadas.slice(ultimoSaltoLinea + 1);
+            } else {
+                // Si no se encuentra un salto de línea, simplemente divide la cadena por la mitad
+                primeraMitad = descripcionesConcatenadas.slice(0, mitadLongitud);
+                segundaMitad = descripcionesConcatenadas.slice(mitadLongitud);
+            }
+
+            const arrS = [primeraMitad, segundaMitad]
+
+            // Imprime o utiliza las mitades según sea necesario
+            console.log(primeraMitad);
+            console.log(segundaMitad);
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -349,19 +424,19 @@ const enviarHorariosRodadero = async (req, res) => {
             const datosMonday = data
             const telefono = data.data.boards[0].items[0].column_values[32].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
-           
+
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
             const datosT = primeros15.slice(0, 15)
             console.log(telefono)
             const datosTurnos = await traerTurnosRodadero()
-
+            const novedad = await novedades()
             // console.log(datosTurnos)
 
             // Función para obtener la descripción de un turno
             function obtenerDescripcionTurno(turno) {
                 const descripcion = datosTurnos.filter((tur) => tur.name == turno.text)
-                const filtroDesc = descripcion.map(obj=>{
-                    const columF = obj.column_values.filter(o=>o.id !== 'subelementos')
+                const filtroDesc = descripcion.map(obj => {
+                    const columF = obj.column_values.filter(o => o.id !== 'subelementos')
 
                     return {
                         id: obj.id,
@@ -371,12 +446,15 @@ const enviarHorariosRodadero = async (req, res) => {
                 })
                 // console.log(filtroDesc)
                 // console.log(descripcion[0].column_values)
-                const novedades = datosTurnos.filter((tur) => tur.name == 'Novedad 1' || 'Novedad 2' || 'Novedad 3' || 'Novedad 4')
-                if (filtroDesc) {
-                    return `- El día *${turno.title}* su hora de entrada es a las *${filtroDesc.map(des => des.column_values[0].text)}*, su hora de salida es a las *${filtroDesc.map(des => des.column_values[1].text)}*, el hotel donde le toca laborar es *${filtroDesc.map(des => des.column_values[2].text)}* y sus tareas para este día son las de: *${filtroDesc.map(des => des.column_values[3].text)}*.`;
-                } else if (novedades) {
-                    return `No se encontró una descripción para el código de turno ${turno.text}.`;
-                }
+
+                const conca = filtroDesc.map(obj => {
+                    if (novedad.some(nov => nov.name === obj.name)) {
+                        return `- El día ${turno.title} ${obj.column_values[0].text}.`;
+                    } else {
+                        return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
+                    }
+                })
+                return conca
             }
 
             const descripciones = [];
@@ -390,9 +468,31 @@ const enviarHorariosRodadero = async (req, res) => {
             }
 
             const descripcionesConcatenadas = descripciones.join('\n');
-            console.log(descripcionesConcatenadas)
-            
-            await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
+            // console.log(descripcionesConcatenadas)
+
+            const mitadLongitud = Math.floor(descripcionesConcatenadas.length / 2);
+
+            // Busca el último salto de línea en la primera mitad de la cadena
+            const ultimoSaltoLinea = descripcionesConcatenadas.lastIndexOf('\n', mitadLongitud);
+
+            // Si se encuentra un salto de línea en la primera mitad, divide la cadena en consecuencia
+            let primeraMitad, segundaMitad;
+            if (ultimoSaltoLinea !== -1) {
+                primeraMitad = descripcionesConcatenadas.slice(0, ultimoSaltoLinea);
+                segundaMitad = descripcionesConcatenadas.slice(ultimoSaltoLinea + 1);
+            } else {
+                // Si no se encuentra un salto de línea, simplemente divide la cadena por la mitad
+                primeraMitad = descripcionesConcatenadas.slice(0, mitadLongitud);
+                segundaMitad = descripcionesConcatenadas.slice(mitadLongitud);
+            }
+
+            const arrS = [primeraMitad, segundaMitad]
+
+            // Imprime o utiliza las mitades según sea necesario
+            console.log(primeraMitad);
+            console.log(segundaMitad);
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -412,7 +512,7 @@ const enviarHorariosAvexi = async (req, res) => {
     res.send({ challenge });
     const apikey = process.env.APIKEY_MONDAY;
     // const datosTurnos = await traerTurnosAvexi()
-    
+
 
     // const id = '5624770732';
     const id = req.body.event.pulseId;
@@ -434,21 +534,21 @@ const enviarHorariosAvexi = async (req, res) => {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
-            const telefono = data.data.boards[0].items[0].column_values[17].text
-            // console.log(datosMonday.data.boards[0].items[0].column_values)
-            
+            const telefono = data.data.boards[0].items[0].column_values[33].text
+
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
             const datosT = primeros15.slice(0, 15)
             console.log(telefono)
             const datosTurnos = await traerTurnosAvexi()
+            const novedad = await novedades()
 
             // console.log(datosTurnos)
 
             // Función para obtener la descripción de un turno
             function obtenerDescripcionTurno(turno) {
                 const descripcion = datosTurnos.filter((tur) => tur.name == turno.text)
-                const filtroDesc = descripcion.map(obj=>{
-                    const columF = obj.column_values.filter(o=>o.id !== 'subelementos')
+                const filtroDesc = descripcion.map(obj => {
+                    const columF = obj.column_values.filter(o => o.id !== 'subelementos')
 
                     return {
                         id: obj.id,
@@ -458,12 +558,14 @@ const enviarHorariosAvexi = async (req, res) => {
                 })
                 // console.log(filtroDesc)
                 // console.log(descripcion[0].column_values)
-                const novedades = datosTurnos.filter((tur) => tur.name == 'Novedad 1' || 'Novedad 2' || 'Novedad 3' || 'Novedad 4')
-                if (filtroDesc) {
-                    return `- El día *${turno.title}* su hora de entrada es a las *${filtroDesc.map(des => des.column_values[0].text)}*, su hora de salida es a las *${filtroDesc.map(des => des.column_values[1].text)}*, el hotel donde le toca laborar es *${filtroDesc.map(des => des.column_values[2].text)}* y sus tareas para este día son las de: *${filtroDesc.map(des => des.column_values[3].text)}*.`;
-                } else if (novedades) {
-                    return `No se encontró una descripción para el código de turno ${turno.text}.`;
-                }
+                const conca = filtroDesc.map(obj => {
+                    if (novedad.some(nov => nov.name === obj.name)) {
+                        return `- El día ${turno.title} ${obj.column_values[0].text}.`;
+                    } else {
+                        return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
+                    }
+                })
+                return conca
             }
 
             const descripciones = [];
@@ -477,9 +579,31 @@ const enviarHorariosAvexi = async (req, res) => {
             }
 
             const descripcionesConcatenadas = descripciones.join('\n');
-            console.log(descripcionesConcatenadas)
-            
-            await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
+            // console.log(descripcionesConcatenadas)
+
+            const mitadLongitud = Math.floor(descripcionesConcatenadas.length / 2);
+
+            // Busca el último salto de línea en la primera mitad de la cadena
+            const ultimoSaltoLinea = descripcionesConcatenadas.lastIndexOf('\n', mitadLongitud);
+
+            // Si se encuentra un salto de línea en la primera mitad, divide la cadena en consecuencia
+            let primeraMitad, segundaMitad;
+            if (ultimoSaltoLinea !== -1) {
+                primeraMitad = descripcionesConcatenadas.slice(0, ultimoSaltoLinea);
+                segundaMitad = descripcionesConcatenadas.slice(ultimoSaltoLinea + 1);
+            } else {
+                // Si no se encuentra un salto de línea, simplemente divide la cadena por la mitad
+                primeraMitad = descripcionesConcatenadas.slice(0, mitadLongitud);
+                segundaMitad = descripcionesConcatenadas.slice(mitadLongitud);
+            }
+
+            const arrS = [primeraMitad, segundaMitad]
+
+            // Imprime o utiliza las mitades según sea necesario
+            console.log(primeraMitad);
+            console.log(segundaMitad);
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -499,7 +623,7 @@ const enviarHorariosAzuan = async (req, res) => {
     res.send({ challenge });
     const apikey = process.env.APIKEY_MONDAY;
     // const datosTurnos = await traerTurnosAzuan()
-    
+
 
     // const id = '5628279688';
     const id = req.body.event.pulseId;
@@ -521,19 +645,20 @@ const enviarHorariosAzuan = async (req, res) => {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
-            const telefono = data.data.boards[0].items[0].column_values[17].text
+            const telefono = data.data.boards[0].items[0].column_values[33].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
-            const datosT = datosMonday.data.boards[0].items[0].column_values;
+            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
+            const datosT = primeros15.slice(0, 15)
             console.log(telefono)
             const datosTurnos = await traerTurnosAzuan()
-
+            const novedad = await novedades()
             // console.log(datosTurnos)
 
             // Función para obtener la descripción de un turno
             function obtenerDescripcionTurno(turno) {
                 const descripcion = datosTurnos.filter((tur) => tur.name == turno.text)
-                const filtroDesc = descripcion.map(obj=>{
-                    const columF = obj.column_values.filter(o=>o.id !== 'subelementos')
+                const filtroDesc = descripcion.map(obj => {
+                    const columF = obj.column_values.filter(o => o.id !== 'subelementos')
 
                     return {
                         id: obj.id,
@@ -543,12 +668,15 @@ const enviarHorariosAzuan = async (req, res) => {
                 })
                 // console.log(filtroDesc)
                 // console.log(descripcion[0].column_values)
-                const novedades = datosTurnos.filter((tur) => tur.name == 'Novedad 1' || 'Novedad 2' || 'Novedad 3' || 'Novedad 4')
-                if (filtroDesc) {
-                    return `- El día *${turno.title}* su hora de entrada es a las *${filtroDesc.map(des => des.column_values[0].text)}*, su hora de salida es a las *${filtroDesc.map(des => des.column_values[1].text)}*, el hotel donde le toca laborar es *${filtroDesc.map(des => des.column_values[2].text)}* y sus tareas para este día son las de: *${filtroDesc.map(des => des.column_values[3].text)}*.`;
-                } else if (novedades) {
-                    return `No se encontró una descripción para el código de turno ${turno.text}.`;
-                }
+                const conca = filtroDesc.map(obj => {
+                    if (novedad.some(nov => nov.name === obj.name)) {
+                        return `- El día ${turno.title} ${obj.column_values[0].text}.`;
+                    } else {
+                        return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
+                    }
+                })
+                return conca
+
             }
 
             const descripciones = [];
@@ -562,9 +690,31 @@ const enviarHorariosAzuan = async (req, res) => {
             }
 
             const descripcionesConcatenadas = descripciones.join('\n');
-            console.log(descripcionesConcatenadas)
-            
-            await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
+            // console.log(descripcionesConcatenadas)
+
+            const mitadLongitud = Math.floor(descripcionesConcatenadas.length / 2);
+
+            // Busca el último salto de línea en la primera mitad de la cadena
+            const ultimoSaltoLinea = descripcionesConcatenadas.lastIndexOf('\n', mitadLongitud);
+
+            // Si se encuentra un salto de línea en la primera mitad, divide la cadena en consecuencia
+            let primeraMitad, segundaMitad;
+            if (ultimoSaltoLinea !== -1) {
+                primeraMitad = descripcionesConcatenadas.slice(0, ultimoSaltoLinea);
+                segundaMitad = descripcionesConcatenadas.slice(ultimoSaltoLinea + 1);
+            } else {
+                // Si no se encuentra un salto de línea, simplemente divide la cadena por la mitad
+                primeraMitad = descripcionesConcatenadas.slice(0, mitadLongitud);
+                segundaMitad = descripcionesConcatenadas.slice(mitadLongitud);
+            }
+
+            const arrS = [primeraMitad, segundaMitad]
+
+            // Imprime o utiliza las mitades según sea necesario
+            console.log(primeraMitad);
+            console.log(segundaMitad);
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -584,7 +734,7 @@ const enviarHorariosAbi = async (req, res) => {
     res.send({ challenge });
     const apikey = process.env.APIKEY_MONDAY;
     // const datosTurnos = await traerTurnosAbi()
-    
+
 
     // const id = '5628450758';
     const id = req.body.event.pulseId;
@@ -606,19 +756,21 @@ const enviarHorariosAbi = async (req, res) => {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
-            const telefono = data.data.boards[0].items[0].column_values[17].text
+            const telefono = data.data.boards[0].items[0].column_values[33].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
-            const datosT = datosMonday.data.boards[0].items[0].column_values;
+            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
+            const datosT = primeros15.slice(0, 15)
             console.log(telefono)
             const datosTurnos = await traerTurnosAbi()
+            const novedad = await novedades()
 
             // console.log(datosTurnos)
 
             // Función para obtener la descripción de un turno
             function obtenerDescripcionTurno(turno) {
                 const descripcion = datosTurnos.filter((tur) => tur.name == turno.text)
-                const filtroDesc = descripcion.map(obj=>{
-                    const columF = obj.column_values.filter(o=>o.id !== 'subelementos')
+                const filtroDesc = descripcion.map(obj => {
+                    const columF = obj.column_values.filter(o => o.id !== 'subelementos')
 
                     return {
                         id: obj.id,
@@ -628,12 +780,14 @@ const enviarHorariosAbi = async (req, res) => {
                 })
                 // console.log(filtroDesc)
                 // console.log(descripcion[0].column_values)
-                const novedades = datosTurnos.filter((tur) => tur.name == 'Novedad 1' || 'Novedad 2' || 'Novedad 3' || 'Novedad 4')
-                if (filtroDesc) {
-                    return `- El día *${turno.title}* su hora de entrada es a las *${filtroDesc.map(des => des.column_values[0].text)}*, su hora de salida es a las *${filtroDesc.map(des => des.column_values[1].text)}*, el hotel donde le toca laborar es *${filtroDesc.map(des => des.column_values[2].text)}* y sus tareas para este día son las de: *${filtroDesc.map(des => des.column_values[3].text)}*.`;
-                } else if (novedades) {
-                    return `No se encontró una descripción para el código de turno ${turno.text}.`;
-                }
+                const conca = filtroDesc.map(obj => {
+                    if (novedad.some(nov => nov.name === obj.name)) {
+                        return `- El día ${turno.title} ${obj.column_values[0].text}.`;
+                    } else {
+                        return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
+                    }
+                })
+                return conca
             }
 
             const descripciones = [];
@@ -647,9 +801,31 @@ const enviarHorariosAbi = async (req, res) => {
             }
 
             const descripcionesConcatenadas = descripciones.join('\n');
-            console.log(descripcionesConcatenadas)
-            
-            await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
+            // console.log(descripcionesConcatenadas)
+
+            const mitadLongitud = Math.floor(descripcionesConcatenadas.length / 2);
+
+            // Busca el último salto de línea en la primera mitad de la cadena
+            const ultimoSaltoLinea = descripcionesConcatenadas.lastIndexOf('\n', mitadLongitud);
+
+            // Si se encuentra un salto de línea en la primera mitad, divide la cadena en consecuencia
+            let primeraMitad, segundaMitad;
+            if (ultimoSaltoLinea !== -1) {
+                primeraMitad = descripcionesConcatenadas.slice(0, ultimoSaltoLinea);
+                segundaMitad = descripcionesConcatenadas.slice(ultimoSaltoLinea + 1);
+            } else {
+                // Si no se encuentra un salto de línea, simplemente divide la cadena por la mitad
+                primeraMitad = descripcionesConcatenadas.slice(0, mitadLongitud);
+                segundaMitad = descripcionesConcatenadas.slice(mitadLongitud);
+            }
+
+            const arrS = [primeraMitad, segundaMitad]
+
+            // Imprime o utiliza las mitades según sea necesario
+            console.log(primeraMitad);
+            console.log(segundaMitad);
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -668,10 +844,8 @@ const enviarHorariosBocagrande = async (req, res) => {
     const challenge = req.body.challenge;
     res.send({ challenge });
     const apikey = process.env.APIKEY_MONDAY;
-    // const datosTurnos = await traerTurnosBocagrande()
-    
 
-    // const id = '5628654198';
+    // const id = '5628654227';
     const id = req.body.event.pulseId;
 
     const query = `query { boards(ids: 5628654082) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
@@ -691,19 +865,20 @@ const enviarHorariosBocagrande = async (req, res) => {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
-            const telefono = data.data.boards[0].items[0].column_values[17].text
+            const telefono = data.data.boards[0].items[0].column_values[33].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
-            const datosT = datosMonday.data.boards[0].items[0].column_values;
+            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
+            const datosT = primeros15.slice(0, 15)
             console.log(telefono)
             const datosTurnos = await traerTurnosBocagrande()
-
+            const novedad = await novedades()
             // console.log(datosTurnos)
 
             // Función para obtener la descripción de un turno
             function obtenerDescripcionTurno(turno) {
                 const descripcion = datosTurnos.filter((tur) => tur.name == turno.text)
-                const filtroDesc = descripcion.map(obj=>{
-                    const columF = obj.column_values.filter(o=>o.id !== 'subelementos')
+                const filtroDesc = descripcion.map(obj => {
+                    const columF = obj.column_values.filter(o => o.id !== 'subelementos')
 
                     return {
                         id: obj.id,
@@ -713,12 +888,14 @@ const enviarHorariosBocagrande = async (req, res) => {
                 })
                 // console.log(filtroDesc)
                 // console.log(descripcion[0].column_values)
-                const novedades = datosTurnos.filter((tur) => tur.name == 'Novedad 1' || 'Novedad 2' || 'Novedad 3' || 'Novedad 4')
-                if (filtroDesc) {
-                    return `- El día *${turno.title}* su hora de entrada es a las *${filtroDesc.map(des => des.column_values[0].text)}*, su hora de salida es a las *${filtroDesc.map(des => des.column_values[1].text)}*, el hotel donde le toca laborar es *${filtroDesc.map(des => des.column_values[2].text)}* y sus tareas para este día son las de: *${filtroDesc.map(des => des.column_values[3].text)}*.`;
-                } else if (novedades) {
-                    return `No se encontró una descripción para el código de turno ${turno.text}.`;
-                }
+                const conca = filtroDesc.map(obj => {
+                    if (novedad.some(nov => nov.name === obj.name)) {
+                        return `- El día ${turno.title} ${obj.column_values[0].text}.`;
+                    } else {
+                        return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
+                    }
+                })
+                return conca
             }
 
             const descripciones = [];
@@ -732,9 +909,31 @@ const enviarHorariosBocagrande = async (req, res) => {
             }
 
             const descripcionesConcatenadas = descripciones.join('\n');
-            console.log(descripcionesConcatenadas)
-            
-            await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
+            // console.log(descripcionesConcatenadas)
+
+            const mitadLongitud = Math.floor(descripcionesConcatenadas.length / 2);
+
+            // Busca el último salto de línea en la primera mitad de la cadena
+            const ultimoSaltoLinea = descripcionesConcatenadas.lastIndexOf('\n', mitadLongitud);
+
+            // Si se encuentra un salto de línea en la primera mitad, divide la cadena en consecuencia
+            let primeraMitad, segundaMitad;
+            if (ultimoSaltoLinea !== -1) {
+                primeraMitad = descripcionesConcatenadas.slice(0, ultimoSaltoLinea);
+                segundaMitad = descripcionesConcatenadas.slice(ultimoSaltoLinea + 1);
+            } else {
+                // Si no se encuentra un salto de línea, simplemente divide la cadena por la mitad
+                primeraMitad = descripcionesConcatenadas.slice(0, mitadLongitud);
+                segundaMitad = descripcionesConcatenadas.slice(mitadLongitud);
+            }
+
+            const arrS = [primeraMitad, segundaMitad]
+
+            // Imprime o utiliza las mitades según sea necesario
+            console.log(primeraMitad);
+            console.log(segundaMitad);
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -754,7 +953,7 @@ const enviarHorariosWindsor = async (req, res) => {
     res.send({ challenge });
     const apikey = process.env.APIKEY_MONDAY;
     // const datosTurnos = await traerTurnosWindsor()
-    
+
 
     // const id = '5628802926';
     const id = req.body.event.pulseId;
@@ -780,17 +979,17 @@ const enviarHorariosWindsor = async (req, res) => {
             // console.log(datosMonday.data.boards[0].items[0].column_values)
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
             const datosT = primeros15.slice(0, 15)
-            
+
             console.log(telefono)
             const datosTurnos = await traerTurnosWindsor()
-
+            const novedad = await novedades()
             // console.log(datosTurnos)
 
             // Función para obtener la descripción de un turno
             function obtenerDescripcionTurno(turno) {
                 const descripcion = datosTurnos.filter((tur) => tur.name == turno.text)
-                const filtroDesc = descripcion.map(obj=>{
-                    const columF = obj.column_values.filter(o=>o.id !== 'subelementos')
+                const filtroDesc = descripcion.map(obj => {
+                    const columF = obj.column_values.filter(o => o.id !== 'subelementos')
 
                     return {
                         id: obj.id,
@@ -798,17 +997,9 @@ const enviarHorariosWindsor = async (req, res) => {
                         column_values: columF
                     };
                 })
-                // console.log(filtroDesc)
-                // console.log(descripcion[0].column_values)
-               
-                // if (filtroDesc) {
-                //     return `- El día *${turno.title}* su hora de entrada es a las *${filtroDesc.map(des => des.column_values[0].text)}*, su hora de salida es a las *${filtroDesc.map(des => des.column_values[1].text)}*, el hotel donde le toca laborar es *${filtroDesc.map(des => des.column_values[2].text)}* y sus tareas para este día son las de: *${filtroDesc.map(des => des.column_values[3].text)}*.`;
-                // } else if (novedades) {
-                //     return `No se encontró una descripción para el código de turno ${turno.text}.`;
-                // }
 
                 const conca = filtroDesc.map(obj => {
-                    if(obj.name == "Novedad 1" || obj.name == "Novedad 2" || obj.name == "Novedad 3" || obj.name == "Novedad 4" || obj.name == "Novedad 5" || obj.name == "Novedad 6"){
+                    if (novedad.some(nov => nov.name === obj.name)) {
                         return `- El día ${turno.title} ${obj.column_values[0].text}.`;
                     } else {
                         return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
@@ -828,9 +1019,31 @@ const enviarHorariosWindsor = async (req, res) => {
             }
 
             const descripcionesConcatenadas = descripciones.join('\n');
-            console.log(descripcionesConcatenadas)
-            
-            await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
+            // console.log(descripcionesConcatenadas)
+
+            const mitadLongitud = Math.floor(descripcionesConcatenadas.length / 2);
+
+            // Busca el último salto de línea en la primera mitad de la cadena
+            const ultimoSaltoLinea = descripcionesConcatenadas.lastIndexOf('\n', mitadLongitud);
+
+            // Si se encuentra un salto de línea en la primera mitad, divide la cadena en consecuencia
+            let primeraMitad, segundaMitad;
+            if (ultimoSaltoLinea !== -1) {
+                primeraMitad = descripcionesConcatenadas.slice(0, ultimoSaltoLinea);
+                segundaMitad = descripcionesConcatenadas.slice(ultimoSaltoLinea + 1);
+            } else {
+                // Si no se encuentra un salto de línea, simplemente divide la cadena por la mitad
+                primeraMitad = descripcionesConcatenadas.slice(0, mitadLongitud);
+                segundaMitad = descripcionesConcatenadas.slice(mitadLongitud);
+            }
+
+            const arrS = [primeraMitad, segundaMitad]
+
+            // Imprime o utiliza las mitades según sea necesario
+            console.log(primeraMitad);
+            console.log(segundaMitad);
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -850,7 +1063,7 @@ const enviarHorariosMadisson = async (req, res) => {
     res.send({ challenge });
     const apikey = process.env.APIKEY_MONDAY;
     // const datosTurnos = await traerTurnosMadisson()
-    
+
 
     // const id = '5628964006';
     const id = req.body.event.pulseId;
@@ -876,17 +1089,17 @@ const enviarHorariosMadisson = async (req, res) => {
             // console.log(datosMonday.data.boards[0].items[0].column_values)
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
             const datosT = primeros15.slice(0, 15)
-            
+
             console.log(telefono)
             const datosTurnos = await traerTurnosMadisson()
-
+            const novedad = await novedades()
             // console.log(datosTurnos)
 
             // Función para obtener la descripción de un turno
             function obtenerDescripcionTurno(turno) {
                 const descripcion = datosTurnos.filter((tur) => tur.name == turno.text)
-                const filtroDesc = descripcion.map(obj=>{
-                    const columF = obj.column_values.filter(o=>o.id !== 'subelementos')
+                const filtroDesc = descripcion.map(obj => {
+                    const columF = obj.column_values.filter(o => o.id !== 'subelementos')
 
                     return {
                         id: obj.id,
@@ -896,12 +1109,14 @@ const enviarHorariosMadisson = async (req, res) => {
                 })
                 // console.log(filtroDesc)
                 // console.log(descripcion[0].column_values)
-                const novedades = datosTurnos.filter((tur) => tur.name == 'Novedad 1' || 'Novedad 2' || 'Novedad 3' || 'Novedad 4')
-                if (filtroDesc) {
-                    return `- El día *${turno.title}* su hora de entrada es a las *${filtroDesc.map(des => des.column_values[0].text)}*, su hora de salida es a las *${filtroDesc.map(des => des.column_values[1].text)}*, el hotel donde le toca laborar es *${filtroDesc.map(des => des.column_values[2].text)}* y sus tareas para este día son las de: *${filtroDesc.map(des => des.column_values[3].text)}*.`;
-                } else if (novedades) {
-                    return `No se encontró una descripción para el código de turno ${turno.text}.`;
-                }
+                const conca = filtroDesc.map(obj => {
+                    if (novedad.some(nov => nov.name === obj.name)) {
+                        return `- El día ${turno.title} ${obj.column_values[0].text}.`;
+                    } else {
+                        return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
+                    }
+                })
+                return conca
             }
 
             const descripciones = [];
@@ -915,9 +1130,31 @@ const enviarHorariosMadisson = async (req, res) => {
             }
 
             const descripcionesConcatenadas = descripciones.join('\n');
-            console.log(descripcionesConcatenadas)
-            
-            await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
+            // console.log(descripcionesConcatenadas)
+
+            const mitadLongitud = Math.floor(descripcionesConcatenadas.length / 2);
+
+            // Busca el último salto de línea en la primera mitad de la cadena
+            const ultimoSaltoLinea = descripcionesConcatenadas.lastIndexOf('\n', mitadLongitud);
+
+            // Si se encuentra un salto de línea en la primera mitad, divide la cadena en consecuencia
+            let primeraMitad, segundaMitad;
+            if (ultimoSaltoLinea !== -1) {
+                primeraMitad = descripcionesConcatenadas.slice(0, ultimoSaltoLinea);
+                segundaMitad = descripcionesConcatenadas.slice(ultimoSaltoLinea + 1);
+            } else {
+                // Si no se encuentra un salto de línea, simplemente divide la cadena por la mitad
+                primeraMitad = descripcionesConcatenadas.slice(0, mitadLongitud);
+                segundaMitad = descripcionesConcatenadas.slice(mitadLongitud);
+            }
+
+            const arrS = [primeraMitad, segundaMitad]
+
+            // Imprime o utiliza las mitades según sea necesario
+            console.log(primeraMitad);
+            console.log(segundaMitad);
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -936,85 +1173,112 @@ const enviarHorariosMarina = async (req, res) => {
     const challenge = req.body.challenge;
     res.send({ challenge });
     const apikey = process.env.APIKEY_MONDAY;
-    const datosTurnos = await traerTurnosMarina()
-    
+    // const datosTurnos = await traerTurnosMadisson()
 
-    // const id = '5640092879';
-    // // const id = req.body.event.pulseId;
 
-    // const query = `query { boards(ids: 5640092760) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
-    // const response = await fetch("https://api.monday.com/v2", {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //         'Authorization': apikey
-    //     },
-    //     body: JSON.stringify({
-    //         'query': query
-    //     })
-    // });
+    // const id = '5640093020';
+    const id = req.body.event.pulseId;
 
-    // try {
-    //     if (response.ok) {
-    //         const data = await response.json();
-    //         // console.log(JSON.stringify(data, null, 2));
-    //         const datosMonday = data
-    //         const telefono = data.data.boards[0].items[0].column_values[17].text
-    //         // console.log(datosMonday.data.boards[0].items[0].column_values)
-    //         const datosT = datosMonday.data.boards[0].items[0].column_values;
-    //         console.log(telefono)
-    //         const datosTurnos = await traerTurnosMadisson()
+    const query = `query { boards(ids: 5640092760) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
+    const response = await fetch("https://api.monday.com/v2", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': apikey
+        },
+        body: JSON.stringify({
+            'query': query
+        })
+    });
 
-    //         // console.log(datosTurnos)
+    try {
+        if (response.ok) {
+            const data = await response.json();
+            // console.log(JSON.stringify(data, null, 2));
+            const datosMonday = data
+            const telefono = data.data.boards[0].items[0].column_values[32].text
+            // console.log(datosMonday.data.boards[0].items[0].column_values)
+            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
+            const datosT = primeros15.slice(0, 15)
 
-    //         // Función para obtener la descripción de un turno
-    //         function obtenerDescripcionTurno(turno) {
-    //             const descripcion = datosTurnos.filter((tur) => tur.name == turno.text)
-    //             const filtroDesc = descripcion.map(obj=>{
-    //                 const columF = obj.column_values.filter(o=>o.id !== 'subelementos')
+            console.log(telefono)
+            const datosTurnos = await traerTurnosMarina()
+            const novedad = await novedades()
+            // console.log(datosTurnos)
 
-    //                 return {
-    //                     id: obj.id,
-    //                     name: obj.name,
-    //                     column_values: columF
-    //                 };
-    //             })
-    //             // console.log(filtroDesc)
-    //             // console.log(descripcion[0].column_values)
-    //             const novedades = datosTurnos.filter((tur) => tur.name == 'Novedad 1' || 'Novedad 2' || 'Novedad 3' || 'Novedad 4')
-    //             if (filtroDesc) {
-    //                 return `- El día *${turno.title}* su hora de entrada es a las *${filtroDesc.map(des => des.column_values[0].text)}*, su hora de salida es a las *${filtroDesc.map(des => des.column_values[1].text)}*, el hotel donde le toca laborar es *${filtroDesc.map(des => des.column_values[2].text)}* y sus tareas para este día son las de: *${filtroDesc.map(des => des.column_values[3].text)}*.`;
-    //             } else if (novedades) {
-    //                 return `No se encontró una descripción para el código de turno ${turno.text}.`;
-    //             }
-    //         }
+            // Función para obtener la descripción de un turno
+            function obtenerDescripcionTurno(turno) {
+                const descripcion = datosTurnos.filter((tur) => tur.name == turno.text)
+                const filtroDesc = descripcion.map(obj => {
+                    const columF = obj.column_values.filter(o => o.id !== 'subelementos')
 
-    //         const descripciones = [];
-    //         // Iterar sobre los turnos e imprimir las descripciones
-    //         for (const turno of datosT) {
-    //             if (turno.id !== 'estado' && turno.id !== 'tel_fono' && turno.id !== 'bot_n' && turno.id !== 'men__desplegable' && turno.id !== 'cargo6') {
+                    return {
+                        id: obj.id,
+                        name: obj.name,
+                        column_values: columF
+                    };
+                })
+                // console.log(filtroDesc)
+                // console.log(descripcion[0].column_values)
+                const conca = filtroDesc.map(obj => {
+                    if (novedad.some(nov => nov.name === obj.name)) {
+                        return `- El día ${turno.title} ${obj.column_values[0].text}.`;
+                    } else {
+                        return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
+                    }
+                })
+                return conca
+            }
 
-    //                 const descripcion = obtenerDescripcionTurno(turno);
-    //                 descripciones.push(descripcion)
-    //             }
-    //         }
+            const descripciones = [];
+            // Iterar sobre los turnos e imprimir las descripciones
+            for (const turno of datosT) {
+                if (turno.id !== 'estado' && turno.id !== 'tel_fono' && turno.id !== 'bot_n' && turno.id !== 'men__desplegable' && turno.id !== 'cargo6') {
 
-    //         const descripcionesConcatenadas = descripciones.join('\n');
-    //         console.log(descripcionesConcatenadas)
-            
-    //         // await enviarWhatsAppBotmaker(telefono, descripcionesConcatenadas)
+                    const descripcion = obtenerDescripcionTurno(turno);
+                    descripciones.push(descripcion)
+                }
+            }
 
-    //     } else {
-    //         console.error('Hubo un error en la solicitud.');
-    //         console.error('Código de estado:', response.status);
-    //         const errorMessage = await response.text();
-    //         console.error('Respuesta:', errorMessage);
-    //     }
-    // } catch (error) {
-    //     console.error('Hubo un error en la solicitud:', error);
-    // }
+            const descripcionesConcatenadas = descripciones.join('\n');
+            // console.log(descripcionesConcatenadas)
+
+            const mitadLongitud = Math.floor(descripcionesConcatenadas.length / 2);
+
+            // Busca el último salto de línea en la primera mitad de la cadena
+            const ultimoSaltoLinea = descripcionesConcatenadas.lastIndexOf('\n', mitadLongitud);
+
+            // Si se encuentra un salto de línea en la primera mitad, divide la cadena en consecuencia
+            let primeraMitad, segundaMitad;
+            if (ultimoSaltoLinea !== -1) {
+                primeraMitad = descripcionesConcatenadas.slice(0, ultimoSaltoLinea);
+                segundaMitad = descripcionesConcatenadas.slice(ultimoSaltoLinea + 1);
+            } else {
+                // Si no se encuentra un salto de línea, simplemente divide la cadena por la mitad
+                primeraMitad = descripcionesConcatenadas.slice(0, mitadLongitud);
+                segundaMitad = descripcionesConcatenadas.slice(mitadLongitud);
+            }
+
+            const arrS = [primeraMitad, segundaMitad]
+
+            // Imprime o utiliza las mitades según sea necesario
+            console.log(primeraMitad);
+            console.log(segundaMitad);
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail)
+
+        } else {
+            console.error('Hubo un error en la solicitud.');
+            console.error('Código de estado:', response.status);
+            const errorMessage = await response.text();
+            console.error('Respuesta:', errorMessage);
+        }
+    } catch (error) {
+        console.error('Hubo un error en la solicitud:', error);
+    }
     res.status(200).end();
 }
+
 
 module.exports = {
     enviarHorarios,

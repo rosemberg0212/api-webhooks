@@ -38,6 +38,48 @@ const enviarWhatsAppBotmaker = async (telefono, descripcionesConcatenadas) => {
   }
 };
 
+const enviarWhatsTemplate = async (telefono, descripcionesConcatenadas) => {
+  const url = "https://go.botmaker.com/api/v1.0/intent/v2";
+  const accessToken = process.env.APIKEY_BOTMAKER;
+
+  const datos = {
+    chatPlatform: "whatsapp",
+    chatChannelNumber: "573336025021",
+    platformContactId: telefono,
+    ruleNameOrId: "linkpago",
+    params: {name: "Rose", monto: 300000, url: "www.link.com"}
+  };
+
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    "access-token": accessToken,
+  };
+
+  const requestOptions = {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify(datos),
+  };
+
+  try {
+    const response = await fetch(url, requestOptions);
+    if (response.status === 200) {
+      const responseData = await response.json();
+      console.log("Respuesta:", responseData);
+    } else {
+      console.error(
+        "Error en la solicitud:",
+        response.status,
+        response.statusText
+      );
+    }
+  } catch (error) {
+    console.error("Error en la solicitud:", error.message);
+  }
+};
+
 module.exports = {
   enviarWhatsAppBotmaker,
+  enviarWhatsTemplate
 };

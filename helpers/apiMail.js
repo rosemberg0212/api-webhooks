@@ -6,7 +6,7 @@ const probandoMail = async (cuerpo, mail) => {
         port: 587,
         auth: {
             user: "rosemberc.g.02@gmail.com",
-            pass: "juls pfhz gggg apzr",
+            pass: process.env.MAIL_CONTRA_APP,
         },
     };
 

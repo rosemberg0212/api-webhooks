@@ -10,8 +10,7 @@ class Server {
     this.paths = {
       certificado: "/hook/certificado",
       horario: "/hook/horario",
-      horario2da: "/hook/horario2da",                 
-      horarioSMS: "/hook/horarioSMS",                 
+      horario2da: "/hook/horario2da",                
       taskRyver: "/hook/taskRyver",
       nomina: "/hook/nomina",
       usuarios: "/api/v1/romi-guess",
@@ -40,7 +39,6 @@ class Server {
     this.app.use(this.paths.certificado, require("../routes/certificado"));
     this.app.use(this.paths.horario, require("../routes/horarios"));
     this.app.use(this.paths.horario2da, require("../routes/horarios2da"));
-    this.app.use(this.paths.horarioSMS, require("../routes/horariosSMS"));
     this.app.use(this.paths.taskRyver, require("../routes/taskRyver"));
     this.app.use(this.paths.nomina, require("../routes/nominaR"));
     this.app.use(this.paths.usuarios, require("../routes/userR"));
