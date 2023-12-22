@@ -3,6 +3,6 @@ const {} = require("../controllers/userC");
 
 const router = Router();
 
-router.get("/", validateToken, usuariosGet);
+// router.get("/", validateToken, usuariosGet);
 
 module.exports = router;
