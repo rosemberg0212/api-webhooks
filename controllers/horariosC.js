@@ -19,9 +19,10 @@ const enviarHorarios = async (req, res) => {
     res.send({ challenge });
     const apikey = process.env.APIKEY_MONDAY;
 
-    const id = '5707679824';
-    // const id = req.body.event.pulseId;
-
+    // const id = '5707679824';
+    const id = req.body.event.pulseId;
+    console.log(req.body.event.columnTitle)
+    let boton = req.body.event.columnTitle;
     const query = `query { boards(ids: 5482696120) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
@@ -42,7 +43,8 @@ const enviarHorarios = async (req, res) => {
             const telefono = data.data.boards[0].items[0].column_values[34].text
             const mail = data.data.boards[0].items[0].column_values[35].text
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(1, 16)
+            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(1, 16) : primeros15.slice(16, 32)
+            // const datosT = primeros15.slice(1, 16)
             console.log(telefono)
             console.log(mail)
             // console.log(datosT)
@@ -51,7 +53,7 @@ const enviarHorarios = async (req, res) => {
             // console.log(novedad)
 
             // Función para obtener la descripción de un turno
-            function obtenerDescripcionTurno(turno) {
+            function obtenerDescripcionTurno(turno) { 
                 const descripcion = datosTurnos.filter((tur) => tur.name == turno.text)
                 const filtroDesc = descripcion.map(obj => {
                     const columF = obj.column_values.filter(o => o.id !== 'subelementos')
@@ -110,8 +112,8 @@ const enviarHorarios = async (req, res) => {
             // Imprime o utiliza las mitades según sea necesario
             console.log(primeraMitad);
             console.log(segundaMitad);
-            // arrS.map(async (obj) => await apiSMS(telefono, obj))
-            // await probandoMail(descripcionesConcatenadas, mail)
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail)
 
 
         } else {
@@ -133,8 +135,10 @@ const enviarHorariosReservas = async (req, res) => {
 
     const apikey = process.env.APIKEY_MONDAY;
 
-    // const id = req.body.event.pulseId;
-    const id = '5532254391';
+    const id = req.body.event.pulseId;
+    // const id = '5532254391';
+    console.log(req.body.event.columnTitle)
+    let boton = req.body.event.columnTitle;
 
     const query = `query { boards(ids: 5474798239) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -157,7 +161,8 @@ const enviarHorariosReservas = async (req, res) => {
             const mail = data.data.boards[0].items[0].column_values[34].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(0, 15)
+            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
+            // const datosT = primeros15.slice(0, 15)
             console.log(telefono)
             console.log(mail)
             const datosTurnos = await traerTurnosAixo()
@@ -223,8 +228,8 @@ const enviarHorariosReservas = async (req, res) => {
             // Imprime o utiliza las mitades según sea necesario
             console.log(primeraMitad);
             console.log(segundaMitad);
-            // arrS.map(async (obj) => await apiSMS(telefono, obj))
-            // await probandoMail(descripcionesConcatenadas, mail)
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -317,8 +322,10 @@ const enviarHorariosSantaM = async (req, res) => {
     // console.log(datosTurnos)
 
 
-    const id = '5482453565';
-    // const id = req.body.event.pulseId;
+    // const id = '5482453565';
+    const id = req.body.event.pulseId;
+    console.log(req.body.event.columnTitle)
+    let boton = req.body.event.columnTitle;
 
     const query = `query { boards(ids: 5482452579) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -342,7 +349,8 @@ const enviarHorariosSantaM = async (req, res) => {
             // console.log(datosMonday.data.boards[0].items[0].column_values)
 
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(0, 15)
+            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
+            // const datosT = primeros15.slice(0, 15)
             console.log(telefono)
             console.log(mail)
             const datosTurnos = await traerTurnos1525()
@@ -409,8 +417,8 @@ const enviarHorariosSantaM = async (req, res) => {
             // Imprime o utiliza las mitades según sea necesario
             console.log(primeraMitad);
             console.log(segundaMitad);
-            // arrS.map(async (obj) => await apiSMS(telefono, obj))
-            // await probandoMail(descripcionesConcatenadas, mail)
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -433,8 +441,10 @@ const enviarHorariosRodadero = async (req, res) => {
     // console.log(datosTurnos)
 
 
-    const id = '5609332573';
-    // const id = req.body.event.pulseId;
+    // const id = '5609332573';
+    const id = req.body.event.pulseId;
+    console.log(req.body.event.columnTitle)
+    let boton = req.body.event.columnTitle;
 
     const query = `query { boards(ids: 5551690311) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -458,7 +468,8 @@ const enviarHorariosRodadero = async (req, res) => {
             // console.log(datosMonday.data.boards[0].items[0].column_values)
 
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(0, 15)
+            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
+            // const datosT = primeros15.slice(0, 15) 
             console.log(telefono)
             console.log(mail)
             const datosTurnos = await traerTurnosRodadero()
@@ -525,8 +536,8 @@ const enviarHorariosRodadero = async (req, res) => {
             // Imprime o utiliza las mitades según sea necesario
             console.log(primeraMitad);
             console.log(segundaMitad);
-            // arrS.map(async (obj) => await apiSMS(telefono, obj))
-            // await probandoMail(descripcionesConcatenadas, mail)
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -548,8 +559,10 @@ const enviarHorariosAvexi = async (req, res) => {
     // const datosTurnos = await traerTurnosAvexi()
 
 
-    const id = '5624770732';
-    // const id = req.body.event.pulseId;
+    // const id = '5624770732';
+    const id = req.body.event.pulseId;
+    console.log(req.body.event.columnTitle)
+    let boton = req.body.event.columnTitle;
 
     const query = `query { boards(ids: 5624770541) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -572,7 +585,8 @@ const enviarHorariosAvexi = async (req, res) => {
             const mail = data.data.boards[0].items[0].column_values[34].text
 
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(0, 15)
+            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
+            // const datosT = primeros15.slice(0, 15)
             console.log(telefono)
             console.log(mail)
             const datosTurnos = await traerTurnosAvexi()
@@ -640,8 +654,8 @@ const enviarHorariosAvexi = async (req, res) => {
             // Imprime o utiliza las mitades según sea necesario
             console.log(primeraMitad);
             console.log(segundaMitad);
-            // arrS.map(async (obj) => await apiSMS(telefono, obj))
-            // await probandoMail(descripcionesConcatenadas, mail)
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -663,8 +677,10 @@ const enviarHorariosAzuan = async (req, res) => {
     // const datosTurnos = await traerTurnosAzuan()
 
 
-    const id = '5628279688';
-    // const id = req.body.event.pulseId;
+    // const id = '5628279688';
+    const id = req.body.event.pulseId;
+    console.log(req.body.event.columnTitle)
+    let boton = req.body.event.columnTitle;
 
     const query = `query { boards(ids: 5628279640) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -687,7 +703,8 @@ const enviarHorariosAzuan = async (req, res) => {
             const mail = data.data.boards[0].items[0].column_values[34].text
             
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(0, 15)
+            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
+            // const datosT = primeros15.slice(0, 15)
             console.log(telefono)
             console.log(mail)
             const datosTurnos = await traerTurnosAzuan()
@@ -755,8 +772,8 @@ const enviarHorariosAzuan = async (req, res) => {
             // Imprime o utiliza las mitades según sea necesario
             console.log(primeraMitad);
             console.log(segundaMitad);
-            // arrS.map(async (obj) => await apiSMS(telefono, obj))
-            // await probandoMail(descripcionesConcatenadas, mail)
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -778,8 +795,10 @@ const enviarHorariosAbi = async (req, res) => {
     // const datosTurnos = await traerTurnosAbi()
 
 
-    const id = '5628450758';
-    // const id = req.body.event.pulseId;
+    // const id = '5628450758';
+    const id = req.body.event.pulseId;
+    console.log(req.body.event.columnTitle)
+    let boton = req.body.event.columnTitle;
 
     const query = `query { boards(ids: 5628450734) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -802,7 +821,8 @@ const enviarHorariosAbi = async (req, res) => {
             const mail = data.data.boards[0].items[0].column_values[34].text
             
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(0, 15)
+            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
+            // const datosT = primeros15.slice(0, 15)
             console.log(telefono)
             console.log(mail)
             const datosTurnos = await traerTurnosAbi()
@@ -870,8 +890,8 @@ const enviarHorariosAbi = async (req, res) => {
             // Imprime o utiliza las mitades según sea necesario
             console.log(primeraMitad);
             console.log(segundaMitad);
-            // arrS.map(async (obj) => await apiSMS(telefono, obj))
-            // await probandoMail(descripcionesConcatenadas, mail)
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -891,8 +911,10 @@ const enviarHorariosBocagrande = async (req, res) => {
     res.send({ challenge });
     const apikey = process.env.APIKEY_MONDAY;
 
-    const id = '5628654227';
-    // const id = req.body.event.pulseId;
+    // const id = '5628654227';
+    const id = req.body.event.pulseId;
+    console.log(req.body.event.columnTitle)
+    let boton = req.body.event.columnTitle;
 
     const query = `query { boards(ids: 5628654082) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -913,9 +935,9 @@ const enviarHorariosBocagrande = async (req, res) => {
             const datosMonday = data
             const telefono = data.data.boards[0].items[0].column_values[33].text
             const mail = data.data.boards[0].items[0].column_values[34].text
-           
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(0, 15)
+            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
+            // const datosT = primeros15.slice(0, 15)
             console.log(telefono)
             console.log(mail)
             const datosTurnos = await traerTurnosBocagrande()
@@ -982,8 +1004,8 @@ const enviarHorariosBocagrande = async (req, res) => {
             // Imprime o utiliza las mitades según sea necesario
             console.log(primeraMitad);
             console.log(segundaMitad);
-            // arrS.map(async (obj) => await apiSMS(telefono, obj))
-            // await probandoMail(descripcionesConcatenadas, mail)
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -1005,8 +1027,10 @@ const enviarHorariosWindsor = async (req, res) => {
     // const datosTurnos = await traerTurnosWindsor()
 
 
-    const id = '5628802926';
-    // const id = req.body.event.pulseId;
+    // const id = '5628802926';
+    const id = req.body.event.pulseId;
+    console.log(req.body.event.columnTitle)
+    let boton = req.body.event.columnTitle;
 
     const query = `query { boards(ids: 5628802846) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -1029,7 +1053,8 @@ const enviarHorariosWindsor = async (req, res) => {
             const mail = data.data.boards[0].items[0].column_values[34].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(0, 15)
+            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
+            // const datosT = primeros15.slice(0, 15)
             console.log(telefono)
             console.log(mail)
             const datosTurnos = await traerTurnosWindsor()
@@ -1096,8 +1121,8 @@ const enviarHorariosWindsor = async (req, res) => {
             // Imprime o utiliza las mitades según sea necesario
             console.log(primeraMitad);
             console.log(segundaMitad);
-            // arrS.map(async (obj) => await apiSMS(telefono, obj))
-            // await probandoMail(descripcionesConcatenadas, mail)
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -1119,8 +1144,10 @@ const enviarHorariosMadisson = async (req, res) => {
     // const datosTurnos = await traerTurnosMadisson()
 
 
-    const id = '5628964006';
-    // const id = req.body.event.pulseId;
+    // const id = '5628964006';
+    const id = req.body.event.pulseId;
+    console.log(req.body.event.columnTitle)
+    let boton = req.body.event.columnTitle;
 
     const query = `query { boards(ids: 5628963944) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -1143,7 +1170,8 @@ const enviarHorariosMadisson = async (req, res) => {
             const mail = data.data.boards[0].items[0].column_values[34].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(0, 15)
+            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
+            // const datosT = primeros15.slice(0, 15)
 
             console.log(telefono)
             console.log(mail)
@@ -1211,8 +1239,8 @@ const enviarHorariosMadisson = async (req, res) => {
             // Imprime o utiliza las mitades según sea necesario
             console.log(primeraMitad);
             console.log(segundaMitad);
-            // arrS.map(async (obj) => await apiSMS(telefono, obj))
-            // await probandoMail(descripcionesConcatenadas, mail)
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail)
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -1234,8 +1262,10 @@ const enviarHorariosMarina = async (req, res) => {
     // const datosTurnos = await traerTurnosMadisson()
 
 
-    const id = '5640093020';
-    // const id = req.body.event.pulseId;
+    // const id = '5640093020';
+    const id = req.body.event.pulseId;
+    console.log(req.body.event.columnTitle)
+    let boton = req.body.event.columnTitle;
 
     const query = `query { boards(ids: 5640092760) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -1258,7 +1288,8 @@ const enviarHorariosMarina = async (req, res) => {
             const mail = data.data.boards[0].items[0].column_values[33].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(0, 15)
+            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
+            // const datosT = primeros15.slice(0, 15)
 
             console.log(telefono)
             console.log(mail)
@@ -1326,8 +1357,8 @@ const enviarHorariosMarina = async (req, res) => {
             // Imprime o utiliza las mitades según sea necesario
             console.log(primeraMitad);
             console.log(segundaMitad);
-            // arrS.map(async (obj) => await apiSMS(telefono, obj))
-            // await probandoMail(descripcionesConcatenadas, mail)
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail)
 
         } else {
             console.error('Hubo un error en la solicitud.');
