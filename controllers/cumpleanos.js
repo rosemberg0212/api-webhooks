@@ -5,8 +5,8 @@ const felizCumple = async (req, res) => {
     res.send({ challenge });
 
     const apikey = process.env.APIKEY_MONDAY;
-    // const id = req.body.event.pulseId;
-    const id = '4886261173';
+    const id = req.body.event.pulseId;
+    // const id = '4886261173';
 
     const query = `query { boards(ids: 3426311372) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
