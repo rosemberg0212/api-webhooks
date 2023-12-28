@@ -21,7 +21,8 @@ const enviarHorarios = async (req, res) => {
 
     // const id = '5707679824';
     const id = req.body.event.pulseId;
-
+    console.log(req.body.event.columnTitle)
+    let boton = req.body.event.columnTitle;
     const query = `query { boards(ids: 5482696120) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
@@ -42,7 +43,8 @@ const enviarHorarios = async (req, res) => {
             const telefono = data.data.boards[0].items[0].column_values[34].text
             const mail = data.data.boards[0].items[0].column_values[35].text
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(0, 16)
+            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(1, 16) : primeros15.slice(16, 32)
+            // const datosT = primeros15.slice(1, 16)
             console.log(telefono)
             console.log(mail)
             // console.log(datosT)
@@ -51,17 +53,29 @@ const enviarHorarios = async (req, res) => {
             // console.log(novedad)
 
             // Función para obtener la descripción de un turno
-            function obtenerDescripcionTurno(turno) {
+            function obtenerDescripcionTurno(turno) { 
                 const descripcion = datosTurnos.filter((tur) => tur.name == turno.text)
+                const filtroDesc = descripcion.map(obj => {
+                    const columF = obj.column_values.filter(o => o.id !== 'subelementos')
 
-                const conca = descripcion.map(obj => {
-                    if (novedad.some(nov => nov.name === obj.name)) {
-                        return `- El día ${turno.title} ${obj.column_values[0].text}.`;
-                    } else {
-                        return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
-                    }
+                    return {
+                        id: obj.id,
+                        name: obj.name,
+                        column_values: columF
+                    };
                 })
-                return conca
+
+                const conca = filtroDesc.length === 0
+                    ? [`- No hay horario asignado para el día ${turno.title}.`]
+                    : filtroDesc.map(obj => {
+                        if (novedad.some(nov => nov.name === obj.name)) {
+                            return `- El día ${turno.title} ${obj.column_values[0].text}.`;
+                        } else {
+                            return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
+                        }
+                    });
+
+                return conca;
             }
 
             const descripciones = [];
@@ -123,6 +137,8 @@ const enviarHorariosReservas = async (req, res) => {
 
     const id = req.body.event.pulseId;
     // const id = '5532254391';
+    console.log(req.body.event.columnTitle)
+    let boton = req.body.event.columnTitle;
 
     const query = `query { boards(ids: 5474798239) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -142,25 +158,40 @@ const enviarHorariosReservas = async (req, res) => {
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
             const telefono = data.data.boards[0].items[0].column_values[32].text
+            const mail = data.data.boards[0].items[0].column_values[34].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(0, 15)
+            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
+            // const datosT = primeros15.slice(0, 15)
             console.log(telefono)
+            console.log(mail)
             const datosTurnos = await traerTurnosAixo()
             const novedad = await novedades()
 
             // Función para obtener la descripción de un turno
             function obtenerDescripcionTurno(turno) {
                 const descripcion = datosTurnos.filter((tur) => tur.name == turno.text)
+                const filtroDesc = descripcion.map(obj => {
+                    const columF = obj.column_values.filter(o => o.id !== 'subelementos')
 
-                const conca = descripcion.map(obj => {
-                    if (novedad.some(nov => nov.name === obj.name)) {
-                        return `- El día ${turno.title} ${obj.column_values[0].text}.`;
-                    } else {
-                        return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
-                    }
+                    return {
+                        id: obj.id,
+                        name: obj.name,
+                        column_values: columF
+                    };
                 })
-                return conca
+
+                const conca = filtroDesc.length === 0
+                    ? [`- No hay horario asignado para el día ${turno.title}.`]
+                    : filtroDesc.map(obj => {
+                        if (novedad.some(nov => nov.name === obj.name)) {
+                            return `- El día ${turno.title} ${obj.column_values[0].text}.`;
+                        } else {
+                            return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
+                        }
+                    });
+
+                return conca;
             }
 
             const descripciones = [];
@@ -293,6 +324,8 @@ const enviarHorariosSantaM = async (req, res) => {
 
     // const id = '5482453565';
     const id = req.body.event.pulseId;
+    console.log(req.body.event.columnTitle)
+    let boton = req.body.event.columnTitle;
 
     const query = `query { boards(ids: 5482452579) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -312,11 +345,14 @@ const enviarHorariosSantaM = async (req, res) => {
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
             const telefono = data.data.boards[0].items[0].column_values[32].text
+            const mail = data.data.boards[0].items[0].column_values[34].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
 
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(0, 15)
+            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
+            // const datosT = primeros15.slice(0, 15)
             console.log(telefono)
+            console.log(mail)
             const datosTurnos = await traerTurnos1525()
             const novedad = await novedades()
             // console.log(datosTurnos)
@@ -334,14 +370,17 @@ const enviarHorariosSantaM = async (req, res) => {
                     };
                 })
 
-                const conca = filtroDesc.map(obj => {
-                    if (novedad.some(nov => nov.name === obj.name)) {
-                        return `- El día ${turno.title} ${obj.column_values[0].text}.`;
-                    } else {
-                        return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
-                    }
-                })
-                return conca
+                const conca = filtroDesc.length === 0
+                    ? [`- No hay horario asignado para el día ${turno.title}.`]
+                    : filtroDesc.map(obj => {
+                        if (novedad.some(nov => nov.name === obj.name)) {
+                            return `- El día ${turno.title} ${obj.column_values[0].text}.`;
+                        } else {
+                            return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
+                        }
+                    });
+
+                return conca;
             }
 
             const descripciones = [];
@@ -404,6 +443,8 @@ const enviarHorariosRodadero = async (req, res) => {
 
     // const id = '5609332573';
     const id = req.body.event.pulseId;
+    console.log(req.body.event.columnTitle)
+    let boton = req.body.event.columnTitle;
 
     const query = `query { boards(ids: 5551690311) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -423,11 +464,14 @@ const enviarHorariosRodadero = async (req, res) => {
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
             const telefono = data.data.boards[0].items[0].column_values[32].text
+            const mail = data.data.boards[0].items[0].column_values[34].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
 
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(0, 15)
+            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
+            // const datosT = primeros15.slice(0, 15) 
             console.log(telefono)
+            console.log(mail)
             const datosTurnos = await traerTurnosRodadero()
             const novedad = await novedades()
             // console.log(datosTurnos)
@@ -444,17 +488,18 @@ const enviarHorariosRodadero = async (req, res) => {
                         column_values: columF
                     };
                 })
-                // console.log(filtroDesc)
-                // console.log(descripcion[0].column_values)
 
-                const conca = filtroDesc.map(obj => {
-                    if (novedad.some(nov => nov.name === obj.name)) {
-                        return `- El día ${turno.title} ${obj.column_values[0].text}.`;
-                    } else {
-                        return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
-                    }
-                })
-                return conca
+                const conca = filtroDesc.length === 0
+                    ? [`- No hay horario asignado para el día ${turno.title}.`]
+                    : filtroDesc.map(obj => {
+                        if (novedad.some(nov => nov.name === obj.name)) {
+                            return `- El día ${turno.title} ${obj.column_values[0].text}.`;
+                        } else {
+                            return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
+                        }
+                    });
+
+                return conca;
             }
 
             const descripciones = [];
@@ -516,6 +561,8 @@ const enviarHorariosAvexi = async (req, res) => {
 
     // const id = '5624770732';
     const id = req.body.event.pulseId;
+    console.log(req.body.event.columnTitle)
+    let boton = req.body.event.columnTitle;
 
     const query = `query { boards(ids: 5624770541) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -535,10 +582,13 @@ const enviarHorariosAvexi = async (req, res) => {
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
             const telefono = data.data.boards[0].items[0].column_values[33].text
+            const mail = data.data.boards[0].items[0].column_values[34].text
 
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(0, 15)
+            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
+            // const datosT = primeros15.slice(0, 15)
             console.log(telefono)
+            console.log(mail)
             const datosTurnos = await traerTurnosAvexi()
             const novedad = await novedades()
 
@@ -556,16 +606,18 @@ const enviarHorariosAvexi = async (req, res) => {
                         column_values: columF
                     };
                 })
-                // console.log(filtroDesc)
-                // console.log(descripcion[0].column_values)
-                const conca = filtroDesc.map(obj => {
-                    if (novedad.some(nov => nov.name === obj.name)) {
-                        return `- El día ${turno.title} ${obj.column_values[0].text}.`;
-                    } else {
-                        return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
-                    }
-                })
-                return conca
+
+                const conca = filtroDesc.length === 0
+                    ? [`- No hay horario asignado para el día ${turno.title}.`]
+                    : filtroDesc.map(obj => {
+                        if (novedad.some(nov => nov.name === obj.name)) {
+                            return `- El día ${turno.title} ${obj.column_values[0].text}.`;
+                        } else {
+                            return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
+                        }
+                    });
+
+                return conca;
             }
 
             const descripciones = [];
@@ -627,6 +679,8 @@ const enviarHorariosAzuan = async (req, res) => {
 
     // const id = '5628279688';
     const id = req.body.event.pulseId;
+    console.log(req.body.event.columnTitle)
+    let boton = req.body.event.columnTitle;
 
     const query = `query { boards(ids: 5628279640) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -646,10 +700,13 @@ const enviarHorariosAzuan = async (req, res) => {
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
             const telefono = data.data.boards[0].items[0].column_values[33].text
-            // console.log(datosMonday.data.boards[0].items[0].column_values)
+            const mail = data.data.boards[0].items[0].column_values[34].text
+            
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(0, 15)
+            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
+            // const datosT = primeros15.slice(0, 15)
             console.log(telefono)
+            console.log(mail)
             const datosTurnos = await traerTurnosAzuan()
             const novedad = await novedades()
             // console.log(datosTurnos)
@@ -666,16 +723,18 @@ const enviarHorariosAzuan = async (req, res) => {
                         column_values: columF
                     };
                 })
-                // console.log(filtroDesc)
-                // console.log(descripcion[0].column_values)
-                const conca = filtroDesc.map(obj => {
-                    if (novedad.some(nov => nov.name === obj.name)) {
-                        return `- El día ${turno.title} ${obj.column_values[0].text}.`;
-                    } else {
-                        return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
-                    }
-                })
-                return conca
+
+                const conca = filtroDesc.length === 0
+                    ? [`- No hay horario asignado para el día ${turno.title}.`]
+                    : filtroDesc.map(obj => {
+                        if (novedad.some(nov => nov.name === obj.name)) {
+                            return `- El día ${turno.title} ${obj.column_values[0].text}.`;
+                        } else {
+                            return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
+                        }
+                    });
+
+                return conca;
 
             }
 
@@ -738,6 +797,8 @@ const enviarHorariosAbi = async (req, res) => {
 
     // const id = '5628450758';
     const id = req.body.event.pulseId;
+    console.log(req.body.event.columnTitle)
+    let boton = req.body.event.columnTitle;
 
     const query = `query { boards(ids: 5628450734) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -757,10 +818,13 @@ const enviarHorariosAbi = async (req, res) => {
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
             const telefono = data.data.boards[0].items[0].column_values[33].text
-            // console.log(datosMonday.data.boards[0].items[0].column_values)
+            const mail = data.data.boards[0].items[0].column_values[34].text
+            
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(0, 15)
+            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
+            // const datosT = primeros15.slice(0, 15)
             console.log(telefono)
+            console.log(mail)
             const datosTurnos = await traerTurnosAbi()
             const novedad = await novedades()
 
@@ -778,16 +842,18 @@ const enviarHorariosAbi = async (req, res) => {
                         column_values: columF
                     };
                 })
-                // console.log(filtroDesc)
-                // console.log(descripcion[0].column_values)
-                const conca = filtroDesc.map(obj => {
-                    if (novedad.some(nov => nov.name === obj.name)) {
-                        return `- El día ${turno.title} ${obj.column_values[0].text}.`;
-                    } else {
-                        return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
-                    }
-                })
-                return conca
+
+                const conca = filtroDesc.length === 0
+                    ? [`- No hay horario asignado para el día ${turno.title}.`]
+                    : filtroDesc.map(obj => {
+                        if (novedad.some(nov => nov.name === obj.name)) {
+                            return `- El día ${turno.title} ${obj.column_values[0].text}.`;
+                        } else {
+                            return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
+                        }
+                    });
+
+                return conca;
             }
 
             const descripciones = [];
@@ -847,6 +913,8 @@ const enviarHorariosBocagrande = async (req, res) => {
 
     // const id = '5628654227';
     const id = req.body.event.pulseId;
+    console.log(req.body.event.columnTitle)
+    let boton = req.body.event.columnTitle;
 
     const query = `query { boards(ids: 5628654082) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -866,10 +934,12 @@ const enviarHorariosBocagrande = async (req, res) => {
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
             const telefono = data.data.boards[0].items[0].column_values[33].text
-            // console.log(datosMonday.data.boards[0].items[0].column_values)
+            const mail = data.data.boards[0].items[0].column_values[34].text
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(0, 15)
+            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
+            // const datosT = primeros15.slice(0, 15)
             console.log(telefono)
+            console.log(mail)
             const datosTurnos = await traerTurnosBocagrande()
             const novedad = await novedades()
             // console.log(datosTurnos)
@@ -886,16 +956,18 @@ const enviarHorariosBocagrande = async (req, res) => {
                         column_values: columF
                     };
                 })
-                // console.log(filtroDesc)
-                // console.log(descripcion[0].column_values)
-                const conca = filtroDesc.map(obj => {
-                    if (novedad.some(nov => nov.name === obj.name)) {
-                        return `- El día ${turno.title} ${obj.column_values[0].text}.`;
-                    } else {
-                        return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
-                    }
-                })
-                return conca
+
+                const conca = filtroDesc.length === 0
+                    ? [`- No hay horario asignado para el día ${turno.title}.`]
+                    : filtroDesc.map(obj => {
+                        if (novedad.some(nov => nov.name === obj.name)) {
+                            return `- El día ${turno.title} ${obj.column_values[0].text}.`;
+                        } else {
+                            return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
+                        }
+                    });
+
+                return conca;
             }
 
             const descripciones = [];
@@ -957,6 +1029,8 @@ const enviarHorariosWindsor = async (req, res) => {
 
     // const id = '5628802926';
     const id = req.body.event.pulseId;
+    console.log(req.body.event.columnTitle)
+    let boton = req.body.event.columnTitle;
 
     const query = `query { boards(ids: 5628802846) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -976,11 +1050,13 @@ const enviarHorariosWindsor = async (req, res) => {
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
             const telefono = data.data.boards[0].items[0].column_values[33].text
+            const mail = data.data.boards[0].items[0].column_values[34].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(0, 15)
-
+            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
+            // const datosT = primeros15.slice(0, 15)
             console.log(telefono)
+            console.log(mail)
             const datosTurnos = await traerTurnosWindsor()
             const novedad = await novedades()
             // console.log(datosTurnos)
@@ -998,14 +1074,17 @@ const enviarHorariosWindsor = async (req, res) => {
                     };
                 })
 
-                const conca = filtroDesc.map(obj => {
-                    if (novedad.some(nov => nov.name === obj.name)) {
-                        return `- El día ${turno.title} ${obj.column_values[0].text}.`;
-                    } else {
-                        return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
-                    }
-                })
-                return conca
+                const conca = filtroDesc.length === 0
+                    ? [`- No hay horario asignado para el día ${turno.title}.`]
+                    : filtroDesc.map(obj => {
+                        if (novedad.some(nov => nov.name === obj.name)) {
+                            return `- El día ${turno.title} ${obj.column_values[0].text}.`;
+                        } else {
+                            return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
+                        }
+                    });
+
+                return conca;
             }
 
             const descripciones = [];
@@ -1067,6 +1146,8 @@ const enviarHorariosMadisson = async (req, res) => {
 
     // const id = '5628964006';
     const id = req.body.event.pulseId;
+    console.log(req.body.event.columnTitle)
+    let boton = req.body.event.columnTitle;
 
     const query = `query { boards(ids: 5628963944) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -1086,11 +1167,14 @@ const enviarHorariosMadisson = async (req, res) => {
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
             const telefono = data.data.boards[0].items[0].column_values[33].text
+            const mail = data.data.boards[0].items[0].column_values[34].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(0, 15)
+            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
+            // const datosT = primeros15.slice(0, 15)
 
             console.log(telefono)
+            console.log(mail)
             const datosTurnos = await traerTurnosMadisson()
             const novedad = await novedades()
             // console.log(datosTurnos)
@@ -1107,16 +1191,18 @@ const enviarHorariosMadisson = async (req, res) => {
                         column_values: columF
                     };
                 })
-                // console.log(filtroDesc)
-                // console.log(descripcion[0].column_values)
-                const conca = filtroDesc.map(obj => {
-                    if (novedad.some(nov => nov.name === obj.name)) {
-                        return `- El día ${turno.title} ${obj.column_values[0].text}.`;
-                    } else {
-                        return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
-                    }
-                })
-                return conca
+
+                const conca = filtroDesc.length === 0
+                    ? [`- No hay horario asignado para el día ${turno.title}.`]
+                    : filtroDesc.map(obj => {
+                        if (novedad.some(nov => nov.name === obj.name)) {
+                            return `- El día ${turno.title} ${obj.column_values[0].text}.`;
+                        } else {
+                            return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
+                        }
+                    });
+
+                return conca;
             }
 
             const descripciones = [];
@@ -1178,6 +1264,8 @@ const enviarHorariosMarina = async (req, res) => {
 
     // const id = '5640093020';
     const id = req.body.event.pulseId;
+    console.log(req.body.event.columnTitle)
+    let boton = req.body.event.columnTitle;
 
     const query = `query { boards(ids: 5640092760) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -1197,11 +1285,14 @@ const enviarHorariosMarina = async (req, res) => {
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
             const telefono = data.data.boards[0].items[0].column_values[32].text
+            const mail = data.data.boards[0].items[0].column_values[33].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
             const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = primeros15.slice(0, 15)
+            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
+            // const datosT = primeros15.slice(0, 15)
 
             console.log(telefono)
+            console.log(mail)
             const datosTurnos = await traerTurnosMarina()
             const novedad = await novedades()
             // console.log(datosTurnos)
@@ -1218,16 +1309,18 @@ const enviarHorariosMarina = async (req, res) => {
                         column_values: columF
                     };
                 })
-                // console.log(filtroDesc)
-                // console.log(descripcion[0].column_values)
-                const conca = filtroDesc.map(obj => {
-                    if (novedad.some(nov => nov.name === obj.name)) {
-                        return `- El día ${turno.title} ${obj.column_values[0].text}.`;
-                    } else {
-                        return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
-                    }
-                })
-                return conca
+
+                const conca = filtroDesc.length === 0
+                    ? [`- No hay horario asignado para el día ${turno.title}.`]
+                    : filtroDesc.map(obj => {
+                        if (novedad.some(nov => nov.name === obj.name)) {
+                            return `- El día ${turno.title} ${obj.column_values[0].text}.`;
+                        } else {
+                            return `- El día ${turno.title} su hora de entrada es a las ${obj.column_values[0].text}, su hora de salida es a las ${obj.column_values[1].text}, el hotel donde le toca laborar es ${obj.column_values[2].text} y sus tareas para este día son las de: ${obj.column_values[3].text}.`;
+                        }
+                    });
+
+                return conca;
             }
 
             const descripciones = [];

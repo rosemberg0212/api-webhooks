@@ -9,10 +9,10 @@ class Server {
 
     this.paths = {
       certificado: "/hook/certificado",
-      horario: "/hook/horario",
-      horario2da: "/hook/horario2da",                
+      horario: "/hook/horario",               
       taskRyver: "/hook/taskRyver",
       nomina: "/hook/nomina",
+      cumpleanos: "/hook/cumple",
       usuarios: "/api/v1/romi-guess",
     };
 
@@ -38,10 +38,10 @@ class Server {
   routes() {
     this.app.use(this.paths.certificado, require("../routes/certificado"));
     this.app.use(this.paths.horario, require("../routes/horarios"));
-    this.app.use(this.paths.horario2da, require("../routes/horarios2da"));
     this.app.use(this.paths.taskRyver, require("../routes/taskRyver"));
     this.app.use(this.paths.nomina, require("../routes/nominaR"));
     this.app.use(this.paths.usuarios, require("../routes/userR"));
+    this.app.use(this.paths.cumpleanos, require("../routes/cumpleanos"));
   }
 
   listem() {
