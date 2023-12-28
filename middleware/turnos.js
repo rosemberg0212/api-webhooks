@@ -436,7 +436,7 @@ const traerTurnosAzuan = async () => {
 const traerTurnosAbi = async () => {
 
     // const query = 'query {boards(ids: 5628507752) { groups { id title }}}'
-    const query = `query { boards(ids: 5628507752) { groups(ids: topics) {  items { id  name  column_values {  id  text  value  }  } } another_group: groups(ids: group_title) {  items { id  name  column_values {  id  text  value  }  } } third_group: groups(ids: grupo_nuevo64039) {  items { id  name  column_values {  id  text  value  }  } } grupo_cuatro: groups(ids: grupo_nuevo80712) {  items { id  name  column_values {  id  text  value  }  } } grupo_sinco: groups(ids: grupo_nuevo) {  items { id  name  column_values {  id  text  value  }  } } } } `;
+    const query = `query { boards(ids: 5628507752) { groups(ids: topics) {  items { id  name  column_values {  id  text  value  }  } } another_group: groups(ids: group_title) {  items { id  name  column_values {  id  text  value  }  } } third_group: groups(ids: grupo_nuevo64039) {  items { id  name  column_values {  id  text  value  }  } } grupo_cuatro: groups(ids: grupo_nuevo80712) {  items { id  name  column_values {  id  text  value  }  } } grupo_sinco: groups(ids: grupo_nuevo) {  items { id  name  column_values {  id  text  value  }  } } grupo_seis: groups(ids: new_group) {  items { id  name  column_values {  id  text  value  }  } } } } `;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
         headers: {
@@ -461,9 +461,9 @@ const traerTurnosAbi = async () => {
             let arreglo3 = data.data.boards[0].third_group[0].items
             let arreglo4 = data.data.boards[0].grupo_cuatro[0].items
             let arreglo5 = data.data.boards[0].grupo_sinco[0].items
-            let arr = [arreglo1, arreglo2, arreglo3, arreglo4, arreglo5, arrNovedades].flat()
-            // console.log(arr)
-            // console.log(arreglo2[0])
+            let arreglo6 = data.data.boards[0].grupo_seis[0].items
+            let arr = [arreglo1, arreglo2, arreglo3, arreglo4, arreglo5, arreglo6, arrNovedades].flat()
+            // // console.log(arr)
             return arr;
 
         } else {

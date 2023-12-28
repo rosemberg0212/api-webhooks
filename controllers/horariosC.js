@@ -23,6 +23,7 @@ const enviarHorarios = async (req, res) => {
     const id = req.body.event.pulseId;
     console.log(req.body.event.columnTitle)
     let boton = req.body.event.columnTitle;
+    // let boton = 'Enviar 1ra Quincena';
     const query = `query { boards(ids: 5482696120) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
@@ -42,18 +43,46 @@ const enviarHorarios = async (req, res) => {
             const datosMonday = data
             const telefono = data.data.boards[0].items[0].column_values[34].text
             const mail = data.data.boards[0].items[0].column_values[35].text
-            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(1, 16) : primeros15.slice(16, 32)
-            // const datosT = primeros15.slice(1, 16)
+            const dias = datosMonday.data.boards[0].items[0].column_values;
+            // const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(1, 16) : primeros15.slice(16, 32)
+            const datosT = dias.slice(1, 32)
+
+            function modificarDias(arr) {
+                // Obtener la fecha actual
+                const fechaActual = new Date();
+
+                // Obtener el día de la semana del primer elemento del arreglo
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+
+                // Crear un arreglo con los nombres de los días de la semana
+                const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+                // Iterar sobre el arreglo de objetos y modificar la propiedad "title"
+                const nuevoArr = arr.map((obj, index) => {
+                    const nuevoDiaIndex = (primerDiaSemana + index) % 7;
+                    const nuevoTitulo = `${diasSemana[nuevoDiaIndex]} ${index + 1}`;
+                    return { ...obj, title: nuevoTitulo };
+                });
+
+                return nuevoArr;
+            }
+
+
+            // Llamar a la función y obtener el nuevo arreglo modificado
+            const nuevoArreglo = modificarDias(datosT);
+
+            const arregloFinal = boton === 'Enviar 1ra Quincena' ? nuevoArreglo.slice(0, 15) : nuevoArreglo.slice(15, 32)
+            // Imprimir el nuevo arreglo
+            // console.log(nuevoArreglo);
+
             console.log(telefono)
             console.log(mail)
             // console.log(datosT)
             const datosTurnos = await traerTurnosAixo()
             const novedad = await novedades()
-            // console.log(novedad)
 
             // Función para obtener la descripción de un turno
-            function obtenerDescripcionTurno(turno) { 
+            function obtenerDescripcionTurno(turno) {
                 const descripcion = datosTurnos.filter((tur) => tur.name == turno.text)
                 const filtroDesc = descripcion.map(obj => {
                     const columF = obj.column_values.filter(o => o.id !== 'subelementos')
@@ -80,7 +109,7 @@ const enviarHorarios = async (req, res) => {
 
             const descripciones = [];
             // Iterar sobre los turnos e imprimir las descripciones
-            for (const turno of datosT) {
+            for (const turno of arregloFinal) {
                 if (turno.id !== 'estado' && turno.id !== 'tel_fono' && turno.id !== 'bot_n' && turno.id !== 'men__desplegable' && turno.id !== 'cargo0' && turno.id !== 'bot_n_1') {
 
                     const descripcion = obtenerDescripcionTurno(turno);
@@ -110,6 +139,7 @@ const enviarHorarios = async (req, res) => {
             const arrS = [primeraMitad, segundaMitad]
 
             // Imprime o utiliza las mitades según sea necesario
+
             console.log(primeraMitad);
             console.log(segundaMitad);
             arrS.map(async (obj) => await apiSMS(telefono, obj))
@@ -135,11 +165,11 @@ const enviarHorariosReservas = async (req, res) => {
 
     const apikey = process.env.APIKEY_MONDAY;
 
-    const id = req.body.event.pulseId;
     // const id = '5532254391';
+    const id = req.body.event.pulseId;
     console.log(req.body.event.columnTitle)
     let boton = req.body.event.columnTitle;
-
+    //  let boton = 'Enviar 1ra Quincena';
     const query = `query { boards(ids: 5474798239) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
@@ -160,9 +190,39 @@ const enviarHorariosReservas = async (req, res) => {
             const telefono = data.data.boards[0].items[0].column_values[32].text
             const mail = data.data.boards[0].items[0].column_values[34].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
-            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
-            // const datosT = primeros15.slice(0, 15)
+            const dias = datosMonday.data.boards[0].items[0].column_values;
+            // const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(1, 16) : primeros15.slice(16, 32)
+            const datosT = dias.slice(0, 31)
+            // console.log(datosT)
+
+            function modificarDias(arr) {
+                // Obtener la fecha actual
+                const fechaActual = new Date();
+
+                // Obtener el día de la semana del primer elemento del arreglo
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+
+                // Crear un arreglo con los nombres de los días de la semana
+                const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+                // Iterar sobre el arreglo de objetos y modificar la propiedad "title"
+                const nuevoArr = arr.map((obj, index) => {
+                    const nuevoDiaIndex = (primerDiaSemana + index) % 7;
+                    const nuevoTitulo = `${diasSemana[nuevoDiaIndex]} ${index + 1}`;
+                    return { ...obj, title: nuevoTitulo };
+                });
+
+                return nuevoArr;
+            }
+
+
+            // Llamar a la función y obtener el nuevo arreglo modificado
+            const nuevoArreglo = modificarDias(datosT);
+
+            const arregloFinal = boton === 'Enviar 1ra Quincena' ? nuevoArreglo.slice(0, 15) : nuevoArreglo.slice(15, 32)
+            // Imprimir el nuevo arreglo
+            // console.log(nuevoArreglo);
+
             console.log(telefono)
             console.log(mail)
             const datosTurnos = await traerTurnosAixo()
@@ -196,7 +256,7 @@ const enviarHorariosReservas = async (req, res) => {
 
             const descripciones = [];
             // Iterar sobre los turnos e imprimir las descripciones
-            for (const turno of datosT) {
+            for (const turno of arregloFinal) {
                 if (turno.id !== 'estado' && turno.id !== 'tel_fono' && turno.id !== 'bot_n' && turno.id !== 'men__desplegable' && turno.id !== 'cargo0' && turno.id !== 'bot_n_1') {
 
                     const descripcion = obtenerDescripcionTurno(turno);
@@ -326,7 +386,7 @@ const enviarHorariosSantaM = async (req, res) => {
     const id = req.body.event.pulseId;
     console.log(req.body.event.columnTitle)
     let boton = req.body.event.columnTitle;
-
+    // let boton = 'Enviar 1ra Quincena';
     const query = `query { boards(ids: 5482452579) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
@@ -348,9 +408,39 @@ const enviarHorariosSantaM = async (req, res) => {
             const mail = data.data.boards[0].items[0].column_values[34].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
 
-            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
-            // const datosT = primeros15.slice(0, 15)
+            const dias = datosMonday.data.boards[0].items[0].column_values;
+            // const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(1, 16) : primeros15.slice(16, 32)
+            const datosT = dias.slice(0, 31)
+            // console.log(datosT)
+
+            function modificarDias(arr) {
+                // Obtener la fecha actual
+                const fechaActual = new Date();
+
+                // Obtener el día de la semana del primer elemento del arreglo
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+
+                // Crear un arreglo con los nombres de los días de la semana
+                const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+                // Iterar sobre el arreglo de objetos y modificar la propiedad "title"
+                const nuevoArr = arr.map((obj, index) => {
+                    const nuevoDiaIndex = (primerDiaSemana + index) % 7;
+                    const nuevoTitulo = `${diasSemana[nuevoDiaIndex]} ${index + 1}`;
+                    return { ...obj, title: nuevoTitulo };
+                });
+
+                return nuevoArr;
+            }
+
+
+            // Llamar a la función y obtener el nuevo arreglo modificado
+            const nuevoArreglo = modificarDias(datosT);
+
+            const arregloFinal = boton === 'Enviar 1ra Quincena'? nuevoArreglo.slice(0, 15) : nuevoArreglo.slice(15, 32)
+            // Imprimir el nuevo arreglo
+            // console.log(nuevoArreglo);
+
             console.log(telefono)
             console.log(mail)
             const datosTurnos = await traerTurnos1525()
@@ -385,7 +475,7 @@ const enviarHorariosSantaM = async (req, res) => {
 
             const descripciones = [];
             // Iterar sobre los turnos e imprimir las descripciones
-            for (const turno of datosT) {
+            for (const turno of arregloFinal) {
                 if (turno.id !== 'estado' && turno.id !== 'tel_fono' && turno.id !== 'bot_n' && turno.id !== 'men__desplegable' && turno.id !== 'cargo9') {
 
                     const descripcion = obtenerDescripcionTurno(turno);
@@ -445,6 +535,7 @@ const enviarHorariosRodadero = async (req, res) => {
     const id = req.body.event.pulseId;
     console.log(req.body.event.columnTitle)
     let boton = req.body.event.columnTitle;
+    // let boton = 'Enviar 2ra Quincena';
 
     const query = `query { boards(ids: 5551690311) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -467,9 +558,38 @@ const enviarHorariosRodadero = async (req, res) => {
             const mail = data.data.boards[0].items[0].column_values[34].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
 
-            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
-            // const datosT = primeros15.slice(0, 15) 
+            const dias = datosMonday.data.boards[0].items[0].column_values;
+            // const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(1, 16) : primeros15.slice(16, 32)
+            const datosT = dias.slice(0, 31)
+            // console.log(datosT)
+
+            function modificarDias(arr) {
+                // Obtener la fecha actual
+                const fechaActual = new Date();
+
+                // Obtener el día de la semana del primer elemento del arreglo
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+
+                // Crear un arreglo con los nombres de los días de la semana
+                const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+                // Iterar sobre el arreglo de objetos y modificar la propiedad "title"
+                const nuevoArr = arr.map((obj, index) => {
+                    const nuevoDiaIndex = (primerDiaSemana + index) % 7;
+                    const nuevoTitulo = `${diasSemana[nuevoDiaIndex]} ${index + 1}`;
+                    return { ...obj, title: nuevoTitulo };
+                });
+
+                return nuevoArr;
+            }
+
+
+            // Llamar a la función y obtener el nuevo arreglo modificado
+            const nuevoArreglo = modificarDias(datosT);
+
+            const arregloFinal = boton === 'Enviar 1ra Quincena'? nuevoArreglo.slice(0, 15) : nuevoArreglo.slice(15, 32)
+            // Imprimir el nuevo arreglo
+            // console.log(nuevoArreglo);
             console.log(telefono)
             console.log(mail)
             const datosTurnos = await traerTurnosRodadero()
@@ -504,7 +624,7 @@ const enviarHorariosRodadero = async (req, res) => {
 
             const descripciones = [];
             // Iterar sobre los turnos e imprimir las descripciones
-            for (const turno of datosT) {
+            for (const turno of arregloFinal) {
                 if (turno.id !== 'estado' && turno.id !== 'tel_fono' && turno.id !== 'bot_n' && turno.id !== 'men__desplegable' && turno.id !== 'cargo9') {
 
                     const descripcion = obtenerDescripcionTurno(turno);
@@ -563,7 +683,7 @@ const enviarHorariosAvexi = async (req, res) => {
     const id = req.body.event.pulseId;
     console.log(req.body.event.columnTitle)
     let boton = req.body.event.columnTitle;
-
+    // let boton = 'Enviar 2ra Quincena';
     const query = `query { boards(ids: 5624770541) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
@@ -584,9 +704,38 @@ const enviarHorariosAvexi = async (req, res) => {
             const telefono = data.data.boards[0].items[0].column_values[33].text
             const mail = data.data.boards[0].items[0].column_values[34].text
 
-            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
-            // const datosT = primeros15.slice(0, 15)
+            const dias = datosMonday.data.boards[0].items[0].column_values;
+            // const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(1, 16) : primeros15.slice(16, 32)
+            const datosT = dias.slice(0, 31)
+            // console.log(datosT)
+
+            function modificarDias(arr) {
+                // Obtener la fecha actual
+                const fechaActual = new Date();
+
+                // Obtener el día de la semana del primer elemento del arreglo
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+
+                // Crear un arreglo con los nombres de los días de la semana
+                const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+                // Iterar sobre el arreglo de objetos y modificar la propiedad "title"
+                const nuevoArr = arr.map((obj, index) => {
+                    const nuevoDiaIndex = (primerDiaSemana + index) % 7;
+                    const nuevoTitulo = `${diasSemana[nuevoDiaIndex]} ${index + 1}`;
+                    return { ...obj, title: nuevoTitulo };
+                });
+
+                return nuevoArr;
+            }
+
+
+            // Llamar a la función y obtener el nuevo arreglo modificado
+            const nuevoArreglo = modificarDias(datosT);
+
+            const arregloFinal = boton === 'Enviar 1ra Quincena'? nuevoArreglo.slice(0, 15) : nuevoArreglo.slice(15, 32)
+            // Imprimir el nuevo arreglo
+            // console.log(nuevoArreglo);
             console.log(telefono)
             console.log(mail)
             const datosTurnos = await traerTurnosAvexi()
@@ -622,7 +771,7 @@ const enviarHorariosAvexi = async (req, res) => {
 
             const descripciones = [];
             // Iterar sobre los turnos e imprimir las descripciones
-            for (const turno of datosT) {
+            for (const turno of arregloFinal) {
                 if (turno.id !== 'estado' && turno.id !== 'tel_fono1' && turno.id !== 'bot_n' && turno.id !== 'men__desplegable' && turno.id !== 'cargo6') {
 
                     const descripcion = obtenerDescripcionTurno(turno);
@@ -681,6 +830,7 @@ const enviarHorariosAzuan = async (req, res) => {
     const id = req.body.event.pulseId;
     console.log(req.body.event.columnTitle)
     let boton = req.body.event.columnTitle;
+    // let boton = 'Enviar 2ra Quincena';
 
     const query = `query { boards(ids: 5628279640) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -701,10 +851,39 @@ const enviarHorariosAzuan = async (req, res) => {
             const datosMonday = data
             const telefono = data.data.boards[0].items[0].column_values[33].text
             const mail = data.data.boards[0].items[0].column_values[34].text
-            
-            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
-            // const datosT = primeros15.slice(0, 15)
+
+            const dias = datosMonday.data.boards[0].items[0].column_values;
+            // const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(1, 16) : primeros15.slice(16, 32)
+            const datosT = dias.slice(0, 31)
+            // console.log(datosT)
+
+            function modificarDias(arr) {
+                // Obtener la fecha actual
+                const fechaActual = new Date();
+
+                // Obtener el día de la semana del primer elemento del arreglo
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+
+                // Crear un arreglo con los nombres de los días de la semana
+                const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+                // Iterar sobre el arreglo de objetos y modificar la propiedad "title"
+                const nuevoArr = arr.map((obj, index) => {
+                    const nuevoDiaIndex = (primerDiaSemana + index) % 7;
+                    const nuevoTitulo = `${diasSemana[nuevoDiaIndex]} ${index + 1}`;
+                    return { ...obj, title: nuevoTitulo };
+                });
+
+                return nuevoArr;
+            }
+
+
+            // Llamar a la función y obtener el nuevo arreglo modificado
+            const nuevoArreglo = modificarDias(datosT);
+
+            const arregloFinal = boton === 'Enviar 1ra Quincena'? nuevoArreglo.slice(0, 15) : nuevoArreglo.slice(15, 32)
+            // Imprimir el nuevo arreglo
+            // console.log(nuevoArreglo);
             console.log(telefono)
             console.log(mail)
             const datosTurnos = await traerTurnosAzuan()
@@ -740,7 +919,7 @@ const enviarHorariosAzuan = async (req, res) => {
 
             const descripciones = [];
             // Iterar sobre los turnos e imprimir las descripciones
-            for (const turno of datosT) {
+            for (const turno of arregloFinal) {
                 if (turno.id !== 'estado' && turno.id !== 'tel_fono' && turno.id !== 'bot_n' && turno.id !== 'men__desplegable' && turno.id !== 'cargo2') {
 
                     const descripcion = obtenerDescripcionTurno(turno);
@@ -799,6 +978,7 @@ const enviarHorariosAbi = async (req, res) => {
     const id = req.body.event.pulseId;
     console.log(req.body.event.columnTitle)
     let boton = req.body.event.columnTitle;
+    // let boton = 'Enviar 1ra Quincena';
 
     const query = `query { boards(ids: 5628450734) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -819,10 +999,40 @@ const enviarHorariosAbi = async (req, res) => {
             const datosMonday = data
             const telefono = data.data.boards[0].items[0].column_values[33].text
             const mail = data.data.boards[0].items[0].column_values[34].text
-            
-            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
-            // const datosT = primeros15.slice(0, 15)
+
+            const dias = datosMonday.data.boards[0].items[0].column_values;
+            // const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(1, 16) : primeros15.slice(16, 32)
+            const datosT = dias.slice(0, 31)
+            // console.log(datosT)
+
+            function modificarDias(arr) {
+                // Obtener la fecha actual
+                const fechaActual = new Date();
+
+                // Obtener el día de la semana del primer elemento del arreglo
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+
+                // Crear un arreglo con los nombres de los días de la semana
+                const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+                // Iterar sobre el arreglo de objetos y modificar la propiedad "title"
+                const nuevoArr = arr.map((obj, index) => {
+                    const nuevoDiaIndex = (primerDiaSemana + index) % 7;
+                    const nuevoTitulo = `${diasSemana[nuevoDiaIndex]} ${index + 1}`;
+                    return { ...obj, title: nuevoTitulo };
+                });
+
+                return nuevoArr;
+            }
+
+
+            // Llamar a la función y obtener el nuevo arreglo modificado
+            const nuevoArreglo = modificarDias(datosT);
+
+            const arregloFinal = boton === 'Enviar 1ra Quincena'? nuevoArreglo.slice(0, 15) : nuevoArreglo.slice(15, 32)
+            // Imprimir el nuevo arreglo
+            // console.log(nuevoArreglo);
+
             console.log(telefono)
             console.log(mail)
             const datosTurnos = await traerTurnosAbi()
@@ -858,7 +1068,7 @@ const enviarHorariosAbi = async (req, res) => {
 
             const descripciones = [];
             // Iterar sobre los turnos e imprimir las descripciones
-            for (const turno of datosT) {
+            for (const turno of arregloFinal) {
                 if (turno.id !== 'estado' && turno.id !== 'tel_fono2' && turno.id !== 'bot_n' && turno.id !== 'men__desplegable' && turno.id !== 'cargo8') {
 
                     const descripcion = obtenerDescripcionTurno(turno);
@@ -915,6 +1125,7 @@ const enviarHorariosBocagrande = async (req, res) => {
     const id = req.body.event.pulseId;
     console.log(req.body.event.columnTitle)
     let boton = req.body.event.columnTitle;
+    // let boton = 'Enviar 2ra Quincena';
 
     const query = `query { boards(ids: 5628654082) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -935,9 +1146,39 @@ const enviarHorariosBocagrande = async (req, res) => {
             const datosMonday = data
             const telefono = data.data.boards[0].items[0].column_values[33].text
             const mail = data.data.boards[0].items[0].column_values[34].text
-            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
-            // const datosT = primeros15.slice(0, 15)
+            const dias = datosMonday.data.boards[0].items[0].column_values;
+            // const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(1, 16) : primeros15.slice(16, 32)
+            const datosT = dias.slice(0, 31)
+            // console.log(datosT)
+
+            function modificarDias(arr) {
+                // Obtener la fecha actual
+                const fechaActual = new Date();
+
+                // Obtener el día de la semana del primer elemento del arreglo
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+
+                // Crear un arreglo con los nombres de los días de la semana
+                const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+                // Iterar sobre el arreglo de objetos y modificar la propiedad "title"
+                const nuevoArr = arr.map((obj, index) => {
+                    const nuevoDiaIndex = (primerDiaSemana + index) % 7;
+                    const nuevoTitulo = `${diasSemana[nuevoDiaIndex]} ${index + 1}`;
+                    return { ...obj, title: nuevoTitulo };
+                });
+
+                return nuevoArr;
+            }
+
+
+            // Llamar a la función y obtener el nuevo arreglo modificado
+            const nuevoArreglo = modificarDias(datosT);
+
+            const arregloFinal = boton === 'Enviar 1ra Quincena'? nuevoArreglo.slice(0, 15) : nuevoArreglo.slice(15, 32)
+            // Imprimir el nuevo arreglo
+            // console.log(nuevoArreglo);
+
             console.log(telefono)
             console.log(mail)
             const datosTurnos = await traerTurnosBocagrande()
@@ -972,7 +1213,7 @@ const enviarHorariosBocagrande = async (req, res) => {
 
             const descripciones = [];
             // Iterar sobre los turnos e imprimir las descripciones
-            for (const turno of datosT) {
+            for (const turno of arregloFinal) {
                 if (turno.id !== 'estado' && turno.id !== 'tel_fono' && turno.id !== 'bot_n' && turno.id !== 'men__desplegable' && turno.id !== 'cargo8') {
 
                     const descripcion = obtenerDescripcionTurno(turno);
@@ -1031,6 +1272,7 @@ const enviarHorariosWindsor = async (req, res) => {
     const id = req.body.event.pulseId;
     console.log(req.body.event.columnTitle)
     let boton = req.body.event.columnTitle;
+    // let boton = 'Enviar 2ra Quincena';
 
     const query = `query { boards(ids: 5628802846) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -1052,9 +1294,38 @@ const enviarHorariosWindsor = async (req, res) => {
             const telefono = data.data.boards[0].items[0].column_values[33].text
             const mail = data.data.boards[0].items[0].column_values[34].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
-            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
-            // const datosT = primeros15.slice(0, 15)
+            const dias = datosMonday.data.boards[0].items[0].column_values;
+            // const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(1, 16) : primeros15.slice(16, 32)
+            const datosT = dias.slice(0, 31)
+            // console.log(datosT)
+
+            function modificarDias(arr) {
+                // Obtener la fecha actual
+                const fechaActual = new Date();
+
+                // Obtener el día de la semana del primer elemento del arreglo
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+
+                // Crear un arreglo con los nombres de los días de la semana
+                const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+                // Iterar sobre el arreglo de objetos y modificar la propiedad "title"
+                const nuevoArr = arr.map((obj, index) => {
+                    const nuevoDiaIndex = (primerDiaSemana + index) % 7;
+                    const nuevoTitulo = `${diasSemana[nuevoDiaIndex]} ${index + 1}`;
+                    return { ...obj, title: nuevoTitulo };
+                });
+
+                return nuevoArr;
+            }
+
+
+            // Llamar a la función y obtener el nuevo arreglo modificado
+            const nuevoArreglo = modificarDias(datosT);
+
+            const arregloFinal = boton === 'Enviar 1ra Quincena'? nuevoArreglo.slice(0, 15) : nuevoArreglo.slice(15, 32)
+            // Imprimir el nuevo arreglo
+            // console.log(nuevoArreglo);
             console.log(telefono)
             console.log(mail)
             const datosTurnos = await traerTurnosWindsor()
@@ -1089,7 +1360,7 @@ const enviarHorariosWindsor = async (req, res) => {
 
             const descripciones = [];
             // Iterar sobre los turnos e imprimir las descripciones
-            for (const turno of datosT) {
+            for (const turno of arregloFinal) {
                 if (turno.id !== 'estado' && turno.id !== 'tel_fono3' && turno.id !== 'bot_n' && turno.id !== 'men__desplegable' && turno.id !== 'cargo9') {
 
                     const descripcion = obtenerDescripcionTurno(turno);
@@ -1148,6 +1419,7 @@ const enviarHorariosMadisson = async (req, res) => {
     const id = req.body.event.pulseId;
     console.log(req.body.event.columnTitle)
     let boton = req.body.event.columnTitle;
+    // let boton = 'Enviar 2ra Quincena';
 
     const query = `query { boards(ids: 5628963944) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -1169,9 +1441,38 @@ const enviarHorariosMadisson = async (req, res) => {
             const telefono = data.data.boards[0].items[0].column_values[33].text
             const mail = data.data.boards[0].items[0].column_values[34].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
-            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
-            // const datosT = primeros15.slice(0, 15)
+            const dias = datosMonday.data.boards[0].items[0].column_values;
+            // const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(1, 16) : primeros15.slice(16, 32)
+            const datosT = dias.slice(0, 31)
+            // console.log(datosT)
+
+            function modificarDias(arr) {
+                // Obtener la fecha actual
+                const fechaActual = new Date();
+
+                // Obtener el día de la semana del primer elemento del arreglo
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+
+                // Crear un arreglo con los nombres de los días de la semana
+                const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+                // Iterar sobre el arreglo de objetos y modificar la propiedad "title"
+                const nuevoArr = arr.map((obj, index) => {
+                    const nuevoDiaIndex = (primerDiaSemana + index) % 7;
+                    const nuevoTitulo = `${diasSemana[nuevoDiaIndex]} ${index + 1}`;
+                    return { ...obj, title: nuevoTitulo };
+                });
+
+                return nuevoArr;
+            }
+
+
+            // Llamar a la función y obtener el nuevo arreglo modificado
+            const nuevoArreglo = modificarDias(datosT);
+
+            const arregloFinal = boton === 'Enviar 1ra Quincena'? nuevoArreglo.slice(0, 15) : nuevoArreglo.slice(15, 32)
+            // Imprimir el nuevo arreglo
+            // console.log(nuevoArreglo);
 
             console.log(telefono)
             console.log(mail)
@@ -1207,7 +1508,7 @@ const enviarHorariosMadisson = async (req, res) => {
 
             const descripciones = [];
             // Iterar sobre los turnos e imprimir las descripciones
-            for (const turno of datosT) {
+            for (const turno of arregloFinal) {
                 if (turno.id !== 'estado' && turno.id !== 'tel_fono' && turno.id !== 'bot_n' && turno.id !== 'men__desplegable' && turno.id !== 'cargo6') {
 
                     const descripcion = obtenerDescripcionTurno(turno);
@@ -1266,6 +1567,7 @@ const enviarHorariosMarina = async (req, res) => {
     const id = req.body.event.pulseId;
     console.log(req.body.event.columnTitle)
     let boton = req.body.event.columnTitle;
+    // let boton = 'Enviar 2ra Quincena';
 
     const query = `query { boards(ids: 5640092760) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -1287,9 +1589,38 @@ const enviarHorariosMarina = async (req, res) => {
             const telefono = data.data.boards[0].items[0].column_values[32].text
             const mail = data.data.boards[0].items[0].column_values[33].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
-            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
-            const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(0, 15) : primeros15.slice(15, 31)
-            // const datosT = primeros15.slice(0, 15)
+            const dias = datosMonday.data.boards[0].items[0].column_values;
+            // const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(1, 16) : primeros15.slice(16, 32)
+            const datosT = dias.slice(0, 31)
+            // console.log(datosT)
+
+            function modificarDias(arr) {
+                // Obtener la fecha actual
+                const fechaActual = new Date();
+
+                // Obtener el día de la semana del primer elemento del arreglo
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+
+                // Crear un arreglo con los nombres de los días de la semana
+                const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+                // Iterar sobre el arreglo de objetos y modificar la propiedad "title"
+                const nuevoArr = arr.map((obj, index) => {
+                    const nuevoDiaIndex = (primerDiaSemana + index) % 7;
+                    const nuevoTitulo = `${diasSemana[nuevoDiaIndex]} ${index + 1}`;
+                    return { ...obj, title: nuevoTitulo };
+                });
+
+                return nuevoArr;
+            }
+
+
+            // Llamar a la función y obtener el nuevo arreglo modificado
+            const nuevoArreglo = modificarDias(datosT);
+
+            const arregloFinal = boton === 'Enviar 1ra Quincena'? nuevoArreglo.slice(0, 15) : nuevoArreglo.slice(15, 32)
+            // Imprimir el nuevo arreglo
+            // console.log(nuevoArreglo);
 
             console.log(telefono)
             console.log(mail)
@@ -1325,7 +1656,7 @@ const enviarHorariosMarina = async (req, res) => {
 
             const descripciones = [];
             // Iterar sobre los turnos e imprimir las descripciones
-            for (const turno of datosT) {
+            for (const turno of arregloFinal) {
                 if (turno.id !== 'estado' && turno.id !== 'tel_fono' && turno.id !== 'bot_n' && turno.id !== 'men__desplegable' && turno.id !== 'cargo6') {
 
                     const descripcion = obtenerDescripcionTurno(turno);
