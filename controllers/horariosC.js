@@ -15,6 +15,8 @@ const { apiSMS, probandoMail, enviarWhatsAppBotmaker, enviarWhatsTemplate } = re
 
 const enviarHorarios = async (req, res) => {
 
+    // const datosTurnos = await traerTurnosAixo()
+
     const challenge = req.body.challenge;
     res.send({ challenge });
     const apikey = process.env.APIKEY_MONDAY;
@@ -23,7 +25,7 @@ const enviarHorarios = async (req, res) => {
     const id = req.body.event.pulseId;
     console.log(req.body.event.columnTitle)
     let boton = req.body.event.columnTitle;
-    // let boton = 'Enviar 1ra Quincena';
+    // let boton = 'Enviar 2ra Quincena';
     const query = `query { boards(ids: 5482696120) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',

@@ -205,9 +205,8 @@ const novedades = async () => {
 
 const traerTurnosAixo = async () => {
 
-    // console.log('hola rous turnosAixo')
     // const query = 'query {boards(ids: 5326768143) { groups { id title }}}'
-    const query = `query { boards(ids: 5326768143) { groups(ids: topics) {  items { id  name  column_values {  id  text  value  }  } } another_group: groups(ids: grupo_nuevo) {  items { id  name  column_values {  id  text  value  }  } } third_group: groups(ids: grupo_nuevo64039) {  items { id  name  column_values {  id  text  value  }  } } grupo_cuatro: groups(ids: grupo_nuevo88540) {  items { id  name  column_values {  id  text  value  }  } } grupo_sinco: groups(ids: group_title) {  items { id  name  column_values {  id  text  value  }  } } grupo_seis: groups(ids: grupo_nuevo16411) {  items { id  name  column_values {  id  text  value  }  } } grupo_siete: groups(ids: grupo_nuevo29435) {  items { id  name  column_values {  id  text  value  }  } } grupo_ocho: groups(ids: grupo_nuevo56779) {  items { id  name  column_values {  id  text  value  }  } } grupo_nueve: groups(ids: grupo_nuevo66276) {  items { id  name  column_values {  id  text  value  }  } } grupo_dies: groups(ids: grupo_nuevo43430) {  items { id  name  column_values {  id  text  value  }  } } grupo_once: groups(ids: grupo_nuevo6379) {  items { id  name  column_values {  id  text  value  }  } } grupo_doce: groups(ids: grupo_nuevo82273) {  items { id  name  column_values {  id  text  value  }  } }} } `;
+    const query = `query { boards(ids: 5326768143) { groups(ids: topics) {  items { id  name  column_values {  id  text  value  }  } } another_group: groups(ids: grupo_nuevo) {  items { id  name  column_values {  id  text  value  }  } } third_group: groups(ids: grupo_nuevo64039) {  items { id  name  column_values {  id  text  value  }  } } grupo_cuatro: groups(ids: grupo_nuevo88540) {  items { id  name  column_values {  id  text  value  }  } } grupo_sinco: groups(ids: group_title) {  items { id  name  column_values {  id  text  value  }  } } grupo_seis: groups(ids: grupo_nuevo16411) {  items { id  name  column_values {  id  text  value  }  } } grupo_siete: groups(ids: grupo_nuevo29435) {  items { id  name  column_values {  id  text  value  }  } } grupo_ocho: groups(ids: grupo_nuevo56779) {  items { id  name  column_values {  id  text  value  }  } } grupo_nueve: groups(ids: grupo_nuevo66276) {  items { id  name  column_values {  id  text  value  }  } } grupo_dies: groups(ids: grupo_nuevo43430) {  items { id  name  column_values {  id  text  value  }  } } grupo_once: groups(ids: grupo_nuevo6379) {  items { id  name  column_values {  id  text  value  }  } } grupo_doce: groups(ids: grupo_nuevo82273) {  items { id  name  column_values {  id  text  value  }  } } grupo_trece: groups(ids: grupo_nuevo93111) {  items { id  name  column_values {  id  text  value  }  } }} } `;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
         headers: {
@@ -224,6 +223,7 @@ const traerTurnosAixo = async () => {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
             // const datosMonday = data
+            // console.log(data.data.boards[0].groups)
 
             const arrNovedades = await novedades()
 
@@ -239,7 +239,8 @@ const traerTurnosAixo = async () => {
             let arreglo10 = data.data.boards[0].grupo_dies[0].items
             let arreg0l11 = data.data.boards[0].grupo_once[0].items
             let arreglo12 = data.data.boards[0].grupo_doce[0].items
-            let arr = [arreglo1, arreglo2, arreglo3, arreglo4, arreglo5, arreglo6, arreglo7, arreglo8, arreglo9, arreglo10, arreg0l11, arreglo12, arrNovedades].flat()
+            let arreglo13 = data.data.boards[0].grupo_trece[0].items
+            let arr = [arreglo1, arreglo2, arreglo3, arreglo4, arreglo5, arreglo6, arreglo7, arreglo8, arreglo9, arreglo10, arreg0l11, arreglo12, arreglo13, arrNovedades].flat()
             // console.log(arr)
 
             return arr;
