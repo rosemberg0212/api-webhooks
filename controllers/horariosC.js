@@ -54,7 +54,7 @@ const enviarHorarios = async (req, res) => {
                 const fechaActual = new Date();
 
                 // Obtener el día de la semana del primer elemento del arreglo
-                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 1).getDay();
 
                 // Crear un arreglo con los nombres de los días de la semana
                 const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -202,7 +202,7 @@ const enviarHorariosReservas = async (req, res) => {
                 const fechaActual = new Date();
 
                 // Obtener el día de la semana del primer elemento del arreglo
-                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 1).getDay();
 
                 // Crear un arreglo con los nombres de los días de la semana
                 const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -420,7 +420,7 @@ const enviarHorariosSantaM = async (req, res) => {
                 const fechaActual = new Date();
 
                 // Obtener el día de la semana del primer elemento del arreglo
-                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 1).getDay();
 
                 // Crear un arreglo con los nombres de los días de la semana
                 const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -570,7 +570,7 @@ const enviarHorariosRodadero = async (req, res) => {
                 const fechaActual = new Date();
 
                 // Obtener el día de la semana del primer elemento del arreglo
-                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 1).getDay();
 
                 // Crear un arreglo con los nombres de los días de la semana
                 const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -716,7 +716,7 @@ const enviarHorariosAvexi = async (req, res) => {
                 const fechaActual = new Date();
 
                 // Obtener el día de la semana del primer elemento del arreglo
-                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 1).getDay();
 
                 // Crear un arreglo con los nombres de los días de la semana
                 const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -864,7 +864,7 @@ const enviarHorariosAzuan = async (req, res) => {
                 const fechaActual = new Date();
 
                 // Obtener el día de la semana del primer elemento del arreglo
-                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 1).getDay();
 
                 // Crear un arreglo con los nombres de los días de la semana
                 const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -1012,7 +1012,7 @@ const enviarHorariosAbi = async (req, res) => {
                 const fechaActual = new Date();
 
                 // Obtener el día de la semana del primer elemento del arreglo
-                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 1).getDay();
 
                 // Crear un arreglo con los nombres de los días de la semana
                 const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -1158,7 +1158,7 @@ const enviarHorariosBocagrande = async (req, res) => {
                 const fechaActual = new Date();
 
                 // Obtener el día de la semana del primer elemento del arreglo
-                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 1).getDay();
 
                 // Crear un arreglo con los nombres de los días de la semana
                 const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -1274,7 +1274,7 @@ const enviarHorariosWindsor = async (req, res) => {
     const id = req.body.event.pulseId;
     console.log(req.body.event.columnTitle)
     let boton = req.body.event.columnTitle;
-    // let boton = 'Enviar 2ra Quincena';
+    // let boton = 'Enviar 1ra Quincena';
 
     const query = `query { boards(ids: 5628802846) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -1293,20 +1293,20 @@ const enviarHorariosWindsor = async (req, res) => {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
-            const telefono = data.data.boards[0].items[0].column_values[33].text
-            const mail = data.data.boards[0].items[0].column_values[34].text
+            const telefono = data.data.boards[0].items[0].column_values[34].text
+            const mail = data.data.boards[0].items[0].column_values[35].text
             // console.log(datosMonday.data.boards[0].items[0].column_values)
             const dias = datosMonday.data.boards[0].items[0].column_values;
             // const datosT = boton === 'Enviar 1ra Quincena'? primeros15.slice(1, 16) : primeros15.slice(16, 32)
-            const datosT = dias.slice(0, 31)
-            // console.log(datosT)
+            const datosT = dias.slice(1, 32)
+            console.log(datosT)
 
             function modificarDias(arr) {
                 // Obtener la fecha actual
                 const fechaActual = new Date();
 
                 // Obtener el día de la semana del primer elemento del arreglo
-                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 1).getDay();
 
                 // Crear un arreglo con los nombres de los días de la semana
                 const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -1327,7 +1327,7 @@ const enviarHorariosWindsor = async (req, res) => {
 
             const arregloFinal = boton === 'Enviar 1ra Quincena'? nuevoArreglo.slice(0, 15) : nuevoArreglo.slice(15, 32)
             // Imprimir el nuevo arreglo
-            // console.log(nuevoArreglo);
+            console.log(nuevoArreglo);
             console.log(telefono)
             console.log(mail)
             const datosTurnos = await traerTurnosWindsor()
@@ -1453,7 +1453,7 @@ const enviarHorariosMadisson = async (req, res) => {
                 const fechaActual = new Date();
 
                 // Obtener el día de la semana del primer elemento del arreglo
-                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 1).getDay();
 
                 // Crear un arreglo con los nombres de los días de la semana
                 const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -1601,7 +1601,7 @@ const enviarHorariosMarina = async (req, res) => {
                 const fechaActual = new Date();
 
                 // Obtener el día de la semana del primer elemento del arreglo
-                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 1).getDay();
 
                 // Crear un arreglo con los nombres de los días de la semana
                 const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
