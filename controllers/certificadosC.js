@@ -1,4 +1,4 @@
-const {enviarWhatsAppBotmaker} = require('../helpers/apiBotmaker')
+const {enviarWhatsAppBotmaker, enviarWhatsTemplate} = require('../helpers/apiBotmaker')
 
 const enviarCertificados = async (req, res) => {
     const challenge = req.body.challenge;
@@ -6,7 +6,7 @@ const enviarCertificados = async (req, res) => {
 
     const apikey = process.env.APIKEY_MONDAY;
     const id = req.body.event.pulseId;
-    // const id = '5443630188';
+    // const id = '5830419383';
 
     const query = `query { boards(ids: 4279283510) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -30,9 +30,12 @@ const enviarCertificados = async (req, res) => {
             // console.log(telefono)
             // console.log(certificado)
             console.log(datosMonday)
-            const cadenaTexto = `Muy buenas estimado, hago envio del certificado: ${certificado}`
+            const params = {
+                url: certificado
+            }
 
-            await enviarWhatsAppBotmaker(telefono, cadenaTexto)
+            // await enviarWhatsAppBotmaker(telefono, cadenaTexto)
+            await enviarWhatsTemplate(telefono, '573044564734', 'envio_certificado', params)
 
         } else {
             console.error('Hubo un error en la solicitud.');

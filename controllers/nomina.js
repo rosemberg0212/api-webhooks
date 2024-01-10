@@ -26,10 +26,11 @@ const calcularNomina = async (req, res) => {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
             const datosMonday = data
-            const datosT = datosMonday.data.boards[0].items[0].column_values;
+            const primeros15 =datosMonday.data.boards[0].items[0].column_values;
+            const datosT = primeros15.slice(1, 16)
             // console.log(datosMonday.data.boards[0].items[0].name)
             const nombre = datosMonday.data.boards[0].items[0].name
-
+            console.log(datosT)
             const turnosAixo = await traerTurnosAixo()
             // console.log(turnosAixo)
 
@@ -37,7 +38,7 @@ const calcularNomina = async (req, res) => {
             const filtro = datosT.filter(dato => {
                 return dato.id !== 'estado' && dato.id !== 'tel_fono' && dato.id !== 'cargo0' && dato.id !== 'bot_n' && dato.id !== 'men__desplegable' && dato.id !== 'bot_n_1'
             })
-            console.log(filtro)
+            // console.log(filtro)
 
             let novedad = 0
             let descuentos = 0
@@ -45,13 +46,13 @@ const calcularNomina = async (req, res) => {
             filtro.map(dias => {
                 let codigo = dias.text
                 
-                if(turnosAixo.some(obj=> obj.name == codigo)){
+                if(turnosAixo.some(obj=> obj.name == codigo)){ 
                     contador2++
                 }
             })
 
             filtro.map(dato => {
-                if (dato.text == 'Novedad 2' || dato.text == 'Novedad 4') {
+                if (dato.text == 'Novedad 2' || dato.text == 'Novedad 4' || dato.text == 'Novedad 10') {
                     novedad++
                 }else if(dato.text == 'Novedad 3' || dato.text == 'Novedad 5'){
                     descuentos++
@@ -67,11 +68,12 @@ const calcularNomina = async (req, res) => {
 
             let domingo = 0;
             const filtrarNovedades = filtro.filter(obj => {
-                return obj.text !== 'Novedad 1' && obj.text !== 'Novedad 2' && obj.text !== 'Novedad 3' && obj.text !== 'Novedad 4' && obj.text !== 'Novedad 5' && obj.text !== 'Novedad 6' && obj.text !== 'Novedad 7' && obj.text !== 'Novedad 8' && obj.text !== 'Novedad 9' && obj.text !== 'Novedad 10'
+                return obj.text !== 'Novedad 1' && obj.text !== 'Novedad 2' && obj.text !== 'Novedad 3' && obj.text !== 'Novedad 4' && obj.text !== 'Novedad 5' && obj.text !== 'Novedad 6' && obj.text !== 'Novedad 7' && obj.text !== 'Novedad 8' && obj.text !== 'Novedad 9' && obj.text !== 'Novedad 10' && obj.text !== 'Novedad 11'
             })
             
-            filtrarNovedades.map(horas=>{
-                if(horas.title == 'Domingo' && (horas.text)){
+
+            filtrarNovedades.map(obj=>{
+                if(obj.title.endsWith('- D') && (obj.text)){
                     domingo += 8;
                 }
             })
@@ -79,14 +81,6 @@ const calcularNomina = async (req, res) => {
 
             let recargosN = 0;
             let domingoN = 0;
-            const filtrarDias = filtro.filter(obj => {
-                return obj.title !== 'Domingo'
-            })
-            // filtrarDias.map(obj => {
-            //     if(obj.text == 'RN1' && (obj.title)){
-            //         recargosN += 9
-            //     }
-            // })
 
             filtrarNovedades.map(obj => {
                 if(obj.text == 'RN1' && obj.title == 'Sabado'){
