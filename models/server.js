@@ -35,7 +35,7 @@ class Server {
     this.app.use(express.static("public"));
   }
 
-  routes() {
+  routes() { 
     this.app.use(this.paths.certificado, require("../routes/certificado"));
     this.app.use(this.paths.horario, require("../routes/horarios"));
     this.app.use(this.paths.taskRyver, require("../routes/taskRyver"));

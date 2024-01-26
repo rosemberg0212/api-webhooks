@@ -50,8 +50,6 @@ const enviarCertificados = async (req, res) => {
     res.status(200).end();
 }
 
-// Llamar a la función para obtener la información del tablero
-
 module.exports = {
     enviarCertificados
 }

@@ -1,12 +1,11 @@
 const {Router} = require('express');
 
-const { calcularNomina, calcularNominaReservas, calcularNominaRodadero } = require('../controllers/nomina');
+const { calcularNomina, generarTirilla} = require('../controllers/nomina');
 
 const router = Router();
 
 router.post('/', calcularNomina);
-router.post('/reservas', calcularNominaReservas);
-router.post('/rodadero', calcularNominaRodadero);
+router.post('/tirilla', generarTirilla);
 
 
 module.exports = router

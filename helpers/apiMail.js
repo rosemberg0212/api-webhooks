@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 
-const probandoMail = async (cuerpo, mail) => {
+const probandoMail = async (cuerpo, mail, asunto) => {
 
     const config = {
         host: "smtp.gmail.com",
@@ -14,7 +14,7 @@ const probandoMail = async (cuerpo, mail) => {
     const mensaje = {
         from: "gestionhumana@gehsuites.com",
         to: `${mail}`,
-        subject: "Notificacion Horario Laboral",
+        subject: `${asunto}`,
         text: `${cuerpo}`,
     };
     const transport = nodemailer.createTransport(config);

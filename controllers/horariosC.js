@@ -24,7 +24,7 @@ const enviarHorarios = async (req, res) => {
     // const id = '5707679824';
     const id = req.body.event.pulseId;
     console.log(req.body.event.columnTitle)
-    // console.log(req.body)
+    let grupo = req.body.event.groupId
     let boton = req.body.event.columnTitle;
     let tableroId = req.body.event.boardId
     // let boton = 'Enviar 1ra Quincena';
@@ -53,14 +53,14 @@ const enviarHorarios = async (req, res) => {
             const diasFiltrado = dias.filter(obj => obj.id !== 'subitems' && obj.id !== 'subelementos')
             
             const datosT = diasFiltrado.slice(0, 33)
-            console.log(diasFiltrado)
+            // console.log(diasFiltrado)
 
             function modificarDias(arr) {
                 // Obtener la fecha actual
                 const fechaActual = new Date();
 
                 // Obtener el día de la semana del primer elemento del arreglo
-                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth()+1, 1).getDay();
 
                 // Crear un arreglo con los nombres de los días de la semana
                 const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -79,7 +79,13 @@ const enviarHorarios = async (req, res) => {
             // Llamar a la función y obtener el nuevo arreglo modificado
             const nuevoArreglo = modificarDias(datosT);
 
-            const arregloFinal = boton === 'Enviar 1ra Quincena' ? nuevoArreglo.slice(0, 15) : nuevoArreglo.slice(15, 32)
+            let arregloFinal
+            if(grupo === 'duplicate_of_enero_1_al_31___2' || grupo === 'duplicate_of_enero_1_a_31__202' || grupo === 'duplicate_of_enero_1_31__2024' || grupo === 'duplicate_of_enero_1_a_31___20' || grupo === 'duplicate_of_enero_1_a_31' || grupo === 'duplicate_of_enero__1_a_3132847' || grupo === 'duplicate_of_enero___1_al_31__' || grupo === 'duplicate_of_enero_1_al_31' || grupo === 'duplicate_of_enero_1_al_3131263'){
+                arregloFinal = boton === 'Enviar 1ra Quincena' ? nuevoArreglo.slice(0, 15) : nuevoArreglo.slice(15, 29)
+            }else{
+                arregloFinal = boton === 'Enviar 1ra Quincena' ? nuevoArreglo.slice(0, 15) : nuevoArreglo.slice(15, 32)
+            }
+
             // Imprimir el nuevo arreglo
             // console.log(nuevoArreglo);
             console.log(telefono)
@@ -197,10 +203,11 @@ const enviarHorarios = async (req, res) => {
 
             // Imprime o utiliza las mitades según sea necesario
 
-            console.log(primeraMitad);
+            console.log(primeraMitad); 
             console.log(segundaMitad);
-            arrS.map(async (obj) => await apiSMS(telefono, obj))
-            await probandoMail(descripcionesConcatenadas, mail)
+            let asunto = 'Notificacion Horario Laboral' 
+            // arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail, asunto)
 
 
         } else {
