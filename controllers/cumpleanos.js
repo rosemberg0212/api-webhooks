@@ -52,8 +52,8 @@ const InvitacionesAnato = async (req, res) => {
     res.send({ challenge });
 
     const apikey = process.env.APIKEY_MONDAY;
-    // const id = req.body.event.pulseId;
-    const id = '5964129481';
+    const id = req.body.event.pulseId;
+    // const id = '5964129481';
 
     const query = `query { boards(ids: 5894171160) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
