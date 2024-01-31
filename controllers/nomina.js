@@ -1,4 +1,6 @@
 const { traerTurnosAixo, traerTurnosRodadero, traerTurnos1525 } = require("../middleware/turnos");
+const fs = require('fs');
+const PDFDocument = require('pdfkit');
 
 const calcularNomina = async (req, res) => {
 
@@ -78,12 +80,12 @@ const calcularNomina = async (req, res) => {
             })
 
 
-            filtrarNovedades.map(obj => {
-                if (obj.title.endsWith('- D') && (obj.text)) {
-                    domingo += 8;
-                }
-            })
-            console.log(domingo)
+            // filtrarNovedades.map(obj => {
+            //     if (obj.title.endsWith('- D') && (obj.text)) {
+            //         domingo += 8;
+            //     }
+            // })
+            // console.log(domingo)
 
             let recargosN = 0;
             let domingoN = 0;
@@ -94,9 +96,9 @@ const calcularNomina = async (req, res) => {
                     domingo = 0
                     recargosN += 3
                     domingoN += 6
-                    domingoRecep += 1;
+                    domingoRecep += 3;
                 } else if (obj.text == 'RN1' && obj.title.endsWith('- D')) {
-                    domingo = 0
+                    domingo += 2
                     domingoN += 3
                     recargosN += 6
                 } else if (obj.text == 'RN1' && (obj.title)) {
@@ -104,7 +106,9 @@ const calcularNomina = async (req, res) => {
                 } else if (obj.text == 'RD1' && obj.title.endsWith('- D')) {
                     domingo = 0;
                     domingoRecep += 12
-                }
+                }else if (obj.title.endsWith('- D') && (obj.text)) {
+                    domingo += 8;
+                } 
             })
 
             let sumaDomingos = domingo + domingoRecep
@@ -153,7 +157,7 @@ const mandarNomina = async (dias, nombre, novedades, domingo, recargosN, domingo
 
 const generarTirilla = async (req, res) => {
     const challenge = req.body.challenge;
-    res.send({ challenge });
+    // res.send({ challenge });
 
     const apikey = process.env.APIKEY_MONDAY;
     const id = req.body.event.pulseId;
@@ -166,7 +170,7 @@ const generarTirilla = async (req, res) => {
             'Content-Type': 'application/json',
             'Authorization': apikey
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
             'query': query
         })
     });
@@ -176,9 +180,27 @@ const generarTirilla = async (req, res) => {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
             // const correo = data.data.boards[0].items[0].column_values
-            // console.log(correo)
-
             
+            // Crear un nuevo documento PDF
+            const doc = new PDFDocument();
+
+            // Pipe el resultado a un archivo (puedes cambiar 'output.pdf' al nombre que prefieras)
+            const stream = fs.createWriteStream('output.pdf');
+            doc.pipe(stream);
+
+            // Agregar contenido al PDF
+            doc
+                .fontSize(16)
+                .text('Ejemplo de PDF con pdfkit', 100, 50);
+
+            doc
+                .fontSize(12)
+                .text('¡Hola, este es un documento PDF generado con pdfkit!', 100, 80);
+
+            // Finalizar y cerrar el documento
+            doc.end();
+
+            console.log('PDF generado con éxito');
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -190,7 +212,7 @@ const generarTirilla = async (req, res) => {
         console.error('Hubo un error en la solicitud:', error);
     }
 
-    res.status(200).end();
+    // res.status(200).end();
 }
 
 module.exports = {
