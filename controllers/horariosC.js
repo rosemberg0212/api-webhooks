@@ -60,7 +60,7 @@ const enviarHorarios = async (req, res) => {
                 const fechaActual = new Date();
 
                 // Obtener el día de la semana del primer elemento del arreglo
-                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth()+1, 1).getDay();
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
 
                 // Crear un arreglo con los nombres de los días de la semana
                 const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -72,7 +72,7 @@ const enviarHorarios = async (req, res) => {
                     return { ...obj, title: nuevoTitulo };
                 });
 
-                return nuevoArr;
+                return nuevoArr; 
             }
 
 
