@@ -83,14 +83,20 @@ const InvitacionesAnato = async (req, res) => {
 
                 let cadena =
 `¡Celebremos juntos la Gran Reapertura del Hotel Windsor House durante el marco de la Feria ANATO 2024!
+
 Estimado ${nombre}
+
 En Geh Suites, nos complace enormemente anunciar la gran reapertura del emblemático Hotel Windsor House en Bogotá. Como parte de nuestra familia, queremos compartir contigo este emocionante momento en el que inauguramos una nueva etapa de elegancia y comodidad.
+
 La fecha está marcada: 29/01/2024 a partir de las 06:30 pm. Nos encantaría contar con tu grata presencia para celebrar este hito tan significativo. La Gran Reapertura se llevará a cabo en el marco de la prestigiosa Feria ANATO 2024, convirtiéndose en el escenario perfecto para disfrutar de un ambiente lleno de exclusividad y experiencias inolvidables.
+
 Para confirmar tu asistencia y asegurar tu lugar en esta memorable celebración, te invitamos a responder a este correo ingresando al siguiente link y diligenciando el cuestionario.
+
 https://wkf.ms/4839yQF
+
 Agradecemos tu continuo apoyo y confianza en Geh Suites Hotels. Estamos emocionados de compartir este momento contigo y esperamos que te unas a nosotros para vivir la experiencia única de la Gran Reapertura del Hotel Windsor House.
 
-Con cordiales saludos,
+Cordiales saludos,
 Geh Suites Hotels.`
 
                 let asunto = 'Invitacion Reapertura Windsor'
