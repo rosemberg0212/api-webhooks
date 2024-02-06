@@ -1,5 +1,5 @@
 node_modules/
 
 .env
-modificado.pdf
-codigo_qr.png
+public/modificado.pdf
+public/codigo_qr.png
