@@ -3,6 +3,7 @@ const { probandoMail, invitacionWindor } = require('../helpers/apiMail')
 const { PDFDocument } = require('pdf-lib');
 const fs = require('fs');
 const qr = require('qrcode');
+const FormData = require('form-data');
 
 const felizCumple = async (req, res) => {
     const challenge = req.body.challenge;
@@ -49,12 +50,12 @@ const felizCumple = async (req, res) => {
 }
 
 const InvitacionesAnato = async (req, res) => {
-        const challenge = req.body.challenge;
-        res.send({ challenge });
+    const challenge = req.body.challenge;
+    res.send({ challenge });
 
-        const apikey = process.env.APIKEY_MONDAY;
-        const id = req.body.event.pulseId;
-        // const id = '5964129481';
+    const apikey = process.env.APIKEY_MONDAY;
+    const id = req.body.event.pulseId;
+    // const id = '5964129481';
 
         const query = `query { boards(ids: 6001737389) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
         const response = await fetch("https://api.monday.com/v2", {
@@ -81,7 +82,8 @@ const InvitacionesAnato = async (req, res) => {
                     return
                 }
 
-                let cadena =
+
+            let cadena =
 `¡Celebremos juntos la Gran Reapertura del Hotel Windsor House durante el marco de la Feria ANATO 2024!
 
 Estimado ${nombre}
@@ -99,45 +101,45 @@ Agradecemos tu continuo apoyo y confianza en Geh Suites Hotels. Estamos emociona
 Cordiales saludos,
 Geh Suites Hotels.`
 
-                let asunto = 'Invitacion Reapertura Windsor'
-                // let nombreAgencia = 'El Rossss'
-                const pdfBuffer = fs.readFileSync('public/Reapertura_Windsor.pdf');
-                const pdfDoc = await PDFDocument.load(pdfBuffer);
+            let asunto = 'Invitacion Reapertura Windsor'
+            // let nombreAgencia = 'El Rossss'
+            const pdfBuffer = fs.readFileSync('public/Reapertura_Windsor.pdf');
+            const pdfDoc = await PDFDocument.load(pdfBuffer);
 
-                const page = pdfDoc.getPages()[0]; // Obtén la primera página (puedes ajustarlo según tu PDF)
-                const { width, height } = page.getSize();
+            const page = pdfDoc.getPages()[0]; // Obtén la primera página (puedes ajustarlo según tu PDF)
+            const { width, height } = page.getSize();
 
-                // Agrega el nombre de la agencia en una posición específica
-                const fontSize = 12;
-                const x = 250;
-                const y = height - 390;
-                page.drawText(nombre, { x, y, fontSize });
+            // Agrega el nombre de la agencia en una posición específica
+            const fontSize = 12;
+            const x = 250;
+            const y = height - 390;
+            page.drawText(nombre, { x, y, fontSize });
 
-                const pdfBytes = await pdfDoc.save();
-                fs.writeFileSync('public/modificado.pdf', pdfBytes);
+            const pdfBytes = await pdfDoc.save();
+            fs.writeFileSync('public/modificado.pdf', pdfBytes);
 
-                await invitacionWindor(cadena, correo, asunto)
+            await invitacionWindor(cadena, correo, asunto)
 
 
-            } else {
-                console.error('Hubo un error en la solicitud.');
-                console.error('Código de estado:', response.status);
-                const errorMessage = await response.text();
-                console.error('Respuesta:', errorMessage);
-            }
-        } catch (error) {
-            console.error('Hubo un error en la solicitud:', error);
+        } else {
+            console.error('Hubo un error en la solicitud.');
+            console.error('Código de estado:', response.status);
+            const errorMessage = await response.text();
+            console.error('Respuesta:', errorMessage);
         }
-
-    // await generarQR()
+    } catch (error) {
+        console.error('Hubo un error en la solicitud:', error);
+    }
 
     res.status(200).end();
 }
 
-const generarQR = async () => {
+const generarQR = async (req, res) => {
+    const challenge = req.body.challenge;
+    res.send({ challenge });
     const apikey = process.env.APIKEY_MONDAY;
-    // const id = req.body.event.pulseId;
-    const id = '5968736518';
+    const id = req.body.event.pulseId;
+    // const id = '5968736518';
 
     const query = `query { boards(ids: 5968533711) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -164,8 +166,7 @@ const generarQR = async () => {
             console.log(nuemroP)
             console.log(pais)
 
-            const datosPersona = `Nombre: ${contacto}, Agencia: ${agencia}, Pais: ${pais}, Numero de acompañantes: ${nuemroP}
-    `;
+            const datosPersona = `Nombre: ${contacto}, Agencia: ${agencia}, Pais: ${pais}, Numero de acompañantes: ${nuemroP}`;
             try {
                 const codigoQR = await qr.toFile('public/codigo_qr.png', JSON.stringify(datosPersona));
                 console.log('Código QR generado y guardado con éxito en public/codigo_qr.png');
@@ -182,11 +183,72 @@ const generarQR = async () => {
     } catch (error) {
         console.error('Hubo un error en la solicitud:', error);
     }
-   
+
+    await mandarQR(id)
+    res.status(200).end();
+}
+
+const mandarQR = async (fila) => { 
+    let idFila = fila.toString();
+
+
+    // adapted from: https://gist.github.com/tanaikech/40c9284e91d209356395b43022ffc5cc
+
+    // set filename
+    var upfile = 'public/codigo_qr.png';
+
+    // set auth token and query
+    var API_KEY = process.env.APIKEY_MONDAY
+    var query = `mutation ($file: File!) { add_file_to_column (file: $file, item_id: ${idFila}, column_id: "archivo") { id } }`;
+
+    // set URL and boundary
+    var url = "https://api.monday.com/v2/file";
+    var boundary = "xxxxxxxxxx";
+    var data = "";
+
+    fs.readFile(upfile, function (err, content) {
+
+        // simple catch error
+        if (err) {
+            console.error(err); 
+        }
+
+        // construct query part
+        data += "--" + boundary + "\r\n";
+        data += "Content-Disposition: form-data; name=\"query\"; \r\n";
+        data += "Content-Type:application/json\r\n\r\n";
+        data += "\r\n" + query + "\r\n";
+
+        // construct file part
+        data += "--" + boundary + "\r\n";
+        data += "Content-Disposition: form-data; name=\"variables[file]\"; filename=\"" + upfile + "\"\r\n";
+        data += "Content-Type:application/octet-stream\r\n\r\n";
+        var payload = Buffer.concat([
+            Buffer.from(data, "utf8"),
+            new Buffer.from(content, 'binary'),
+            Buffer.from("\r\n--" + boundary + "--\r\n", "utf8"),
+        ]);
+
+        // construct request options
+        var options = {
+            method: 'post',
+            headers: {
+                "Content-Type": "multipart/form-data; boundary=" + boundary,
+                "Authorization": API_KEY
+            },
+            body: payload,
+        };
+
+        // make request
+        fetch(url, options)
+            .then(res => res.json())
+            .then(json => console.log(json));
+    });
 
 }
 
 module.exports = {
     felizCumple,
-    InvitacionesAnato
+    InvitacionesAnato,
+    generarQR
 }
