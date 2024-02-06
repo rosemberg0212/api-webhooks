@@ -12,7 +12,7 @@ class Server {
       horario: "/hook/horario",               
       taskRyver: "/hook/taskRyver",
       nomina: "/hook/nomina",
-      cumpleanos: "/hook/cumple",
+      notificaciones: "/hook/notifi",
       usuarios: "/api/v1/romi-guess",
     };
 
@@ -41,7 +41,7 @@ class Server {
     this.app.use(this.paths.taskRyver, require("../routes/taskRyver"));
     this.app.use(this.paths.nomina, require("../routes/nominaR"));
     this.app.use(this.paths.usuarios, require("../routes/userR"));
-    this.app.use(this.paths.cumpleanos, require("../routes/cumpleanos"));
+    this.app.use(this.paths.notificaciones, require("../routes/notificaciones"));
   }
 
   listem() {
