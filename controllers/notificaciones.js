@@ -13,14 +13,15 @@ const felizCumple = async (req, res) => {
     const id = req.body.event.pulseId;
     // const id = '4886261173';
 
-    const query = `query { boards(ids: 3426311372) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
+    // const query = `query { boards(ids: 3426311372) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
+    const query = `query  { boards  (ids: 3426311372) { items_page (query_params: {ids: ${id}}) { items { id name column_values { id value text }}}}}`;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': apikey
         },
-        body: JSON.stringify({
+        body: JSON.stringify({ 
             'query': query
         })
     });
@@ -29,10 +30,10 @@ const felizCumple = async (req, res) => {
         if (response.ok) {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
-            const telefono = data.data.boards[0].items[0].column_values[23].text
-            const name = data.data.boards[0].items[0].name
+            const telefono = data.data.boards[0].items_page.items[0].column_values[23].text
+            const name = data.data.boards[0].items_page.items[0].name
             console.log(telefono)
-            // console.log(name)
+            console.log(name)
             const params = { name: name }
             await enviarWhatsTemplate(telefono, '573044564734', 'felicitaciones', params)
 
@@ -57,7 +58,7 @@ const InvitacionesAnato = async (req, res) => {
     const id = req.body.event.pulseId;
     // const id = '5964129481';
 
-    const query = `query { boards(ids: 5894171160) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
+    const query = `query  { boards  (ids: 5894171160) { items_page (query_params: {ids: ${id}}) { items { id name column_values { id value text }}}}}`;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
         headers: {
@@ -73,13 +74,13 @@ const InvitacionesAnato = async (req, res) => {
         if (response.ok) {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
-            const correo = data.data.boards[0].items[0].column_values[7].text
-            const nombre = data.data.boards[0].items[0].column_values[1].text
+            const correo = data.data.boards[0].items_page.items[0].column_values[7].text
+            const nombre = data.data.boards[0].items_page.items[0].column_values[1].text
             console.log(nombre)
             console.log(correo)
             if (correo.trim() === '') {
                 console.log('correo vacio')
-                return
+                return 
             }
 
             let cadena =
@@ -140,7 +141,8 @@ const generarQR = async (req, res) => {
     const id = req.body.event.pulseId;
     // const id = '5968736518';
 
-    const query = `query { boards(ids: 5968533711) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
+    // const query = `query { boards(ids: 5968533711) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
+    const query = `query  { boards  (ids: 5968533711) { items_page (query_params: {ids: ${id}}) { items { id name column_values { id value text }}}}}`;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
         headers: {
@@ -156,13 +158,13 @@ const generarQR = async (req, res) => {
         if (response.ok) {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
-            const contacto = data.data.boards[0].items[0].column_values[0].text
-            const nuemroP = data.data.boards[0].items[0].column_values[4].text
-            const pais = data.data.boards[0].items[0].column_values[3].text
-            const agencia = data.data.boards[0].items[0].name
+            const contacto = data.data.boards[0].items_page.items[0].column_values[0].text
+            const nuemroP = data.data.boards[0].items_page.items[0].column_values[4].text
+            const pais = data.data.boards[0].items_page.items[0].column_values[3].text
+            const agencia = data.data.boards[0].items_page.items[0].name
             console.log(contacto)
             console.log(agencia)
-            console.log(nuemroP)
+            console.log(nuemroP) 
             console.log(pais)
 
             const datosPersona = `Nombre: ${contacto}, Agencia: ${agencia}, Pais: ${pais}, Numero de acompañantes: ${nuemroP}`;
