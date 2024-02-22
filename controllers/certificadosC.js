@@ -8,7 +8,8 @@ const enviarCertificados = async (req, res) => {
     const id = req.body.event.pulseId;
     // const id = '5830419383';
 
-    const query = `query { boards(ids: 4279283510) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
+    // const query = `query { boards(ids: 4279283510) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
+    const query = `query  { boards  (ids: 4279283510) { items_page (query_params: {ids: ${id}}) { items { id name column_values { id value text }}}}}`;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
         headers: {
@@ -24,9 +25,9 @@ const enviarCertificados = async (req, res) => {
         if (response.ok) {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
-            const datosMonday = data.data.boards[0].items[0].column_values[12].text
-            const telefono = data.data.boards[0].items[0].column_values[12].text
-            const certificado = data.data.boards[0].items[0].column_values[14].text
+            const datosMonday = data.data.boards[0].items_page.items[0].column_values[12].text 
+            const telefono = data.data.boards[0].items_page.items[0].column_values[12].text
+            const certificado = data.data.boards[0].items_page.items[0].column_values[14].text
             // console.log(telefono)
             // console.log(certificado)
             console.log(datosMonday)
