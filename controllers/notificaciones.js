@@ -282,7 +282,7 @@ const videoInnoGrow = async (req, res) =>{
                 return 
             }
             const params = { name: name, url: 'https://space-img.sfo3.digitaloceanspaces.com/Videos/2052cdfd-9838-4beb-825b-fa2d467fdd9d.mp4' }
-            await enviarWhatsTemplate(telefono, '573336025021', 'lanzamiento_libro', params)
+            await enviarWhatsTemplate(telefono, '573336025021', 'lanzamiento_libroinn', params)
 
         } else { 
             console.error('Hubo un error en la solicitud.');
