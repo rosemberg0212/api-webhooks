@@ -58,7 +58,7 @@ const InvitacionesAnato = async (req, res) => {
     const id = req.body.event.pulseId;
     // const id = '5964129481';
 
-    const query = `query  { boards  (ids: 5894171160) { items_page (query_params: {ids: ${id}}) { items { id name column_values { id value text }}}}}`;
+    const query = `query  { boards  (ids: 6001737389) { items_page (query_params: {ids: ${id}}) { items { id name column_values { id value text }}}}}`;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
         headers: {
@@ -74,8 +74,8 @@ const InvitacionesAnato = async (req, res) => {
         if (response.ok) {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
-            const correo = data.data.boards[0].items_page.items[0].column_values[7].text
-            const nombre = data.data.boards[0].items_page.items[0].column_values[1].text
+            const correo = data.data.boards[0].items_page.items[0].column_values[5].text
+            const nombre = data.data.boards[0].items_page.items[0].name
             console.log(nombre)
             console.log(correo)
             if (correo.trim() === '') {
