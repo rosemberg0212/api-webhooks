@@ -248,8 +248,58 @@ const mandarQR = async (fila) => {
 
 }
 
+const videoInnoGrow = async (req, res) =>{
+    const challenge = req.body.challenge;
+    res.send({ challenge });
+
+    const apikey = process.env.APIKEY_MONDAY;
+    const id = req.body.event.pulseId;
+    let tableroId = req.body.event.boardId
+    // const id = '4886261173';
+
+    const query = `query  { boards  (ids: ${tableroId}) { items_page (query_params: {ids: ${id}}) { items { id name column_values { id value text }}}}}`;
+    const response = await fetch("https://api.monday.com/v2", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': apikey
+        },
+        body: JSON.stringify({ 
+            'query': query
+        })
+    });
+
+    try {
+        if (response.ok) {
+            const data = await response.json();
+            // console.log(JSON.stringify(data, null, 2));
+            const telefono = data.data.boards[0].items_page.items[0].column_values[0].text
+            const name = data.data.boards[0].items_page.items[0].name
+            console.log(telefono) 
+            console.log(name)
+            if (telefono.trim() === '') {
+                console.log('telefono vacio')
+                return 
+            }
+            const params = { name: name, url: 'https://space-img.sfo3.digitaloceanspaces.com/Videos/2052cdfd-9838-4beb-825b-fa2d467fdd9d.mp4' }
+            await enviarWhatsTemplate(telefono, '573336025021', 'lanzamiento_libro', params)
+
+        } else { 
+            console.error('Hubo un error en la solicitud.');
+            console.error('Código de estado:', response.status);
+            const errorMessage = await response.text();
+            console.error('Respuesta:', errorMessage);
+        }
+    } catch (error) {
+        console.error('Hubo un error en la solicitud:', error);
+    }
+
+    res.status(200).end();
+}
+
 module.exports = {
     felizCumple,
     InvitacionesAnato,
-    generarQR
+    generarQR,
+    videoInnoGrow
 }
