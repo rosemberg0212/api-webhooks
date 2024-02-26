@@ -34,7 +34,7 @@ const invitacionWindor = async (cuerpo, mail, asunto) => {
     };
 
     const mensaje = {
-        from: "gestionhumana@gehsuites.com",
+        from: "reservas@gehsuites.com",
         to: `${mail}`,
         subject: `${asunto}`,
         text: `${cuerpo}`,
