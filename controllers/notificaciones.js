@@ -4,6 +4,8 @@ const { PDFDocument } = require('pdf-lib');
 const fs = require('fs');
 const qr = require('qrcode');
 const FormData = require('form-data');
+const { LocalStorage } = require('node-localstorage');
+const localStorage = new LocalStorage('./scratch');
 
 const felizCumple = async (req, res) => {
     const challenge = req.body.challenge;
@@ -21,7 +23,7 @@ const felizCumple = async (req, res) => {
             'Content-Type': 'application/json',
             'Authorization': apikey
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
             'query': query
         })
     });
@@ -80,11 +82,11 @@ const InvitacionesAnato = async (req, res) => {
             console.log(correo)
             if (correo.trim() === '') {
                 console.log('correo vacio')
-                return 
+                return
             }
 
             let cadena =
-`¡Celebremos juntos la Gran Reapertura del Hotel Windsor House durante el marco de la Feria ANATO 2024!
+                `¡Celebremos juntos la Gran Reapertura del Hotel Windsor House durante el marco de la Feria ANATO 2024!
 
 Estimado ${nombre}
 
@@ -164,7 +166,7 @@ const generarQR = async (req, res) => {
             const agencia = data.data.boards[0].items_page.items[0].name
             console.log(contacto)
             console.log(agencia)
-            console.log(nuemroP) 
+            console.log(nuemroP)
             console.log(pais)
 
             const datosPersona = `Nombre: ${contacto}, Agencia: ${agencia}, Pais: ${pais}, Numero de acompañantes: ${nuemroP}`;
@@ -189,7 +191,7 @@ const generarQR = async (req, res) => {
     res.status(200).end();
 }
 
-const mandarQR = async (fila) => { 
+const mandarQR = async (fila) => {
     let idFila = fila.toString();
 
 
@@ -211,7 +213,7 @@ const mandarQR = async (fila) => {
 
         // simple catch error
         if (err) {
-            console.error(err); 
+            console.error(err);
         }
 
         // construct query part
@@ -248,7 +250,7 @@ const mandarQR = async (fila) => {
 
 }
 
-const videoInnoGrow = async (req, res) =>{
+const videoInnoGrow = async (req, res) => {
     const challenge = req.body.challenge;
     res.send({ challenge });
 
@@ -264,7 +266,7 @@ const videoInnoGrow = async (req, res) =>{
             'Content-Type': 'application/json',
             'Authorization': apikey
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
             'query': query
         })
     });
@@ -275,16 +277,16 @@ const videoInnoGrow = async (req, res) =>{
             // console.log(JSON.stringify(data, null, 2));
             const telefono = data.data.boards[0].items_page.items[0].column_values[0].text
             const name = data.data.boards[0].items_page.items[0].name
-            console.log(telefono) 
+            console.log(telefono)
             console.log(name)
             if (telefono.trim() === '') {
                 console.log('telefono vacio')
-                return 
+                return
             }
             const params = { name: name, url: 'https://space-img.sfo3.digitaloceanspaces.com/Videos/2052cdfd-9838-4beb-825b-fa2d467fdd9d.mp4' }
             await enviarWhatsTemplate(telefono, '573336025021', 'lanzamiento_libro', params)
 
-        } else { 
+        } else {
             console.error('Hubo un error en la solicitud.');
             console.error('Código de estado:', response.status);
             const errorMessage = await response.text();
@@ -297,9 +299,64 @@ const videoInnoGrow = async (req, res) =>{
     res.status(200).end();
 }
 
+const requisicones = async (req, res) => {
+    const challenge = req.body.challenge;
+    res.send({ challenge });
+
+    const apikey = process.env.APIKEY_MONDAY;
+    // const id = req.body.event.pulseId;
+    const id = '6000782915'
+    // let tableroId = req.body.event.boardId
+    let tableroId = 4023799522
+
+    const query = `query  { boards  (ids: ${tableroId}) { items_page (query_params: {ids: ${id}}) { items { id name column_values { id value text }}}}}`;
+    const response = await fetch("https://api.monday.com/v2", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': apikey
+        },
+        body: JSON.stringify({
+            'query': query
+        })
+    });
+
+    try {
+        if (response.ok) {
+            const data = await response.json();
+            // console.log(JSON.stringify(data, null, 2));
+            let itemsOrder = JSON.parse(localStorage.getItem('itemsOrder')) || [];
+
+            const { items } = req.body; 
+
+            itemsOrder.push(...items);
+            // Guardar los ítems actualizados en localStorage
+            localStorage.setItem('itemsOrder', JSON.stringify(itemsOrder));
+
+            console.log(itemsOrder)
+            // vaciar()
+        } else {
+            console.error('Hubo un error en la solicitud.');
+            console.error('Código de estado:', response.status);
+            const errorMessage = await response.text();
+            console.error('Respuesta:', errorMessage);
+        }
+    } catch (error) {
+        console.error('Hubo un error en la solicitud:', error);
+    }
+
+    res.status(200).end();
+}
+
+const vaciar = ()=>{
+    let itemsOrder = []
+    localStorage.setItem('itemsOrder', JSON.stringify(itemsOrder));
+}
+
 module.exports = {
     felizCumple,
     InvitacionesAnato,
     generarQR,
-    videoInnoGrow
+    videoInnoGrow,
+    requisicones
 }
