@@ -54,7 +54,7 @@ const traerTurnosAixo = async () => {
     // const query = 'query {boards(ids: 5326768143) { groups { id title }}}'
     const query = `query {
         boards (ids: 5326768143) {
-            items_page{
+            items_page(limit:200){
               cursor
               items {
                 id
@@ -93,7 +93,7 @@ const traerTurnosAixo = async () => {
             let arr = [arreglo1, arrNovedades].flat()
             // console.log(arr)
 
-            // return arr;
+            return arr;
 
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -108,7 +108,7 @@ const traerTurnosAixo = async () => {
 
 const traerTurnos1525 = async () => {
 
-    const query = `query { boards (ids: 5482469617) { items_page{ cursor items { id name column_values { id text value }}}}}`;
+    const query = `query { boards (ids: 5482469617) { items_page(limit:200){ cursor items { id name column_values { id text value }}}}}`;
     
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
@@ -144,7 +144,7 @@ const traerTurnos1525 = async () => {
 }
 const traerTurnosRodadero = async () => {
 
-    const query = `query { boards (ids: 5551668078) { items_page{ cursor items { id name column_values { id text value }}}}}`;
+    const query = `query { boards (ids: 5551668078) { items_page(limit:200){ cursor items { id name column_values { id text value }}}}}`;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
         headers: {
@@ -180,7 +180,7 @@ const traerTurnosRodadero = async () => {
 
 const traerTurnosAvexi = async () => {
 
-    const query = `query { boards (ids: 5628102206) { items_page{ cursor items { id name column_values { id text value }}}}}`;
+    const query = `query { boards (ids: 5628102206) { items_page(limit:200){ cursor items { id name column_values { id text value }}}}}`;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
         headers: {
@@ -216,7 +216,7 @@ const traerTurnosAvexi = async () => {
 
 const traerTurnosAzuan = async () => {
 
-    const query = `query { boards (ids: 5628380713) { items_page{ cursor items { id name column_values { id text value }}}}}`;
+    const query = `query { boards (ids: 5628380713) { items_page(limit:200){ cursor items { id name column_values { id text value }}}}}`;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
         headers: {
@@ -252,7 +252,7 @@ const traerTurnosAzuan = async () => {
 
 const traerTurnosAbi = async () => {
 
-    const query = `query { boards (ids: 5628507752) { items_page{ cursor items { id name column_values { id text value }}}}}`;
+    const query = `query { boards (ids: 5628507752) { items_page(limit:200){ cursor items { id name column_values { id text value }}}}}`;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
         headers: {
@@ -288,7 +288,7 @@ const traerTurnosAbi = async () => {
 
 const traerTurnosBocagrande = async () => {
 
-    const query = `query { boards (ids: 5628704392) { items_page{ cursor items { id name column_values { id text value }}}}}`;
+    const query = `query { boards (ids: 5628704392) { items_page(limit:200){ cursor items { id name column_values { id text value }}}}}`;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
         headers: {
@@ -325,7 +325,7 @@ const traerTurnosBocagrande = async () => {
 
 const traerTurnosWindsor = async () => {
 
-    const query = `query { boards (ids: 5628846354) { items_page(limit:100){ cursor items { id name column_values { id text value }}}}}`;
+    const query = `query { boards (ids: 5628846354) { items_page(limit:200){ cursor items { id name column_values { id text value }}}}}`;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
         headers: {
@@ -362,7 +362,7 @@ const traerTurnosWindsor = async () => {
 
 const traerTurnosMadisson = async () => {
 
-    const query = `query { boards (ids: 5629036514) { items_page{ cursor items { id name column_values { id text value }}}}}`;
+    const query = `query { boards (ids: 5629036514) { items_page(limit:200){ cursor items { id name column_values { id text value }}}}}`;
     
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
@@ -399,7 +399,7 @@ const traerTurnosMadisson = async () => {
 
 const traerTurnosMarina = async () => {
 
-    const query = `query { boards (ids: 5640398217) { items_page{ cursor items { id name column_values { id text value }}}}}`;
+    const query = `query { boards (ids: 5640398217) { items_page(limit:200){ cursor items { id name column_values { id text value }}}}}`;
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
         headers: {
