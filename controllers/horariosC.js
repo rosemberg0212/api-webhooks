@@ -62,17 +62,17 @@ const enviarHorarios = async (req, res) => {
                 // Obtener la fecha actual
                 const fechaActual = new Date();
 
-                let primerDiaSemana
-                if ((grupo == 'duplicate_of_febrero_1_a_29__262681' || grupo == 'duplicate_of_febrero_1_a_29___' || grupo == 'duplicate_of_febrero_1_al_29__') && mesActual == 1) {
-                    primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 1).getDay()
-                } else if (grupo == 'duplicate_of_febrero_1_a_29__262681' && mesActual == 2) {
-                    primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 1).getDay()
-                } else {
-                    primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay()
-                }
+                // let primerDiaSemana
+                // if ((grupo == 'duplicate_of_febrero_1_a_29__262681' || grupo == 'duplicate_of_febrero_1_a_29___' || grupo == 'duplicate_of_febrero_1_al_29__') && mesActual == 1) {
+                //     primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 1).getDay()
+                // } else if (grupo == 'duplicate_of_febrero_1_a_29__262681' && mesActual == 2) {
+                //     primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 1).getDay()
+                // } else {
+                //     primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay()
+                // }
 
-                // // Obtener el día de la semana del primer elemento del arreglo
-                // const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth()+1, 1).getDay();
+                // Obtener el día de la semana del primer elemento del arreglo
+                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
 
                 // Crear un arreglo con los nombres de los días de la semana
                 const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
