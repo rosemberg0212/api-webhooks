@@ -3,9 +3,9 @@ const { probandoMail, invitacionWindor } = require('../helpers/apiMail')
 const { PDFDocument } = require('pdf-lib');
 const fs = require('fs');
 const qr = require('qrcode');
-const FormData = require('form-data');
 const { LocalStorage } = require('node-localstorage');
 const localStorage = new LocalStorage('./scratch');
+const XlsxPopulate = require('xlsx-populate');
 
 const felizCumple = async (req, res) => {
     const challenge = req.body.challenge;
@@ -305,9 +305,9 @@ const requisicones = async (req, res) => {
 
     const apikey = process.env.APIKEY_MONDAY;
     // const id = req.body.event.pulseId;
-    const id = '6000782915'
+    const id = '6173065434'
     // let tableroId = req.body.event.boardId
-    let tableroId = 4023799522
+    let tableroId = 6172883646
 
     const query = `query  { boards  (ids: ${tableroId}) { items_page (query_params: {ids: ${id}}) { items { id name column_values { id value text }}}}}`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -326,14 +326,35 @@ const requisicones = async (req, res) => {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
             let itemsOrder = JSON.parse(localStorage.getItem('itemsOrder')) || [];
+            const dataMonday = data.data.boards[0].items_page.items[0].column_values
 
-            const { items } = req.body; 
+            const hotel = data.data.boards[0].items_page.items[0].column_values[1].text
+            const proveedor = data.data.boards[0].items_page.items[0].column_values[2].text
+            console.log(hotel)
+            console.log(proveedor)
+            const productos = dataMonday.filter(obj => obj.id !== 'subelementos' && obj.id !== 'bot_n0' && obj.id !== 'bot_n5' && obj.id !== 'bot_n' && obj.id !== 'selecci_n_m_ltiple6' && obj.id !== 'pulse_log' && obj.id !== 'duration' && obj.id !== 'archivo' && obj.id !== 'fecha1' && obj.id !== 'estado53' && obj.id !== 'bot_n9')
+            console.log(productos)
 
-            itemsOrder.push(...items);
+            const dataProd = [{
+                departamento: productos.find(item => item.id === 'estado')?.text || '', 
+                hotel: productos.find(item => item.id === 'estado2')?.text || '',
+                proveedor: productos.find(item => item.id === 'men__desplegable')?.text || '',
+                producto: productos.find(item => item.id === 'men__desplegable_1')?.text || '',
+                unidad_medida: productos.find(item => item.id === 'men__desplegable6')?.text || '',
+                cantidad: productos.find(item => item.id === 'n_meros')?.text || '',
+                comentario: productos.find(item => item.id === 'texto_largo')?.text || ''
+            }]
+
+            console.log(dataProd)
+            const { items } = req.body;
+
+            itemsOrder.push(...dataProd);
             // Guardar los ítems actualizados en localStorage
             localStorage.setItem('itemsOrder', JSON.stringify(itemsOrder));
 
-            console.log(itemsOrder)
+            // console.log(itemsOrder)
+            await generarExcle(itemsOrder, hotel, proveedor, productos)
+
             // vaciar()
         } else {
             console.error('Hubo un error en la solicitud.');
@@ -348,9 +369,69 @@ const requisicones = async (req, res) => {
     res.status(200).end();
 }
 
-const vaciar = ()=>{
+const vaciar = () => {
     let itemsOrder = []
     localStorage.setItem('itemsOrder', JSON.stringify(itemsOrder));
+}
+
+const generarExcle = async (items, hotel, proveedor, productos) => {
+
+    const workbook = await XlsxPopulate.fromBlankAsync();
+
+    // crear un valor en una celda
+    // workbook.sheet(0).cell('A1').value('Nombre');
+    // workbook.toFileAsync('./salida.xlsx')
+
+    // // leer una celda
+    // const value = workbook.sheet('Sheet1').cell('A2').value();
+
+    // // leer toda la hoja
+    // const value2 = workbook.sheet('Sheet1').usedRange().value()
+
+    // // leer un rango
+    // const value3 = workbook.sheet('Sheet1').range('A1:B2').value()
+
+    const sheet = workbook.sheet(0);
+
+    let num = 0
+    const day = new Date()
+    console.log(day.toLocaleDateString())
+    // crear valores como arreglos
+
+    sheet.cell('A1').value('ORDEN DE COMPRA').style({ horizontalAlignment: 'center', bold: true });
+    sheet.range('A1:D1').merged(true)
+    sheet.cell('A2').value([['No', num++, 'FECHA', day.toLocaleDateString()]])
+    sheet.range('A3:D3').merged(true)
+    sheet.cell('A4').value([['EMPRESA', 'ECONO HOTEL GROUP SAS', 'PROVEEDOR', `${proveedor}`]])
+    sheet.cell('A5').value([['NIT', '901116843', 'CONTACTO', 'test']])
+    sheet.cell('A6').value([['HOTEL', `${hotel}`]])
+    sheet.range('B6:D6').merged(true)
+    sheet.cell('A7').value([['DIRECCION', 'BARRIO MARBELLA CARRERA 2 No 47 10']])
+    sheet.range('B7:D7').merged(true)
+    sheet.cell('A8').value('Solicitamos su colaboracion con el despacho de los siguientes articulos ').style({ horizontalAlignment: 'center' });
+    sheet.range('A8:D9').merged(true)
+    sheet.cell('A10').value([['Item', 'Producto', 'Cantidad', 'Medida']]);
+
+    items.map((item, index) => {
+        const rowIndex = index + 11;
+        sheet.row(rowIndex).cell('A').value(num++)
+        sheet.row(rowIndex).cell('B').value(item.producto)
+        sheet.row(rowIndex).cell('C').value(item.cantidad)
+        sheet.row(rowIndex).cell('D').value(item.unidad_medida)
+    })
+
+    const infoRowIndex = 11 + items.length + 1;
+    sheet.row(infoRowIndex).cell('A').value('REALIZADO POR')
+    sheet.row(infoRowIndex).cell('B').value('Geraldines Agudelo Alvarez')
+
+    sheet.row(infoRowIndex + 1).cell('A').value('OBSERVACIONES')
+    sheet.row(infoRowIndex + 1).cell('B').value('NA')
+
+    // workbook.sheet(0).cell('A2').value('Titulo').style({horizontalAlignment: 'center'});
+    // workbook.sheet(0).range('A2:B2').merged(true);
+
+
+    workbook.toFileAsync('./salida.xlsx')
 }
 
 module.exports = {
