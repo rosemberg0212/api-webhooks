@@ -198,11 +198,12 @@ const mandarQR = async (fila) => {
     // adapted from: https://gist.github.com/tanaikech/40c9284e91d209356395b43022ffc5cc
 
     // set filename
-    var upfile = 'public/codigo_qr.png';
+    // var upfile = 'public/codigo_qr.png';
+    var upfile = './salida.xlsx';
 
     // set auth token and query
     var API_KEY = process.env.APIKEY_MONDAY
-    var query = `mutation ($file: File!) { add_file_to_column (file: $file, item_id: ${idFila}, column_id: "archivo") { id } }`;
+    var query = `mutation ($file: File!) { add_file_to_column (file: $file, item_id: ${idFila}, column_id: "archivo8") { id } }`;
 
     // set URL and boundary
     var url = "https://api.monday.com/v2/file";
@@ -304,10 +305,10 @@ const requisicones = async (req, res) => {
     res.send({ challenge });
 
     const apikey = process.env.APIKEY_MONDAY;
-    // const id = req.body.event.pulseId;
-    const id = '6173065434'
-    // let tableroId = req.body.event.boardId
-    let tableroId = 6172883646
+    const id = req.body.event.pulseId;
+    // const id = '6173065434'
+    let tableroId = req.body.event.boardId
+    // let tableroId = 6172883646
 
     const query = `query  { boards  (ids: ${tableroId}) { items_page (query_params: {ids: ${id}}) { items { id name column_values { id value text }}}}}`;
     const response = await fetch("https://api.monday.com/v2", {
@@ -333,10 +334,9 @@ const requisicones = async (req, res) => {
             console.log(hotel)
             console.log(proveedor)
             const productos = dataMonday.filter(obj => obj.id !== 'subelementos' && obj.id !== 'bot_n0' && obj.id !== 'bot_n5' && obj.id !== 'bot_n' && obj.id !== 'selecci_n_m_ltiple6' && obj.id !== 'pulse_log' && obj.id !== 'duration' && obj.id !== 'archivo' && obj.id !== 'fecha1' && obj.id !== 'estado53' && obj.id !== 'bot_n9')
-            console.log(productos)
 
             const dataProd = [{
-                departamento: productos.find(item => item.id === 'estado')?.text || '', 
+                departamento: productos.find(item => item.id === 'estado')?.text || '',
                 hotel: productos.find(item => item.id === 'estado2')?.text || '',
                 proveedor: productos.find(item => item.id === 'men__desplegable')?.text || '',
                 producto: productos.find(item => item.id === 'men__desplegable_1')?.text || '',
@@ -353,7 +353,7 @@ const requisicones = async (req, res) => {
             localStorage.setItem('itemsOrder', JSON.stringify(itemsOrder));
 
             // console.log(itemsOrder)
-            await generarExcle(itemsOrder, hotel, proveedor, productos)
+            await generarExcle(itemsOrder, hotel, proveedor)
 
             // vaciar()
         } else {
@@ -374,7 +374,7 @@ const vaciar = () => {
     localStorage.setItem('itemsOrder', JSON.stringify(itemsOrder));
 }
 
-const generarExcle = async (items, hotel, proveedor, productos) => {
+const generarExcle = async (items, hotel, proveedor) => {
 
     const workbook = await XlsxPopulate.fromBlankAsync();
 
@@ -420,12 +420,29 @@ const generarExcle = async (items, hotel, proveedor, productos) => {
         sheet.row(rowIndex).cell('D').value(item.unidad_medida)
     })
 
+    // Estilo de bordes
+    const borderStyle = { style: "thin", color: "000000" }; // Borde delgado negro
+    const range = sheet.range(`A1:D${10 + items.length}`);
+    range.style({ border: true });
+    range.forEach(cell => {
+        cell.style({ bottomBorder: borderStyle, rightBorder: borderStyle });
+    });
     const infoRowIndex = 11 + items.length + 1;
     sheet.row(infoRowIndex).cell('A').value('REALIZADO POR')
     sheet.row(infoRowIndex).cell('B').value('Geraldines Agudelo Alvarez')
 
     sheet.row(infoRowIndex + 1).cell('A').value('OBSERVACIONES')
     sheet.row(infoRowIndex + 1).cell('B').value('NA')
+
+    const rangeData = sheet.range(`A${infoRowIndex}:D${infoRowIndex}`);
+    const rangeBelow = sheet.range(`A${infoRowIndex + 1}:D${infoRowIndex + 1}`); // Puedes ajustar cuántas filas debajo quieres aplicar el estilo
+    rangeData.style({ border: true });
+    rangeData.forEach(cell => {
+        cell.style({ bottomBorder: borderStyle, rightBorder: borderStyle });
+    });
+    rangeBelow.forEach(cell => {
+        cell.style({ rightBorder: borderStyle });
+    });
 
     // workbook.sheet(0).cell('A2').value('Titulo').style({horizontalAlignment: 'center'});
     // workbook.sheet(0).range('A2:B2').merged(true);
@@ -434,10 +451,21 @@ const generarExcle = async (items, hotel, proveedor, productos) => {
     workbook.toFileAsync('./salida.xlsx')
 }
 
+const enviarExcel = async (req, res) => {
+
+    const challenge = req.body.challenge;
+    res.send({ challenge });
+    const id = req.body.event.pulseId;
+
+    await mandarQR(id)
+    await vaciar()
+}
+
 module.exports = {
     felizCumple,
     InvitacionesAnato,
     generarQR,
     videoInnoGrow,
-    requisicones
+    requisicones,
+    enviarExcel
 }
