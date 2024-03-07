@@ -12,7 +12,8 @@ const calcularNomina = async (req, res) => {
     // const id = '5482696375';
     let tableroId = req.body.event.boardId
 
-    const query = `query { boards(ids: ${tableroId}) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
+    // const query = `query { boards(ids: ${tableroId}) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
+    const query = `query  { boards  (ids: ${tableroId}) { items_page (query_params: {ids: ${id}}) { items { id name column_values { id  text column {title} ...on BoardRelationValue{display_value} ...on MirrorValue {display_value} }}}}}`
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
         headers: {
@@ -27,13 +28,13 @@ const calcularNomina = async (req, res) => {
     try {
         if (response.ok) {
             const data = await response.json();
-            // console.log(JSON.stringify(data, null, 2));
+            // console.log(JSON.stringify(data, null, 2)); 
             const datosMonday = data
-            const primeros15 = datosMonday.data.boards[0].items[0].column_values;
+            const primeros15 = datosMonday.data.boards[0].items_page.items[0].column_values;
             const datosT = primeros15.slice(1, 16)
-            // console.log(datosMonday.data.boards[0].items[0].name)
-            const nombre = datosMonday.data.boards[0].items[0].name
-            console.log(datosT)
+            // console.log(datosMonday.data.boards[0].items_page.items[0].name)
+            const nombre = datosMonday.data.boards[0].items_page.items[0].name
+            // console.log(datosT)
             const turnosAixo = await traerTurnosAixo()
             // console.log(turnosAixo)
 
@@ -41,14 +42,14 @@ const calcularNomina = async (req, res) => {
             const filtro = datosT.filter(dato => {
                 return dato.id !== 'estado' && dato.id !== 'tel_fono' && dato.id !== 'cargo0' && dato.id !== 'bot_n' && dato.id !== 'men__desplegable' && dato.id !== 'bot_n_1'
             })
-            // console.log(filtro)
+            console.log(filtro)
 
             let novedad = 0
             let descuentos = 0
             let contador2 = 0;
             let descontarUnDia = 0;
             filtro.map(dias => {
-                let codigo = dias.text
+                let codigo = dias.display_value
 
                 if (turnosAixo.some(obj => obj.name == codigo)) {
                     contador2++
@@ -56,11 +57,11 @@ const calcularNomina = async (req, res) => {
             })
 
             filtro.map(dato => {
-                if (dato.text == 'Novedad 2' || dato.text == 'Novedad 4' || dato.text == 'Novedad 10') {
+                if (dato.display_value == 'Novedad 2' || dato.display_value == 'Novedad 4' || dato.display_value == 'Novedad 10') {
                     novedad++
-                } else if (dato.text == 'Novedad 12' || dato.text == 'Novedad 5') {
+                } else if (dato.display_value == 'Novedad 12' || dato.display_value == 'Novedad 5') {
                     descuentos++
-                } else if (dato.text == 'Novedad 3') {
+                } else if (dato.display_value == 'Novedad 3') {
                     descontarUnDia++
                 }
             })
@@ -76,44 +77,44 @@ const calcularNomina = async (req, res) => {
 
             let domingo = 0;
             const filtrarNovedades = filtro.filter(obj => {
-                return obj.text !== 'Novedad 1' && obj.text !== 'Novedad 2' && obj.text !== 'Novedad 3' && obj.text !== 'Novedad 4' && obj.text !== 'Novedad 5' && obj.text !== 'Novedad 6' && obj.text !== 'Novedad 7' && obj.text !== 'Novedad 8' && obj.text !== 'Novedad 9' && obj.text !== 'Novedad 10' && obj.text !== 'Novedad 11'
+                return obj.display_value !== 'Novedad 1' && obj.display_value !== 'Novedad 2' && obj.display_value !== 'Novedad 3' && obj.display_value !== 'Novedad 4' && obj.display_value !== 'Novedad 5' && obj.display_value !== 'Novedad 6' && obj.display_value !== 'Novedad 7' && obj.display_value !== 'Novedad 8' && obj.display_value !== 'Novedad 9' && obj.display_value !== 'Novedad 10' && obj.display_value !== 'Novedad 11'
             })
 
 
-            // filtrarNovedades.map(obj => {
-            //     if (obj.title.endsWith('- D') && (obj.text)) {
-            //         domingo += 8;
-            //     }
-            // })
-            // console.log(domingo)
+            filtrarNovedades.map(obj => {
+                if (obj.column.title.endsWith('- D') && (obj.display_value)) {
+                    domingo += 8;
+                }
+            })
+            console.log(`es domingo ${domingo}`)
 
             let recargosN = 0;
             let domingoN = 0;
             let domingoRecep = 0;
 
-            filtrarNovedades.map(obj => {
-                if (obj.text == 'RN1' && obj.title.endsWith('- S')) {
-                    domingo = 0
-                    recargosN += 3
-                    domingoN += 6
-                    domingoRecep += 3;
-                } else if (obj.text == 'RN1' && obj.title.endsWith('- D')) {
-                    domingo += 2
-                    domingoN += 3
-                    recargosN += 6
-                } else if (obj.text == 'RN1' && (obj.title)) {
-                    recargosN += 9
-                } else if (obj.text == 'RD1' && obj.title.endsWith('- D')) {
-                    domingo = 0;
-                    domingoRecep += 12
-                }else if (obj.title.endsWith('- D') && (obj.text)) {
-                    domingo += 8;
-                } 
-            })
+            // filtrarNovedades.map(obj => {
+            //     if (obj.text == 'RN1' && obj.title.endsWith('- S')) {
+            //         domingo = 0
+            //         recargosN += 3
+            //         domingoN += 6
+            //         domingoRecep += 3;
+            //     } else if (obj.text == 'RN1' && obj.title.endsWith('- D')) {
+            //         domingo += 2
+            //         domingoN += 3
+            //         recargosN += 6
+            //     } else if (obj.text == 'RN1' && (obj.title)) {
+            //         recargosN += 9
+            //     } else if (obj.text == 'RD1' && obj.title.endsWith('- D')) {
+            //         domingo = 0;
+            //         domingoRecep += 12
+            //     }else if (obj.title.endsWith('- D') && (obj.text)) {
+            //         domingo += 8;
+            //     } 
+            // })
 
             let sumaDomingos = domingo + domingoRecep
             await mandarNomina(diasDescontados, nombre, novedad, sumaDomingos, recargosN, domingoN)
-            console.log(contador2)
+            // console.log(contador2)
         } else {
             console.error('Hubo un error en la solicitud.');
             console.error('Código de estado:', response.status);
