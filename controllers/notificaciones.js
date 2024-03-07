@@ -273,10 +273,10 @@ const videoInnoGrow = async (req, res) =>{
         if (response.ok) {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
-            const telefono = data.data.boards[0].items_page.items[0].column_values[0].text
+            const telefono = data.data.boards[0].items_page.items[0].column_values[5].text
             const name = data.data.boards[0].items_page.items[0].name
             console.log(telefono) 
-            console.log(name)
+            console.log(name) 
             if (telefono.trim() === '') {
                 console.log('telefono vacio')
                 return 
