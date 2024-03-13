@@ -95,7 +95,7 @@ const calcularNomina = async (req, res) => {
             let domingoN = 0;
             let domingoRecep = 0;
 
-            let sumaDomingos = domingo + domingoRecep 
+            let sumaDomingos = domingo + domingoRecep
             await mandarNomina(diasDescontados, nombre, novedad, sumaDomingos, recargosN, domingoN)
             // console.log(contador2)
         } else {

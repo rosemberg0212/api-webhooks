@@ -3,7 +3,9 @@ const { probandoMail, invitacionWindor } = require('../helpers/apiMail')
 const { PDFDocument } = require('pdf-lib');
 const fs = require('fs');
 const qr = require('qrcode');
-const FormData = require('form-data');
+const { LocalStorage } = require('node-localstorage');
+const localStorage = new LocalStorage('./scratch');
+const XlsxPopulate = require('xlsx-populate');
 
 const felizCumple = async (req, res) => {
     const challenge = req.body.challenge;
@@ -21,7 +23,7 @@ const felizCumple = async (req, res) => {
             'Content-Type': 'application/json',
             'Authorization': apikey
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
             'query': query
         })
     });
@@ -80,11 +82,11 @@ const InvitacionesAnato = async (req, res) => {
             console.log(correo)
             if (correo.trim() === '') {
                 console.log('correo vacio')
-                return 
+                return
             }
 
             let cadena =
-`¡Celebremos juntos la Gran Reapertura del Hotel Windsor House durante el marco de la Feria ANATO 2024!
+                `¡Celebremos juntos la Gran Reapertura del Hotel Windsor House durante el marco de la Feria ANATO 2024!
 
 Estimado ${nombre}
 
@@ -164,7 +166,7 @@ const generarQR = async (req, res) => {
             const agencia = data.data.boards[0].items_page.items[0].name
             console.log(contacto)
             console.log(agencia)
-            console.log(nuemroP) 
+            console.log(nuemroP)
             console.log(pais)
 
             const datosPersona = `Nombre: ${contacto}, Agencia: ${agencia}, Pais: ${pais}, Numero de acompañantes: ${nuemroP}`;
@@ -189,18 +191,19 @@ const generarQR = async (req, res) => {
     res.status(200).end();
 }
 
-const mandarQR = async (fila) => { 
+const mandarQR = async (fila) => {
     let idFila = fila.toString();
 
 
     // adapted from: https://gist.github.com/tanaikech/40c9284e91d209356395b43022ffc5cc
 
     // set filename
-    var upfile = 'public/codigo_qr.png';
+    // var upfile = 'public/codigo_qr.png';
+    var upfile = './salida.xlsx';
 
     // set auth token and query
     var API_KEY = process.env.APIKEY_MONDAY
-    var query = `mutation ($file: File!) { add_file_to_column (file: $file, item_id: ${idFila}, column_id: "archivo") { id } }`;
+    var query = `mutation ($file: File!) { add_file_to_column (file: $file, item_id: ${idFila}, column_id: "archivo8") { id } }`;
 
     // set URL and boundary
     var url = "https://api.monday.com/v2/file";
@@ -211,7 +214,7 @@ const mandarQR = async (fila) => {
 
         // simple catch error
         if (err) {
-            console.error(err); 
+            console.error(err);
         }
 
         // construct query part
@@ -248,7 +251,7 @@ const mandarQR = async (fila) => {
 
 }
 
-const videoInnoGrow = async (req, res) =>{
+const videoInnoGrow = async (req, res) => {
     const challenge = req.body.challenge;
     res.send({ challenge });
 
@@ -264,7 +267,7 @@ const videoInnoGrow = async (req, res) =>{
             'Content-Type': 'application/json',
             'Authorization': apikey
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
             'query': query
         })
     });
@@ -279,12 +282,12 @@ const videoInnoGrow = async (req, res) =>{
             console.log(name) 
             if (telefono.trim() === '') {
                 console.log('telefono vacio')
-                return 
+                return
             }
             const params = { name: name, url: 'https://space-img.sfo3.digitaloceanspaces.com/Videos/2052cdfd-9838-4beb-825b-fa2d467fdd9d.mp4' }
             await enviarWhatsTemplate(telefono, '573336025021', 'lanzamiento_libroinn', params)
 
-        } else { 
+        } else {
             console.error('Hubo un error en la solicitud.');
             console.error('Código de estado:', response.status);
             const errorMessage = await response.text();
@@ -297,9 +300,172 @@ const videoInnoGrow = async (req, res) =>{
     res.status(200).end();
 }
 
+const requisicones = async (req, res) => {
+    const challenge = req.body.challenge;
+    res.send({ challenge });
+
+    const apikey = process.env.APIKEY_MONDAY;
+    const id = req.body.event.pulseId;
+    // const id = '6173065434'
+    let tableroId = req.body.event.boardId
+    // let tableroId = 6172883646
+
+    const query = `query  { boards  (ids: ${tableroId}) { items_page (query_params: {ids: ${id}}) { items { id name column_values { id value text }}}}}`;
+    const response = await fetch("https://api.monday.com/v2", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': apikey
+        },
+        body: JSON.stringify({
+            'query': query
+        })
+    });
+
+    try {
+        if (response.ok) {
+            const data = await response.json();
+            // console.log(JSON.stringify(data, null, 2));
+            let itemsOrder = JSON.parse(localStorage.getItem('itemsOrder')) || [];
+            const dataMonday = data.data.boards[0].items_page.items[0].column_values
+
+            const hotel = data.data.boards[0].items_page.items[0].column_values[1].text
+            const proveedor = data.data.boards[0].items_page.items[0].column_values[2].text
+            console.log(hotel)
+            console.log(proveedor)
+            const productos = dataMonday.filter(obj => obj.id !== 'subelementos' && obj.id !== 'bot_n0' && obj.id !== 'bot_n5' && obj.id !== 'bot_n' && obj.id !== 'selecci_n_m_ltiple6' && obj.id !== 'pulse_log' && obj.id !== 'duration' && obj.id !== 'archivo' && obj.id !== 'fecha1' && obj.id !== 'estado53' && obj.id !== 'bot_n9')
+
+            const dataProd = [{
+                departamento: productos.find(item => item.id === 'estado')?.text || '',
+                hotel: productos.find(item => item.id === 'estado2')?.text || '',
+                proveedor: productos.find(item => item.id === 'men__desplegable')?.text || '',
+                producto: productos.find(item => item.id === 'men__desplegable_1')?.text || '',
+                unidad_medida: productos.find(item => item.id === 'men__desplegable6')?.text || '',
+                cantidad: productos.find(item => item.id === 'n_meros')?.text || '',
+                comentario: productos.find(item => item.id === 'texto_largo')?.text || ''
+            }]
+
+            console.log(dataProd)
+            const { items } = req.body;
+
+            itemsOrder.push(...dataProd);
+            // Guardar los ítems actualizados en localStorage
+            localStorage.setItem('itemsOrder', JSON.stringify(itemsOrder));
+
+            // console.log(itemsOrder)
+            await generarExcle(itemsOrder, hotel, proveedor)
+
+            // vaciar()
+        } else {
+            console.error('Hubo un error en la solicitud.');
+            console.error('Código de estado:', response.status);
+            const errorMessage = await response.text();
+            console.error('Respuesta:', errorMessage);
+        }
+    } catch (error) {
+        console.error('Hubo un error en la solicitud:', error);
+    }
+
+    res.status(200).end();
+}
+
+const vaciar = () => {
+    let itemsOrder = []
+    localStorage.setItem('itemsOrder', JSON.stringify(itemsOrder));
+}
+
+const generarExcle = async (items, hotel, proveedor) => {
+
+    const workbook = await XlsxPopulate.fromBlankAsync();
+
+    // crear un valor en una celda
+    // workbook.sheet(0).cell('A1').value('Nombre');
+    // workbook.toFileAsync('./salida.xlsx')
+
+    // // leer una celda
+    // const value = workbook.sheet('Sheet1').cell('A2').value();
+
+    // // leer toda la hoja
+    // const value2 = workbook.sheet('Sheet1').usedRange().value()
+
+    // // leer un rango
+    // const value3 = workbook.sheet('Sheet1').range('A1:B2').value()
+
+    const sheet = workbook.sheet(0);
+
+    let num = 0
+    const day = new Date()
+    console.log(day.toLocaleDateString())
+    // crear valores como arreglos
+
+    sheet.cell('A1').value('ORDEN DE COMPRA').style({ horizontalAlignment: 'center', bold: true });
+    sheet.range('A1:D1').merged(true)
+    sheet.cell('A2').value([['No', num++, 'FECHA', day.toLocaleDateString()]])
+    sheet.range('A3:D3').merged(true)
+    sheet.cell('A4').value([['EMPRESA', 'ECONO HOTEL GROUP SAS', 'PROVEEDOR', `${proveedor}`]])
+    sheet.cell('A5').value([['NIT', '901116843', 'CONTACTO', 'test']])
+    sheet.cell('A6').value([['HOTEL', `${hotel}`]])
+    sheet.range('B6:D6').merged(true)
+    sheet.cell('A7').value([['DIRECCION', 'BARRIO MARBELLA CARRERA 2 No 47 10']])
+    sheet.range('B7:D7').merged(true)
+    sheet.cell('A8').value('Solicitamos su colaboracion con el despacho de los siguientes articulos ').style({ horizontalAlignment: 'center' });
+    sheet.range('A8:D9').merged(true)
+    sheet.cell('A10').value([['Item', 'Producto', 'Cantidad', 'Medida']]);
+
+    items.map((item, index) => {
+        const rowIndex = index + 11;
+        sheet.row(rowIndex).cell('A').value(num++)
+        sheet.row(rowIndex).cell('B').value(item.producto)
+        sheet.row(rowIndex).cell('C').value(item.cantidad)
+        sheet.row(rowIndex).cell('D').value(item.unidad_medida)
+    })
+
+    // Estilo de bordes
+    const borderStyle = { style: "thin", color: "000000" }; // Borde delgado negro
+    const range = sheet.range(`A1:D${10 + items.length}`);
+    range.style({ border: true });
+    range.forEach(cell => {
+        cell.style({ bottomBorder: borderStyle, rightBorder: borderStyle });
+    });
+    const infoRowIndex = 11 + items.length + 1;
+    sheet.row(infoRowIndex).cell('A').value('REALIZADO POR')
+    sheet.row(infoRowIndex).cell('B').value('Geraldines Agudelo Alvarez')
+
+    sheet.row(infoRowIndex + 1).cell('A').value('OBSERVACIONES')
+    sheet.row(infoRowIndex + 1).cell('B').value('NA')
+
+    const rangeData = sheet.range(`A${infoRowIndex}:D${infoRowIndex}`);
+    const rangeBelow = sheet.range(`A${infoRowIndex + 1}:D${infoRowIndex + 1}`); // Puedes ajustar cuántas filas debajo quieres aplicar el estilo
+    rangeData.style({ border: true });
+    rangeData.forEach(cell => {
+        cell.style({ bottomBorder: borderStyle, rightBorder: borderStyle });
+    });
+    rangeBelow.forEach(cell => {
+        cell.style({ rightBorder: borderStyle });
+    });
+
+    // workbook.sheet(0).cell('A2').value('Titulo').style({horizontalAlignment: 'center'});
+    // workbook.sheet(0).range('A2:B2').merged(true);
+
+
+    workbook.toFileAsync('./salida.xlsx')
+}
+
+const enviarExcel = async (req, res) => {
+
+    const challenge = req.body.challenge;
+    res.send({ challenge });
+    const id = req.body.event.pulseId;
+
+    await mandarQR(id)
+    await vaciar()
+}
+
 module.exports = {
     felizCumple,
     InvitacionesAnato,
     generarQR,
-    videoInnoGrow
+    videoInnoGrow,
+    requisicones,
+    enviarExcel
 }
