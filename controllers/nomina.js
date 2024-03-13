@@ -11,8 +11,8 @@ const calcularNomina = async (req, res) => {
     const id = req.body.event.pulseId;
     // const id = '5482696375';
     let tableroId = req.body.event.boardId
+    console.log(req.body.event)
 
-    // const query = `query { boards(ids: ${tableroId}) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
     const query = `query  { boards  (ids: ${tableroId}) { items_page (query_params: {ids: ${id}}) { items { id name column_values { id  text column {title} ...on BoardRelationValue{display_value} ...on MirrorValue {display_value} }}}}}`
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
@@ -42,7 +42,7 @@ const calcularNomina = async (req, res) => {
             const filtro = datosT.filter(dato => {
                 return dato.id !== 'estado' && dato.id !== 'tel_fono' && dato.id !== 'cargo0' && dato.id !== 'bot_n' && dato.id !== 'men__desplegable' && dato.id !== 'bot_n_1'
             })
-            console.log(filtro)
+            // console.log(filtro)
 
             let novedad = 0
             let descuentos = 0
@@ -92,28 +92,8 @@ const calcularNomina = async (req, res) => {
             let domingoN = 0;
             let domingoRecep = 0;
 
-            // filtrarNovedades.map(obj => {
-            //     if (obj.text == 'RN1' && obj.title.endsWith('- S')) {
-            //         domingo = 0
-            //         recargosN += 3
-            //         domingoN += 6
-            //         domingoRecep += 3;
-            //     } else if (obj.text == 'RN1' && obj.title.endsWith('- D')) {
-            //         domingo += 2
-            //         domingoN += 3
-            //         recargosN += 6
-            //     } else if (obj.text == 'RN1' && (obj.title)) {
-            //         recargosN += 9
-            //     } else if (obj.text == 'RD1' && obj.title.endsWith('- D')) {
-            //         domingo = 0;
-            //         domingoRecep += 12
-            //     }else if (obj.title.endsWith('- D') && (obj.text)) {
-            //         domingo += 8;
-            //     } 
-            // })
-
-            let sumaDomingos = domingo + domingoRecep
-            await mandarNomina(diasDescontados, nombre, novedad, sumaDomingos, recargosN, domingoN)
+            let sumaDomingos = domingo + domingoRecep 
+            // await mandarNomina(diasDescontados, nombre, novedad, sumaDomingos, recargosN, domingoN)
             // console.log(contador2)
         } else {
             console.error('Hubo un error en la solicitud.');
