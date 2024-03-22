@@ -38,7 +38,7 @@ const calcularNomina = async (req, res) => {
             // console.log(datosMonday.data.boards[0].items_page.items[0].name)
             const nombre = datosMonday.data.boards[0].items_page.items[0].name
             console.log(datosT)
-            const turnosAixo = await traerTurnosAixo()
+            const turnosAixo = await traerTurnosAixo() 
             // console.log(turnosAixo)
 
 
@@ -141,13 +141,14 @@ const mandarNomina = async (dias, nombre, novedades, domingo, recargosN, domingo
 
 const generarTirilla = async (req, res) => {
     const challenge = req.body.challenge;
-    // res.send({ challenge });
+    res.send({ challenge });
 
     const apikey = process.env.APIKEY_MONDAY;
     const id = req.body.event.pulseId;
+    let tableroId = req.body.event.boardId
     // const id = '4886261173';
 
-    const query = `query { boards(ids: 122335008) { id items (ids: ${id}) { id name column_values { id title text } } } }`;
+    const query = `query  { boards  (ids: ${tableroId}) { items_page (query_params: {ids: ${id}}) { items { id name column_values { id  text column {title} ...on BoardRelationValue{display_value} ...on MirrorValue {display_value} ...on FormulaValue{value id}}}}}}`
     const response = await fetch("https://api.monday.com/v2", {
         method: 'POST',
         headers: {
@@ -162,29 +163,8 @@ const generarTirilla = async (req, res) => {
     try {
         if (response.ok) {
             const data = await response.json();
-            // console.log(JSON.stringify(data, null, 2));
+            console.log(JSON.stringify(data, null, 2)); 
             // const correo = data.data.boards[0].items[0].column_values
-            
-            // Crear un nuevo documento PDF
-            const doc = new PDFDocument();
-
-            // Pipe el resultado a un archivo (puedes cambiar 'output.pdf' al nombre que prefieras)
-            const stream = fs.createWriteStream('output.pdf');
-            doc.pipe(stream);
-
-            // Agregar contenido al PDF
-            doc
-                .fontSize(16)
-                .text('Ejemplo de PDF con pdfkit', 100, 50);
-
-            doc
-                .fontSize(12)
-                .text('¡Hola, este es un documento PDF generado con pdfkit!', 100, 80);
-
-            // Finalizar y cerrar el documento
-            doc.end();
-
-            console.log('PDF generado con éxito');
 
         } else {
             console.error('Hubo un error en la solicitud.');
