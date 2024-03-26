@@ -62,17 +62,17 @@ const enviarHorarios = async (req, res) => {
                 // Obtener la fecha actual
                 const fechaActual = new Date();
 
-                // let primerDiaSemana
-                // if ((grupo == 'duplicate_of_febrero_1_a_29__262681' || grupo == 'duplicate_of_febrero_1_a_29___' || grupo == 'duplicate_of_febrero_1_al_29__') && mesActual == 1) {
-                //     primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 1).getDay()
-                // } else if (grupo == 'duplicate_of_febrero_1_a_29__262681' && mesActual == 2) {
-                //     primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 1).getDay()
-                // } else {
-                //     primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay()
-                // }
+                let primerDiaSemana
+                if ((grupo == 'duplicate_of_marzo_1_al_31__20' || grupo == 'duplicate_of_marzo_1_a_31___20' || grupo == 'duplicate_of_marzo_1_al_31___2') && mesActual == 2) {
+                    primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 1).getDay()
+                } else if ((grupo == 'duplicate_of_marzo_1_al_31__20' || grupo == 'duplicate_of_marzo_1_a_31___20' || grupo == 'duplicate_of_marzo_1_al_31___2') && mesActual == 3) {
+                    primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay()
+                } else {
+                    primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay()
+                }
 
                 // Obtener el día de la semana del primer elemento del arreglo
-                const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
+                // const primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay();
 
                 // Crear un arreglo con los nombres de los días de la semana
                 const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -92,8 +92,8 @@ const enviarHorarios = async (req, res) => {
             const nuevoArreglo = modificarDias(datosT);
 
             let arregloFinal
-            if (grupo === 'duplicate_of_enero_1_al_31___2' || grupo === 'duplicate_of_enero_1_a_31__202' || grupo === 'duplicate_of_enero_1_31__2024' || grupo === 'duplicate_of_enero_1_a_31___20' || grupo === 'duplicate_of_enero_1_a_31' || grupo === 'duplicate_of_enero__1_a_3132847' || grupo === 'duplicate_of_enero___1_al_31__' || grupo === 'duplicate_of_enero_1_al_31' || grupo === 'duplicate_of_enero_1_al_3131263') {
-                arregloFinal = boton === 'Enviar 1ra Quincena' ? nuevoArreglo.slice(0, 15) : nuevoArreglo.slice(15, 29)
+            if (grupo === 'duplicate_of_marzo_1_al_31__20' || grupo === 'duplicate_of_marzo_1_a_31___20' || grupo == 'duplicate_of_marzo_1_al_31___2') {
+                arregloFinal = boton === 'Enviar 1ra Quincena' ? nuevoArreglo.slice(0, 15) : nuevoArreglo.slice(15, 30)
             } else {
                 arregloFinal = boton === 'Enviar 1ra Quincena' ? nuevoArreglo.slice(0, 15) : nuevoArreglo.slice(15, 32)
             }
