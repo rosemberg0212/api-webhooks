@@ -59,90 +59,6 @@ const felizCumple = async (req, res) => {
     res.status(200).end();
 }
 
-const InvitacionesAnato = async (req, res) => {
-    const challenge = req.body.challenge;
-    res.send({ challenge });
-
-    const apikey = process.env.APIKEY_MONDAY;
-    const id = req.body.event.pulseId;
-    // const id = '5964129481';
-
-    const query = `query  { boards  (ids: 6001737389) { items_page (query_params: {ids: ${id}}) { items { id name column_values { id value text }}}}}`;
-    const response = await fetch("https://api.monday.com/v2", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': apikey
-        },
-        body: JSON.stringify({
-            'query': query
-        })
-    });
-
-    try {
-        if (response.ok) {
-            const data = await response.json();
-            // console.log(JSON.stringify(data, null, 2));
-            const correo = data.data.boards[0].items_page.items[0].column_values[5].text
-            const nombre = data.data.boards[0].items_page.items[0].name
-            console.log(nombre)
-            console.log(correo)
-            if (correo.trim() === '') {
-                console.log('correo vacio')
-                return
-            }
-
-            let cadena =
-                `¡Celebremos juntos la Gran Reapertura del Hotel Windsor House durante el marco de la Feria ANATO 2024!
-
-Estimado ${nombre}
-
-En Geh Suites, nos complace enormemente anunciar la gran reapertura del emblemático Hotel Windsor House en Bogotá. Como parte de nuestra familia, queremos compartir contigo este emocionante momento en el que inauguramos una nueva etapa de elegancia y comodidad.
-
-La fecha está marcada: 29/01/2024 a partir de las 06:30 pm. Nos encantaría contar con tu grata presencia para celebrar este hito tan significativo. La Gran Reapertura se llevará a cabo en el marco de la prestigiosa Feria ANATO 2024, convirtiéndose en el escenario perfecto para disfrutar de un ambiente lleno de exclusividad y experiencias inolvidables.
-
-Para confirmar tu asistencia y asegurar tu lugar en esta memorable celebración, te invitamos a responder a este correo ingresando al siguiente link y diligenciando el cuestionario.
-
-https://wkf.ms/4839yQF
-
-Agradecemos tu continuo apoyo y confianza en Geh Suites Hotels. Estamos emocionados de compartir este momento contigo y esperamos que te unas a nosotros para vivir la experiencia única de la Gran Reapertura del Hotel Windsor House.
-
-Cordiales saludos,
-Geh Suites Hotels.`
-
-            let asunto = 'Invitacion Reapertura Windsor'
-            // let nombreAgencia = 'El Rossss'
-            const pdfBuffer = fs.readFileSync('public/Reapertura_Windsor.pdf');
-            const pdfDoc = await PDFDocument.load(pdfBuffer);
-
-            const page = pdfDoc.getPages()[0]; // Obtén la primera página (puedes ajustarlo según tu PDF)
-            const { width, height } = page.getSize();
-
-            // Agrega el nombre de la agencia en una posición específica
-            const fontSize = 12;
-            const x = 250;
-            const y = height - 390;
-            page.drawText(nombre, { x, y, fontSize });
-
-            const pdfBytes = await pdfDoc.save();
-            fs.writeFileSync('public/modificado.pdf', pdfBytes);
-
-            await invitacionWindor(cadena, correo, asunto)
-
-
-        } else {
-            console.error('Hubo un error en la solicitud.');
-            console.error('Código de estado:', response.status);
-            const errorMessage = await response.text();
-            console.error('Respuesta:', errorMessage);
-        }
-    } catch (error) {
-        console.error('Hubo un error en la solicitud:', error);
-    }
-
-    res.status(200).end();
-}
-
 const generarQR = async (req, res) => {
     const challenge = req.body.challenge;
     res.send({ challenge });
@@ -256,55 +172,6 @@ const mandarQR = async (fila) => {
             .then(json => console.log(json));
     });
 
-}
-
-const videoInnoGrow = async (req, res) => {
-    const challenge = req.body.challenge;
-    res.send({ challenge });
-
-    const apikey = process.env.APIKEY_MONDAY;
-    const id = req.body.event.pulseId;
-    let tableroId = req.body.event.boardId
-    // const id = '4886261173';
-
-    const query = `query  { boards  (ids: ${tableroId}) { items_page (query_params: {ids: ${id}}) { items { id name column_values { id value text }}}}}`;
-    const response = await fetch("https://api.monday.com/v2", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': apikey
-        },
-        body: JSON.stringify({
-            'query': query
-        })
-    });
-
-    try {
-        if (response.ok) {
-            const data = await response.json();
-            // console.log(JSON.stringify(data, null, 2));
-            const telefono = data.data.boards[0].items_page.items[0].column_values[5].text
-            const name = data.data.boards[0].items_page.items[0].name
-            console.log(telefono) 
-            console.log(name) 
-            if (telefono.trim() === '') {
-                console.log('telefono vacio')
-                return
-            }
-            const params = { name: name, url: 'https://space-img.sfo3.digitaloceanspaces.com/Videos/2052cdfd-9838-4beb-825b-fa2d467fdd9d.mp4' }
-            await enviarWhatsTemplate(telefono, '573336025021', 'lanzamiento_libroinn', params)
-
-        } else {
-            console.error('Hubo un error en la solicitud.');
-            console.error('Código de estado:', response.status);
-            const errorMessage = await response.text();
-            console.error('Respuesta:', errorMessage);
-        }
-    } catch (error) {
-        console.error('Hubo un error en la solicitud:', error);
-    }
-
-    res.status(200).end();
 }
 
 const requisicones = async (req, res) => {
@@ -470,9 +337,7 @@ const enviarExcel = async (req, res) => {
 
 module.exports = {
     felizCumple,
-    InvitacionesAnato,
     generarQR,
-    videoInnoGrow,
     requisicones,
     enviarExcel
 }

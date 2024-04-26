@@ -62,10 +62,10 @@ const enviarHorarios = async (req, res) => {
                 // Obtener la fecha actual
                 const fechaActual = new Date();
 
-                let primerDiaSemana
-                if ((grupo == 'duplicate_of_marzo_1_al_31__20' || grupo == 'duplicate_of_marzo_1_a_31___20' || grupo == 'duplicate_of_marzo_1_al_31___2') && mesActual == 2) {
+                let primerDiaSemana 
+                if ((grupo == 'duplicate_of_abril_1_al_30__20__1' || grupo == 'duplicate_of_abril_1_al_30___2__1') && mesActual == 3) {
                     primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 1).getDay()
-                } else if ((grupo == 'duplicate_of_marzo_1_al_31__20' || grupo == 'duplicate_of_marzo_1_a_31___20' || grupo == 'duplicate_of_marzo_1_al_31___2') && mesActual == 3) {
+                } else if ((grupo == 'duplicate_of_abril_1_al_30__20__1' || grupo == 'duplicate_of_abril_1_al_30___2__1') && mesActual == 4) {
                     primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay()
                 } else {
                     primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay()

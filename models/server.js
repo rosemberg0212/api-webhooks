@@ -13,6 +13,7 @@ class Server {
       taskRyver: "/hook/taskRyver",
       nomina: "/hook/nomina",
       notificaciones: "/hook/notifi",
+      plavih: "/hook/plavih",
       usuarios: "/api/v1/romi-guess",
     };
 
@@ -42,6 +43,7 @@ class Server {
     this.app.use(this.paths.nomina, require("../routes/nominaR"));
     this.app.use(this.paths.usuarios, require("../routes/userR"));
     this.app.use(this.paths.notificaciones, require("../routes/notificaciones"));
+    this.app.use(this.paths.plavih, require("../routes/plavih"));
   }
 
   listem() {
