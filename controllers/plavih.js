@@ -85,6 +85,8 @@ const obtenerUsuarioMonday = async (req, res) => {
     }
 
     res.status(200).end();
+
+    
 }
 
 const getUser = async (id) => {

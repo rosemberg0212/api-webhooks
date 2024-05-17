@@ -14,6 +14,7 @@ class Server {
       nomina: "/hook/nomina",
       notificaciones: "/hook/notifi",
       plavih: "/hook/plavih",
+      bitrix: "/hook/bitrix",
       usuarios: "/api/v1/romi-guess",
     };
 
@@ -44,6 +45,7 @@ class Server {
     this.app.use(this.paths.usuarios, require("../routes/userR"));
     this.app.use(this.paths.notificaciones, require("../routes/notificaciones"));
     this.app.use(this.paths.plavih, require("../routes/plavih"));
+    this.app.use(this.paths.bitrix, require("../routes/plavih_bitrix_R"));
   }
 
   listem() {
