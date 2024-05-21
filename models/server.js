@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-const { dbConnection } = require('../db/config');
 
 class Server {
   constructor() {
@@ -9,13 +8,12 @@ class Server {
 
     this.paths = {
       certificado: "/hook/certificado",
-      horario: "/hook/horario",               
-      taskRyver: "/hook/taskRyver",
+      horario: "/hook/horario",
       nomina: "/hook/nomina",
       notificaciones: "/hook/notifi",
       plavih: "/hook/plavih",
       bitrix: "/hook/bitrix",
-      usuarios: "/api/v1/romi-guess",
+      bitrixMonday: "/hook/bitrixMonday",
     };
 
     //Middlewares
@@ -24,7 +22,6 @@ class Server {
     //Rutas de mi aplicacion
     this.routes();
   }
-
 
   Middlewares() {
     //CORS
@@ -37,15 +34,17 @@ class Server {
     this.app.use(express.static("public"));
   }
 
-  routes() { 
+  routes() {
     this.app.use(this.paths.certificado, require("../routes/certificado"));
     this.app.use(this.paths.horario, require("../routes/horarios"));
-    this.app.use(this.paths.taskRyver, require("../routes/taskRyver"));
     this.app.use(this.paths.nomina, require("../routes/nominaR"));
-    this.app.use(this.paths.usuarios, require("../routes/userR"));
-    this.app.use(this.paths.notificaciones, require("../routes/notificaciones"));
+    this.app.use(
+      this.paths.notificaciones,
+      require("../routes/notificaciones")
+    );
     this.app.use(this.paths.plavih, require("../routes/plavih"));
     this.app.use(this.paths.bitrix, require("../routes/plavih_bitrix_R"));
+    this.app.use(this.paths.bitrixMonday, require("../routes/bitrixR"));
   }
 
   listem() {

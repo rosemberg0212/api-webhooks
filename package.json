@@ -12,7 +12,7 @@
     "author": "rous",
     "license": "ISC",
     "dependencies": {
-        "axios": "^1.6.0",
+        "axios": "^1.7.1",
         "bcryptjs": "^2.4.3",
         "cloudinary": "^1.26.3",
         "cors": "^2.8.5",
