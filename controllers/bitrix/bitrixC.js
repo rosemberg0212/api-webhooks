@@ -21,7 +21,7 @@ const createBitrixSivil = async (req = request, res = response) => {
   });
 
   const contacto = await createContactBitrix(data).catch((res) => {
-    throw new Error("Problema monday");
+    throw new Error("Problema bitrix");
   });
 
   await createProspectoBitrix(data, contacto.id);

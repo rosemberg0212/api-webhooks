@@ -174,7 +174,7 @@ const getCargo = (cargo) => {
     case "coordinador de eventos":
       return 2986;
 
-    case "coordinadoor de recursos humanos":
+    case "coordinador de recursos humanos":
       return 2868;
 
     case "coordinador de reservas":
