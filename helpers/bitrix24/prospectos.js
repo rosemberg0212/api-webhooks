@@ -266,7 +266,7 @@ const getCargo = (cargo) => {
       return 2918;
 
     case "supervisor de habitaciones":
-      return 1944;
+      return 2946;
 
     case "tecnico en refrigeracion":
       return 2920;
