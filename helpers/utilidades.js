@@ -26,6 +26,19 @@ const splitName = (str = "") => {
   };
 };
 
+const formatearTelefonoSPQRS = (phone = "") => {
+  if (phone.length === 10) {
+    return "+57" + phone;
+  }
+  if (phone.length === 12) {
+    return "+" + phone;
+  }
+  if (phone.length < 10 || phone.length > 13) {
+    return null;
+  }
+  return phone;
+};
 module.exports = {
   splitName,
+  formatearTelefonoSPQRS,
 };

@@ -1,5 +1,6 @@
 const { bitrix24Api } = require("../../apis");
-const { splitName } = require("../utilidades");
+const { splitName, formatearTelefonoSPQRS } = require("../utilidades");
+const { getInfoFilterBitrix } = require("./general");
 
 const formateContact = (info) => {
   const contactInfo = splitName(info.name);
@@ -47,6 +48,35 @@ const formateContact = (info) => {
   return contact;
 };
 
+const obtenerContacto = async ({ select, phone, email }) => {
+  let start = 0;
+  let encontrado = false;
+  const formatPhone = formatearTelefonoSPQRS(phone);
+  while (start !== undefined && !encontrado) {
+    const data = await getInfoFilterBitrix({
+      start,
+      select,
+      url:"/crm.contact.list.json",
+    });
+    for (const contact of data.result) {
+      const tels = contact.PHONE ? contact.PHONE.map((i) => i.VALUE) : [];
+      const emails = contact.EMAIL ? contact.EMAIL.map((i) => i.VALUE) : [];
+
+      if (
+        formatPhone === tels[0] ||
+        formatPhone === tels[1] ||
+        emails[0] === email
+      ) {
+        encontrado === true;
+        return contact.ID;
+      }
+    }
+    start = data.next;
+  }
+
+  return null;
+};
+
 const createContactBitrix = async (info) => {
   const contactoFormateado = formateContact(info);
 
@@ -59,7 +89,9 @@ const createContactBitrix = async (info) => {
   };
 };
 
+
 module.exports = {
   formateContact,
   createContactBitrix,
+  obtenerContacto,
 };
