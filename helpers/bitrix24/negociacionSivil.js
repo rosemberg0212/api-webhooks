@@ -311,9 +311,9 @@ const formatePropectos = (info, contactId) => {
       CATEGORY_ID: "16",
       CONTACT_ID: contactId,
       UF_CRM_663116D710A85: !genero ? null : getGenero(genero), //? Genero
-      UF_CRM_1714427061: !nivelEdu ? null : getEducationLevel(nivelEdu), //? Nivel educativo
-      UF_CRM_663119664CA2D: numeriID,
-      UF_CRM_663119664CA2D: !grupoSanguineo
+      UF_CRM_663119664CA2D: !nivelEdu ? null : getEducationLevel(nivelEdu), //? Nivel educativo
+      UF_CRM_663116D72BD39: numeriID,
+      UF_CRM_6622E62A04EA5: !grupoSanguineo
         ? null
         : getGrupoSanguineo(grupoSanguineo), //? Grupo sanguineo,
       UF_CRM_66508E0883967: personalDesc, //? Descripcion personal
