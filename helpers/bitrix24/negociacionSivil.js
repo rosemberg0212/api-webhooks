@@ -4,59 +4,59 @@ const { splitName } = require("../utilidades");
 const getGenero = (genero) => {
   switch (genero.toLowerCase().trim()) {
     case "masculino":
-      return 684;
+      return 846;
 
     case "femenino":
-      return 686;
+      return 848;
 
     default:
-      return 688;
+      return 850;
   }
 };
 
 const getEducationLevel = (education) => {
   switch (education.toLowerCase().trim()) {
     case "tecnologo":
-      return 696;
+      return 878;
 
     case "tecnico":
-      return 694;
+      return 876;
 
     case "bachiller":
-      return 692;
+      return 874;
 
     case "profesional":
-      return 698;
+      return 880;
 
     case "especialista":
-      return 700;
+      return 882;
 
     case "magister":
-      return 702;
+      return 884;
 
     case "doctorado":
-      return 704;
+      return 886;
   }
 };
 
 const getGrupoSanguineo = (grupo) => {
   switch (grupo.toLowerCase().trim()) {
     case "a positivo":
-      return "748";
+      return "206";
     case "a negativo":
-      return "750";
+      return "208";
     case "b positivo":
-      return "752";
+      return "204";
     case "b negativo":
-      return "754";
+      return "202";
     case "ab positivo":
-      return "756";
+      return "212";
     case "ab negativo":
-      return "758";
+      return "210";
     case "o positivo":
-      return "760";
+      return "200";
     case "o negativo":
-      return "762";
+      return "198";
     default:
       return null;
   }
@@ -65,216 +65,216 @@ const getGrupoSanguineo = (grupo) => {
 const getComunidades = (comunidad) => {
   switch (comunidad.toLowerCase().trim()) {
     case "afrocolombiano":
-      return 766;
+      return 864;
 
     case "afrodescendiente":
-      return 2044;
+      return 2064;
 
     case "mestizo":
-      return 3024;
+      return 3026;
 
     case "indigena":
-      return 3024;
+      return 862;
 
-    case "indigena":
-      return 2050;
+    case "negritudes":
+      return 2062;
 
-    case "indigena":
-      return 2050;
+    case "desplazado":
+      return 2070;
 
     default:
-      return 772;
+      return 870;
   }
 };
 
 const getCargo = (cargo) => {
   switch (cargo) {
     case "administrador":
-      return 2886;
+      return 1872;
 
     case "ama de llaves":
-      return 2880;
+      return 1866;
 
     case "albañil":
-      return 2930;
+      return 1916;
 
     case "almacenista y porteria":
-      return 2926;
+      return 1912;
 
     case "analista contable":
-      return 2950;
+      return 1886;
 
     case "areas comunes":
-      return 2916;
+      return 1902;
 
     case "asesor de eventos":
     case "asistente de eventos":
-      return 2984;
+      return 1900;
 
     case "asistente de gerencia":
-      return 2956;
+      return 1942;
 
     case "asistente administrativa":
-      return 2966;
+      return 1952;
 
     case "asistente contable":
-      return 2952;
+      return 1886;
 
     case "auditor":
-      return 2866;
+      return 1852;
 
     case "auxiliar administrativo":
-      return 2982;
+      return 2230;
 
     case "auxiliar contable":
-      return 2900;
+      return 1886;
 
     case "auxiliar de cocina":
-      return 2860;
+      return 1846;
 
     case "auxiliar de habitacion":
-      return 2964;
+      return 1950;
 
     case "auxiliar de sistema":
-      return 2912;
+      return 1898;
 
     case "bartender":
-      return 2942;
+      return 1928;
 
     case "botones":
-      return 2858;
+      return 1844;
 
     case "call center":
-      return 2864;
+    case "reservas":
+      return 1848;
 
     case "camarera":
-      return 2882;
+      return 1868;
 
     case "carpintero":
-      return 2922;
+      return 1908;
 
     case "chef":
-      return 2940;
+      return 1926;
 
     case "compras":
-      return 2938;
+      return 1878;
 
     case "conductor":
-      return 2904;
+      return 1890;
 
     case "contabilidad":
-      return 2944;
+      return 1886;
 
     case "coordinador de calidad":
-      return 2870;
+      return 1876;
 
     case "coordinador de call center":
-      return 2980;
+      return 2228;
 
     case "coordinador de eventos":
-      return 2986;
+      return 2234;
 
     case "coordinador de recursos humanos":
-      return 2868;
+      return 1854;
 
     case "coordinador de reservas":
-      return 2874;
+      return 1850;
 
     case "coordinador sst":
     case "sst":
-      return 2872;
+      return 1858;
 
     case "electricista":
     case "técnico electricista":
-      return 2908;
+      return 1894;
 
     case "jefe de mantenimineto":
-      return 2878;
+      return 1864;
 
     case "jefe de operaciones":
-      return 2876;
+      return 1862;
 
     case "jefe de recepcion":
     case "recepcionista":
-      return 2854;
+      return 1840;
 
     case "jefe de seguridad":
-      return 2962;
+      return 1848;
 
     case "lavanderia":
-      return 2968;
+      return 1954;
 
     case "mantenimiento":
-      return 2896;
+      return 1882;
 
     case "mesero":
-      return 2884;
+      return 1870;
 
     case "oficios varios":
-      return 2906;
+      return 1892;
 
     case "operación":
-      return 2960;
+      return 1946;
 
     case "panaderia":
-      return 2936;
+      return 1922;
 
     case "pintor":
-      return 2928;
+      return 1914;
 
     case "plomero":
-      return 2924;
+      return 1910;
 
     case "practicante":
-      return 2898;
+      return 1884;
 
     case "practicante de botones":
-      return 2978;
+      return 2034;
 
     case "practicante de camarería":
     case "practicante de mesera":
-      return 2970;
+      return 2026;
 
     case "practicante de cocina":
-      return 2976;
+      return 2032;
 
     case "practicante de contabilidad":
-      return 3030;
+      return 3028;
 
     case "practicante de panadería":
-      return 2972;
+      return 2028;
 
     case "practicante de recepción":
-      return 2974;
+      return 2030;
 
     case "practicante de reservas":
-    case "reservas":
-      return 2862;
+      return 4118;
 
     case "programador de software":
-      return 2894;
+      return 1880;
 
     case "revenue":
     case "revenue management":
-      return 2958;
+      return 1944;
 
     case "sistemas":
     case "tecnólogo en sistemas":
-      return 2910;
+      return 1896;
 
     case "steward":
-      return 2918;
+      return 1904;
 
     case "supervisor de habitaciones":
-      return 2946;
+      return 1932;
 
     case "tecnico en refrigeracion":
-      return 2920;
+      return 1906;
 
     case "vigilante":
-      return 2902;
+      return 1888;
     default:
-      return 2988;
+      return 2036;
   }
 };
 
