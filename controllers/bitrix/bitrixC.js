@@ -2,7 +2,7 @@ const { request, response } = require("express");
 const { getInfoMonday } = require("../../helpers/monday");
 const {
   createContactBitrix,
-  createProspectoBitrix,
+  createnegociacionBitrix,
   obtenerContacto,
   createSpqrBitrix,
 } = require("../../helpers/bitrix24");
@@ -26,7 +26,7 @@ const createBitrixSivil = async (req = request, res = response) => {
     throw new Error("Problema bitrix");
   });
 
-  await createProspectoBitrix(data, contacto.id);
+  await createnegociacionBitrix(data, contacto.id);
   // const propspecto = createProspectoBitrix(data, 123);
   return res.sendStatus(200);
   // return res.status(200).json({propspecto});
@@ -36,7 +36,7 @@ const createBitrixSPQR = async (req = request, res = response) => {
   const { challenge } = req.body;
   res.send({ challenge });
   const pulseId = req.body.event.pulseId;
-  const boardId = req.body.event.boardId; 
+  const boardId = req.body.event.boardId;
   // const { pulseId, boardId } = req.body.event;
 
   const { data } = await getInfoMonday({
@@ -46,16 +46,16 @@ const createBitrixSPQR = async (req = request, res = response) => {
     throw new Error("Problema monday");
   });
   const phone = data.column_values.find((i) => i.id === "phone")?.text || null;
-  
+
   const email =
-  data.column_values.find((i) => i.id === "correo_electr_nico")?.text || null;
-  
+    data.column_values.find((i) => i.id === "correo_electr_nico")?.text || null;
+
   const contactId = await obtenerContacto({
     select: ["ID", "PHONE", "EMAIL"],
     phone,
     email,
   });
-  
+
   await createSpqrBitrix(data, contactId);
   return res.sendStatus(200);
 };

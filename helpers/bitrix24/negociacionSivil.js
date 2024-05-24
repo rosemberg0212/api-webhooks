@@ -304,23 +304,25 @@ const formatePropectos = (info, contactId) => {
     info.column_values.find(({ id }) => id === "selecci_n_m_ltiple6")?.text ||
     null;
 
-  const prospecto = {
+  const negociacion = {
     fields: {
       TITLE,
+      STAGE_ID: "C16:NEW",
+      CATEGORY_ID: "16",
       CONTACT_ID: contactId,
-      UF_CRM_1714426925: !genero ? null : getGenero(genero), //? Genero
+      UF_CRM_663116D710A85: !genero ? null : getGenero(genero), //? Genero
       UF_CRM_1714427061: !nivelEdu ? null : getEducationLevel(nivelEdu), //? Nivel educativo
-      UF_CRM_1714481829: numeriID,
-      UF_CRM_1714482439: !grupoSanguineo
+      UF_CRM_663119664CA2D: numeriID,
+      UF_CRM_663119664CA2D: !grupoSanguineo
         ? null
         : getGrupoSanguineo(grupoSanguineo), //? Grupo sanguineo,
-      UF_CRM_1714482647: personalDesc,
-      UF_CRM_1714482978: !comunidad ? null : getComunidades(comunidad), //? Comunidades,
-      UF_CRM_1714754406: !fechaNacimiento
+      UF_CRM_66508E0883967: personalDesc, //? Descripcion personal
+      UF_CRM_663116D74F802: !comunidad ? null : getComunidades(comunidad), //? Comunidades,
+      UF_CRM_6635150DE95EB: !fechaNacimiento
         ? null
         : fechaNacimiento.concat("T03:00:00+03:00"),
-      UF_CRM_1714754449: lugarExpedicionCC,
-      UF_CRM_664B8F1F112CC: !cargos
+      UF_CRM_6635150E0294C: lugarExpedicionCC,
+      UF_CRM_1715689729: !cargos
         ? [2988]
         : cargos.split(", ").map((cargo) => {
             return getCargo(cargo.trim().toLowerCase());
@@ -328,14 +330,14 @@ const formatePropectos = (info, contactId) => {
     },
   };
 
-  return prospecto;
+  return negociacion;
 };
 
-const createProspectoBitrix = async (info, contactId) => {
-  const prospectoFormateado = formatePropectos(info, contactId);
+const createnegociacionBitrix = async (info, contactId) => {
+  const negociacionFormateado = formatePropectos(info, contactId);
 
-  await bitrix24Api.post("/crm.lead.add", {
-    fields: prospectoFormateado.fields,
+  await bitrix24Api.post("/crm.deal.add", {
+    fields: negociacionFormateado.fields,
   });
 
   return;
@@ -343,5 +345,5 @@ const createProspectoBitrix = async (info, contactId) => {
 
 module.exports = {
   formatePropectos,
-  createProspectoBitrix,
+  createnegociacionBitrix,
 };

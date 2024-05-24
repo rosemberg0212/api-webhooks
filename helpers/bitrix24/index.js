@@ -1,11 +1,11 @@
 const contactos = require("./contacts");
-const prospects = require("./prospectos");
+const negociacionSivil = require("./negociacionSivil");
 const general = require("./general");
 const spqrs = require("./spqrs");
 
 module.exports = {
   ...contactos,
-  ...prospects,
+  ...negociacionSivil,
   ...general,
   ...spqrs,
 };

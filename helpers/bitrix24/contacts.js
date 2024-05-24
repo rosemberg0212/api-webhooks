@@ -56,7 +56,7 @@ const obtenerContacto = async ({ select, phone, email }) => {
     const data = await getInfoFilterBitrix({
       start,
       select,
-      url:"/crm.contact.list.json",
+      url: "/crm.contact.list.json",
     });
     for (const contact of data.result) {
       const tels = contact.PHONE ? contact.PHONE.map((i) => i.VALUE) : [];
@@ -79,7 +79,6 @@ const obtenerContacto = async ({ select, phone, email }) => {
 
 const createContactBitrix = async (info) => {
   const contactoFormateado = formateContact(info);
-
   const { data } = await bitrix24Api.post("/crm.contact.add", {
     fields: contactoFormateado.fields,
   });
@@ -88,7 +87,6 @@ const createContactBitrix = async (info) => {
     id: data.result,
   };
 };
-
 
 module.exports = {
   formateContact,
