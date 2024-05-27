@@ -185,6 +185,9 @@ const getCargo = (cargo) => {
     case "sst":
       return 1858;
 
+    case "cocinero":
+      return 1842
+
     case "electricista":
     case "técnico electricista":
       return 1894;
