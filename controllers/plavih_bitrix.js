@@ -5,6 +5,7 @@ const obtenerDatosUsuario = async (req, res) => {
     // const myHeaders = new Headers();
     // myHeaders.append("Cookie", "qmb=0.");
     const {id} = req.params
+    // const id = '2580'
     const api_key = process.env.APIKEY_BITRIX; 
 
     const requestOptions = {
@@ -14,12 +15,12 @@ const obtenerDatosUsuario = async (req, res) => {
     };
 
     try {
-        const prospecto = await fetch(`https://gehsuites.bitrix24.com/rest/14/${api_key}/crm.lead.get.json?ID=${id}`, requestOptions);
+        const prospecto = await fetch(`https://gehsuites.bitrix24.com/rest/14/${api_key}/crm.deal.get.json?ID=${id}`, requestOptions);
         const result = await prospecto.json();
         const data = result.result
         // console.log(data);
 
-        const cc = data.UF_CRM_1714481829
+        const cc = data.UF_CRM_663116D72BD39
         const cc_sin_puntos = cc.replace(/\./g, "");
         const contact_id = data.CONTACT_ID
         // console.log('====////=====////======/////=====//////=====//////')
@@ -30,6 +31,7 @@ const obtenerDatosUsuario = async (req, res) => {
         const nombre = resultContact.result.NAME
         const apellido = resultContact.result.LAST_NAME
         const email = resultContact.result.EMAIL[0].VALUE
+        console.log(nombre, apellido, email)
 
         crearUser(cc_sin_puntos, nombre, apellido, email)
 
