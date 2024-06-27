@@ -103,7 +103,7 @@ const obtenerDatosB = async (req, res) => {
         }
 
         // console.log(datosLink)
-        // await generarLink(datosLink)
+        await generarLink(datosLink)
 
     } catch (error) {
         console.error(error);
