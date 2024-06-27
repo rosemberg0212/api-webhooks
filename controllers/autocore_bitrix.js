@@ -103,7 +103,7 @@ const obtenerDatosB = async (req, res) => {
         }
 
         // console.log(datosLink)
-        await generarLink(datosLink)
+        // await generarLink(datosLink)
 
     } catch (error) {
         console.error(error);
@@ -288,33 +288,65 @@ const actualizarDatosPagos = async (req, res) => {
         default:
             break;
     }
-
-    const datos = JSON.stringify({
-        "fields": {
-            "UF_CRM_1718396179138": amount,
-            "UF_CRM_1718396297448": payment_date,
-            "UF_CRM_1718397018945": transaction_id,
-            "UF_CRM_1719335914": company_id,
-            "UF_CRM_1718636597": [hotel_id],
-            "UF_CRM_1719422000266": voucher_url
-        }
-    })
-
-    try {
-        const update = await fetch(`https://gehsuites.bitrix24.com/rest/14/${api_key}/crm.deal.update?ID=${external_ref_id}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: datos
-        });
-        const resUpdate = await update.json();
-        res.json({
-            msg: resUpdate.result
+    if(payment_status == 'Aplicado'){
+        
+        const datos = JSON.stringify({
+            "fields": {
+                "UF_CRM_1718396179138": amount,
+                "UF_CRM_1718396297448": payment_date,
+                "UF_CRM_1718397018945": transaction_id,
+                "UF_CRM_1719335914": company_id,
+                "UF_CRM_1718636597": [hotel_id],
+                "UF_CRM_1719422000266": voucher_url,
+                "UF_CRM_1719519638392": payment_status
+            }
         })
-        console.log(resUpdate)
 
-    } catch (error) {
-        console.log(error)
+        try {
+            const update = await fetch(`https://gehsuites.bitrix24.com/rest/14/${api_key}/crm.deal.update?ID=${external_ref_id}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: datos
+            });
+            const resUpdate = await update.json();
+            res.json({
+                msg: resUpdate.result
+            })
+            console.log(resUpdate)
+    
+        } catch (error) {
+            console.log(error)
+        }
+    }else if(payment_status == 'Rechazado' || payment_status == 'Tarjeta no válida'){
+        const datos = JSON.stringify({
+            "fields": {
+                "UF_CRM_1718396179138": 0,
+                "UF_CRM_1718396297448": '',
+                "UF_CRM_1718397018945": '',
+                "UF_CRM_1719335914": '',
+                "UF_CRM_1718636597": [],
+                "UF_CRM_1719422000266": '',
+                "UF_CRM_1719519638392": payment_status
+            }
+        })
+
+        try {
+            const update = await fetch(`https://gehsuites.bitrix24.com/rest/14/${api_key}/crm.deal.update?ID=${external_ref_id}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: datos
+            });
+            const resUpdate = await update.json();
+            res.json({
+                msg: resUpdate.result
+            })
+            console.log(resUpdate)
+    
+        } catch (error) {
+            console.log(error)
+        }
     }
+
     res.status(200).end();
 }
 
