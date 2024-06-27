@@ -14,6 +14,7 @@ class Server {
       plavih: "/hook/plavih",
       bitrix: "/hook/bitrix",
       bitrixMonday: "/hook/bitrixMonday",
+      bitrixAutocore: "/hook/bitrixAutocore",
     };
 
     //Middlewares
@@ -45,6 +46,7 @@ class Server {
     this.app.use(this.paths.plavih, require("../routes/plavih"));
     this.app.use(this.paths.bitrix, require("../routes/plavih_bitrix_R"));
     this.app.use(this.paths.bitrixMonday, require("../routes/bitrixR"));
+    this.app.use(this.paths.bitrixAutocore, require("../routes/autocore_bitrix"));
   }
 
   listem() {
