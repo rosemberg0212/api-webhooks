@@ -23,7 +23,7 @@ const obtenerDatosB = async (req, res) => {
         const resultContact = await contacto.json()
         // console.log(resultContact)
 
-        const montoApiAutocore = (data.UF_CRM_1719433377306).replace(/\|COP/g, "")
+        const montoSinImpuestos = (data.UF_CRM_1719433377306).replace(/\|COP/g, "")
         const nombre = resultContact.result.NAME
         const apellido = resultContact.result.LAST_NAME
         const email = resultContact.result.EMAIL[0].VALUE
@@ -34,12 +34,17 @@ const obtenerDatosB = async (req, res) => {
         const dealID = data.ID
         let hotel_id = ''
         const porcentajeLink = data.UF_CRM_1719497194288;
-        const porcentaje = (montoApiAutocore * porcentajeLink) / 100
-        const montoLink = montoApiAutocore - porcentaje
         const gLink = data.UF_CRM_1719507093656;
         const montoConImpuesto = (data.UF_CRM_1719433473082).replace(/\|COP/g, "");
+        const porcentaje = (montoConImpuesto * porcentajeLink) / 100
+        const montoLink = montoConImpuesto - porcentaje
+
         const checkin = data.UF_CRM_1717100135
         const checkout = data.UF_CRM_1717100323
+
+        const formateCheckin = checkin.replace(/T.*/, '');
+        const formateCheckout = checkout.replace(/T.*/, '');
+        const booking_dates = `${formateCheckin} - ${formateCheckout}`
 
         const newCheckin = new Date(checkin);
         const newCheckout = new Date(checkout);
@@ -99,7 +104,7 @@ const obtenerDatosB = async (req, res) => {
         }
 
         const datosLink = {
-            montoLink, nombre, apellido, email, telefono, hotel_id, descripcion, dealID, montoApiAutocore, gLink, montoConImpuesto, porcentajeLink
+            montoLink, nombre, apellido, email, telefono, hotel_id, descripcion, dealID, montoSinImpuestos, gLink, montoConImpuesto, porcentajeLink, booking_dates
         }
 
         // console.log(datosLink)
@@ -130,7 +135,8 @@ const generarLink = async (datos) => {
             "description": datos.descripcion,
             "available_hours": 100,
             "source": "Bitrix24 GehSuites",
-            "external_ref_id": datos.dealID
+            "external_ref_id": datos.dealID,
+            "booking_dates": datos.booking_dates
         });
     } else {
         raw = JSON.stringify({
@@ -167,7 +173,7 @@ const generarLink = async (datos) => {
             "fields": {
                 "UF_CRM_1719255922011": res.url,
                 "UF_CRM_1719322536900": datos.montoConImpuesto,
-                "OPPORTUNITY": datos.montoApiAutocore,
+                "OPPORTUNITY": datos.montoSinImpuestos,
                 "CURRENCY_ID": 'COP'
             }
         })
@@ -190,7 +196,7 @@ const generarLink = async (datos) => {
             "fields": {
                 "UF_CRM_1719255922011": res.url,
                 "UF_CRM_1719322536900": datos.montoLink,
-                "OPPORTUNITY": datos.montoApiAutocore,
+                "OPPORTUNITY": datos.montoSinImpuestos,
                 "CURRENCY_ID": 'COP'
             }
         })
@@ -208,7 +214,7 @@ const generarLink = async (datos) => {
             "fields": {
                 "UF_CRM_1719255922011": '',
                 "UF_CRM_1719322536900": '0',
-                "OPPORTUNITY": datos.montoApiAutocore,
+                "OPPORTUNITY": datos.montoSinImpuestos,
                 "CURRENCY_ID": 'COP'
             }
         })

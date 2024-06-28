@@ -63,9 +63,9 @@ const enviarHorarios = async (req, res) => {
                 const fechaActual = new Date();
 
                 let primerDiaSemana 
-                if ((grupo == 'duplicate_of_mayo_1_al_31__202__1' || grupo == 'duplicate_of_mayo_1_al_31___20__1') && mesActual == 4) { 
+                if ((grupo == 'duplicate_of_junio_1_al_30___2__1' || grupo == 'duplicate_of_mayo_1_al_31___20__1') && mesActual == 5) { 
                     primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 1).getDay()
-                } else if ((grupo == 'duplicate_of_mayo_1_al_31__202__1' || grupo == 'duplicate_of_abril_1_al_30___2__1') && mesActual == 5) {
+                } else if ((grupo == 'duplicate_of_junio_1_al_30___2__1' || grupo == 'duplicate_of_abril_1_al_30___2__1') && mesActual == 6) {
                     primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay()
                 } else {
                     primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay()
@@ -221,8 +221,8 @@ const enviarHorarios = async (req, res) => {
             console.log(primeraMitad);
             console.log(segundaMitad);
             let asunto = 'Notificacion Horario Laboral'
-            arrS.map(async (obj) => await apiSMS(telefono, obj))
-            await probandoMail(descripcionesConcatenadas, mail, asunto) 
+            // arrS.map(async (obj) => await apiSMS(telefono, obj))
+            // await probandoMail(descripcionesConcatenadas, mail, asunto) 
 
 
         } else {
