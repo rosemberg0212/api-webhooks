@@ -40,18 +40,18 @@ const obtenerDatosB = async (req, res) => {
         const montoConImpuesto = (data.UF_CRM_1719433473082).replace(/\|COP/g, "");
         const checkin = data.UF_CRM_1717100135
         const checkout = data.UF_CRM_1717100323
-        
+
         const newCheckin = new Date(checkin);
         const newCheckout = new Date(checkout);
 
         if (newCheckin >= newCheckout) {
             return false;
         }
-        
+
         const diferencia = newCheckout - newCheckin;
-        
+
         const noches = diferencia / (1000 * 60 * 60 * 24);
-        
+
         const descripcion = `Reserva de ${noches} noches`
 
         switch (hotel) {
@@ -116,8 +116,8 @@ const generarLink = async (datos) => {
     const api_key = process.env.APIKEY_BITRIX;
     console.log(datos)
 
-    const myHeaders = new Headers()
-    myHeaders.append("Content-Type", "application/json");
+    // const myHeaders = new Headers()
+    // myHeaders.append("Content-Type", "application/json");
     let raw = ''
     if (datos.porcentajeLink) {
 
@@ -149,12 +149,16 @@ const generarLink = async (datos) => {
 
     const requestOptions = {
         method: "POST",
-        headers: myHeaders,
+        headers: {
+            "Content-Type": "application/json",
+            "access_key": "75Aatc4Z8lLM0cLE",
+            "secret_key": "tdQ61vQwvFXlKjh0E9meowYxMnfCi0bC"
+        },
         body: raw,
     };
 
     if (datos.gLink == '1' && datos.porcentajeLink == '') {
-        const geLink = await fetch(`https://api-dev.autocore.pro/v2/links/schedule/`, requestOptions);
+        const geLink = await fetch(`https://api.autocore.pro/v2/links/schedule/`, requestOptions);
         const res = await geLink.json()
         console.log(res)
 
@@ -177,7 +181,7 @@ const generarLink = async (datos) => {
         // console.log(resUpdate)
 
     } else if (datos.gLink == '1') {
-        const geLink = await fetch(`https://api-dev.autocore.pro/v2/links/schedule/`, requestOptions);
+        const geLink = await fetch(`https://api.autocore.pro/v2/links/schedule/`, requestOptions);
         const res = await geLink.json()
         console.log(res)
 
@@ -288,8 +292,8 @@ const actualizarDatosPagos = async (req, res) => {
         default:
             break;
     }
-    if(payment_status == 'Aplicado'){
-        
+    if (payment_status == 'Aplicado') {
+
         const datos = JSON.stringify({
             "fields": {
                 "UF_CRM_1718396179138": amount,
@@ -313,11 +317,11 @@ const actualizarDatosPagos = async (req, res) => {
                 msg: resUpdate.result
             })
             console.log(resUpdate)
-    
+
         } catch (error) {
             console.log(error)
         }
-    }else if(payment_status == 'Rechazado' || payment_status == 'Tarjeta no válida'){
+    } else if (payment_status == 'Rechazado' || payment_status == 'Tarjeta no válida') {
         const datos = JSON.stringify({
             "fields": {
                 "UF_CRM_1718396179138": 0,
@@ -341,7 +345,7 @@ const actualizarDatosPagos = async (req, res) => {
                 msg: resUpdate.result
             })
             console.log(resUpdate)
-    
+
         } catch (error) {
             console.log(error)
         }
