@@ -221,8 +221,8 @@ const enviarHorarios = async (req, res) => {
             console.log(primeraMitad);
             console.log(segundaMitad);
             let asunto = 'Notificacion Horario Laboral'
-            // arrS.map(async (obj) => await apiSMS(telefono, obj))
-            // await probandoMail(descripcionesConcatenadas, mail, asunto) 
+            arrS.map(async (obj) => await apiSMS(telefono, obj))
+            await probandoMail(descripcionesConcatenadas, mail, asunto) 
 
 
         } else {
