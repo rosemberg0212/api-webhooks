@@ -30,7 +30,8 @@ const obtenerDatosB = async (req, res) => {
         const phone = resultContact.result.PHONE[0].VALUE
         const telefono = phone.replace(/\+/g, "");
         // const noches = data.UF_CRM_1719239960129
-        const hotel = data.UF_CRM_1719420631812
+        // const hotel = data.UF_CRM_1719420631812
+        const hotel = data.UF_CRM_1716497043303
         const dealID = data.ID
         let hotel_id = ''
         const porcentajeLink = data.UF_CRM_1719497194288;
@@ -82,43 +83,43 @@ const obtenerDatosB = async (req, res) => {
         const descripcion = `Reserva de ${noches} noches`
 
         switch (hotel) {
-            case '6174':
+            case '3162':
                 hotel_id = 9
                 break;
 
-            case '6176':
+            case '3164':
                 hotel_id = 6
                 break;
 
-            case '6178':
+            case '3166':
                 hotel_id = 1
                 break;
 
-            case '6180':
+            case '3168':
                 hotel_id = 7
                 break;
 
-            case '6182':
+            case '5094':
                 hotel_id = 5
                 break;
 
-            case '6184':
+            case '3170':
                 hotel_id = 4
                 break;
 
-            case '6188':
+            case '3178':
                 hotel_id = 3
                 break;
 
-            case '6190':
+            case '3180':
                 hotel_id = 10
                 break;
 
-            case '6192':
+            case '3182':
                 hotel_id = 8
                 break;
 
-            case '6194':
+            case '3184':
                 hotel_id = 2
                 break;
             default:
@@ -168,7 +169,7 @@ const generarLink = async (datos) => {
             "phone": datos.telefono,
             "amount": datos.montoConImpuesto,
             "description": datos.descripcion,
-            "available_hours": 100,
+            "available_hours": 3652,
             "source": "Bitrix24 GehSuites",
             "external_ref_id": datos.dealID
         });
