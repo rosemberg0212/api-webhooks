@@ -15,7 +15,7 @@ const obtenerDatosB = async (req, res) => {
         const prospecto = await fetch(`https://gehsuites.bitrix24.com/rest/14/${api_key}/crm.deal.get.json?ID=${id}`, requestOptions);
         const result = await prospecto.json();
         const data = result.result
-        console.log(data);
+        // console.log(data);
 
         const contact_id = data.CONTACT_ID
         // console.log('====////=====////======/////=====//////=====//////')
@@ -46,6 +46,28 @@ const obtenerDatosB = async (req, res) => {
         const formateCheckout = checkout.replace(/T.*/, '');
         const booking_dates = `${formateCheckin} - ${formateCheckout}`
 
+        // separar dias de la reserva
+        const convertirFechas = (diaCheckin, diacheckout) => {
+            const meses = [
+                'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+                'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+            ];
+
+            const partesCheckin = diaCheckin.split('-');
+            const mes = parseInt(partesCheckin[1]) - 1;
+            const diaCkin = partesCheckin[2]
+            const nombreMes = meses[mes];
+
+            const partesCheckout = diacheckout.split('-');
+            const diaCkout = partesCheckout[2]
+
+            return {nombreMes, diaCkin, diaCkout}
+        }
+
+        const fechasConvertidas = convertirFechas(formateCheckin, formateCheckout)
+        console.log(`mes: ${fechasConvertidas.nombreMes} dia: ${fechasConvertidas.diaCkin} diaout: ${fechasConvertidas.diaCkout}`)
+
+        // Calcular numero de noches
         const newCheckin = new Date(checkin);
         const newCheckout = new Date(checkout);
 
@@ -104,7 +126,7 @@ const obtenerDatosB = async (req, res) => {
         }
 
         const datosLink = {
-            montoLink, nombre, apellido, email, telefono, hotel_id, descripcion, dealID, montoSinImpuestos, gLink, montoConImpuesto, porcentajeLink, booking_dates
+            montoLink, nombre, apellido, email, telefono, hotel_id, descripcion, dealID, montoSinImpuestos, gLink, montoConImpuesto, porcentajeLink, booking_dates, fechasConvertidas
         }
 
         // console.log(datosLink)
@@ -174,7 +196,10 @@ const generarLink = async (datos) => {
                 "UF_CRM_1719255922011": res.url,
                 "UF_CRM_1719322536900": datos.montoConImpuesto,
                 "OPPORTUNITY": datos.montoSinImpuestos,
-                "CURRENCY_ID": 'COP'
+                "CURRENCY_ID": 'COP',
+                "UF_CRM_1719938839622": datos.fechasConvertidas.diaCkin,
+                "UF_CRM_1719938921840": datos.fechasConvertidas.diaCkout,
+                "UF_CRM_1719939072554": datos.fechasConvertidas.nombreMes
             }
         })
 
@@ -197,7 +222,10 @@ const generarLink = async (datos) => {
                 "UF_CRM_1719255922011": res.url,
                 "UF_CRM_1719322536900": datos.montoLink,
                 "OPPORTUNITY": datos.montoSinImpuestos,
-                "CURRENCY_ID": 'COP'
+                "CURRENCY_ID": 'COP',
+                "UF_CRM_1719938839622": datos.fechasConvertidas.diaCkin,
+                "UF_CRM_1719938921840": datos.fechasConvertidas.diaCkout,
+                "UF_CRM_1719939072554": datos.fechasConvertidas.nombreMes
             }
         })
 
@@ -215,7 +243,10 @@ const generarLink = async (datos) => {
                 "UF_CRM_1719255922011": '',
                 "UF_CRM_1719322536900": '0',
                 "OPPORTUNITY": datos.montoSinImpuestos,
-                "CURRENCY_ID": 'COP'
+                "CURRENCY_ID": 'COP',
+                "UF_CRM_1719938839622": datos.fechasConvertidas.diaCkin,
+                "UF_CRM_1719938921840": datos.fechasConvertidas.diaCkout,
+                "UF_CRM_1719939072554": datos.fechasConvertidas.nombreMes
             }
         })
 
