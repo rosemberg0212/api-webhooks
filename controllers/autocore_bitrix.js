@@ -38,7 +38,7 @@ const obtenerDatosB = async (req, res) => {
         const gLink = data.UF_CRM_1719507093656;
         const montoConImpuesto = (data.UF_CRM_1719433473082).replace(/\|COP/g, "");
         const porcentaje = (montoConImpuesto * porcentajeLink) / 100
-        const montoLink = montoConImpuesto - porcentaje
+        const montoLink = porcentaje
 
         const checkin = data.UF_CRM_1717100135
         const checkout = data.UF_CRM_1717100323
