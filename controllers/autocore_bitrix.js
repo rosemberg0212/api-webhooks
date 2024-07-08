@@ -171,7 +171,8 @@ const generarLink = async (datos) => {
             "description": datos.descripcion,
             "available_hours": 3652,
             "source": "Bitrix24 GehSuites",
-            "external_ref_id": datos.dealID
+            "external_ref_id": datos.dealID,
+            "booking_dates": datos.booking_dates
         });
     }
 
