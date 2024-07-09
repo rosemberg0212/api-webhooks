@@ -15,7 +15,7 @@ const obtenerDatosB = async (req, res) => {
         const prospecto = await fetch(`https://gehsuites.bitrix24.com/rest/14/${api_key}/crm.deal.get.json?ID=${id}`, requestOptions);
         const result = await prospecto.json();
         const data = result.result
-        // console.log(data);
+        console.log(data);
 
         const contact_id = data.CONTACT_ID
         // console.log('====////=====////======/////=====//////=====//////')
@@ -341,7 +341,10 @@ const actualizarDatosPagos = async (req, res) => {
                 "UF_CRM_1719335914": company_id,
                 "UF_CRM_1718636597": [hotel_id],
                 "UF_CRM_1719422000266": voucher_url,
-                "UF_CRM_1719519638392": payment_status
+                "UF_CRM_1719519638392": payment_status,
+                "UF_CRM_1718394865311": "5204",
+                "UF_CRM_1718396464904": "5208",
+                "STAGE_ID": "UC_D6ERFN"
             }
         })
 
@@ -369,7 +372,9 @@ const actualizarDatosPagos = async (req, res) => {
                 "UF_CRM_1719335914": '',
                 "UF_CRM_1718636597": [],
                 "UF_CRM_1719422000266": '',
-                "UF_CRM_1719519638392": payment_status
+                "UF_CRM_1719519638392": payment_status,
+                "UF_CRM_1718394865311": "",
+                "UF_CRM_1718396464904": ""
             }
         })
 
