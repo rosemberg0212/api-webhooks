@@ -40,9 +40,9 @@ const enviarHorarios = async (req, res) => {
         body: JSON.stringify({
             'query': query
         })
-    });
+    }); 
 
-    try {
+    try { 
         if (response.ok) {
             const data = await response.json();
             // console.log(JSON.stringify(data, null, 2));
@@ -63,9 +63,9 @@ const enviarHorarios = async (req, res) => {
                 const fechaActual = new Date();
 
                 let primerDiaSemana 
-                if ((grupo == 'duplicate_of_junio_1_al_30___2__1' || grupo == 'duplicate_of_mayo_1_al_31___20__1') && mesActual == 5) { 
+                if ((grupo == 'duplicate_of_julio_1_al_31___2__1' || grupo == 'duplicate_of_mayo_1_al_31___20__1') && mesActual == 6) { 
                     primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 1).getDay()
-                } else if ((grupo == 'duplicate_of_junio_1_al_30___2__1' || grupo == 'duplicate_of_abril_1_al_30___2__1') && mesActual == 6) {
+                } else if ((grupo == 'duplicate_of_julio_1_al_31___2__1' || grupo == 'duplicate_of_abril_1_al_30___2__1') && mesActual == 7) {
                     primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay()
                 } else {
                     primerDiaSemana = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1).getDay()
