@@ -1,136 +1,45 @@
+const { getDeal, getContact, hotelId, separarDias, calcularNoches} = require('../helpers/index')
 
 const obtenerDatosB = async (req, res) => {
 
     const { id } = req.params
-    // const id = '2580'
-    const api_key = process.env.APIKEY_BITRIX;
-
-    const requestOptions = {
-        method: "POST",
-        // headers: myHeaders,
-        redirect: "follow"
-    };
 
     try {
-        const prospecto = await fetch(`https://gehsuites.bitrix24.com/rest/14/${api_key}/crm.deal.get.json?ID=${id}`, requestOptions);
-        const result = await prospecto.json();
-        const data = result.result
-        console.log(data);
-
+        const data = await getDeal(id);
         const contact_id = data.CONTACT_ID
-        // console.log('====////=====////======/////=====//////=====//////')
-        const contacto = await fetch(`https://gehsuites.bitrix24.com/rest/14/${api_key}/crm.contact.get.json?ID=${contact_id}`, requestOptions);
-        const resultContact = await contacto.json()
+        const resultContact = await getContact(contact_id);
         // console.log(resultContact)
 
-        const montoSinImpuestos = (data.UF_CRM_1719433377306).replace(/\|COP/g, "")
-        const nombre = resultContact.result.NAME
-        const apellido = resultContact.result.LAST_NAME
-        const email = resultContact.result.EMAIL[0].VALUE
-        const phone = resultContact.result.PHONE[0].VALUE
-        const telefono = phone.replace(/\+/g, "");
-        // const noches = data.UF_CRM_1719239960129
-        // const hotel = data.UF_CRM_1719420631812
         const hotel = data.UF_CRM_1716497043303
-        const dealID = data.ID
-        let hotel_id = ''
         const porcentajeLink = data.UF_CRM_1719497194288;
-        const gLink = data.UF_CRM_1719507093656;
         const montoConImpuesto = (data.UF_CRM_1719433473082).replace(/\|COP/g, "");
-        const porcentaje = (montoConImpuesto * porcentajeLink) / 100
-        const montoLink = porcentaje
-
-        const checkin = data.UF_CRM_1717100135
-        const checkout = data.UF_CRM_1717100323
-
-        const formateCheckin = checkin.replace(/T.*/, '');
-        const formateCheckout = checkout.replace(/T.*/, '');
+        const porcentaje = (montoConImpuesto * porcentajeLink) / 100;
+        const formateCheckin = (data.UF_CRM_1717100135).replace(/T.*/, '');
+        const formateCheckout = (data.UF_CRM_1717100323).replace(/T.*/, '');
         const booking_dates = `${formateCheckin} - ${formateCheckout}`
-
-        // separar dias de la reserva
-        const convertirFechas = (diaCheckin, diacheckout) => {
-            const meses = [
-                'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-                'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
-            ];
-
-            const partesCheckin = diaCheckin.split('-');
-            const mes = parseInt(partesCheckin[1]) - 1;
-            const diaCkin = partesCheckin[2]
-            const nombreMes = meses[mes];
-
-            const partesCheckout = diacheckout.split('-');
-            const diaCkout = partesCheckout[2]
-
-            return {nombreMes, diaCkin, diaCkout}
-        }
-
-        const fechasConvertidas = convertirFechas(formateCheckin, formateCheckout)
-        console.log(`mes: ${fechasConvertidas.nombreMes} dia: ${fechasConvertidas.diaCkin} diaout: ${fechasConvertidas.diaCkout}`)
-
-        // Calcular numero de noches
-        const newCheckin = new Date(checkin);
-        const newCheckout = new Date(checkout);
-
-        if (newCheckin >= newCheckout) {
-            return false;
-        }
-
-        const diferencia = newCheckout - newCheckin;
-
-        const noches = diferencia / (1000 * 60 * 60 * 24);
-
-        const descripcion = `Reserva de ${noches} noches`
-
-        switch (hotel) {
-            case '3162':
-                hotel_id = 9
-                break;
-
-            case '3164':
-                hotel_id = 6
-                break;
-
-            case '3166':
-                hotel_id = 1
-                break;
-
-            case '3168':
-                hotel_id = 7
-                break;
-
-            case '5094':
-                hotel_id = 5
-                break;
-
-            case '3170':
-                hotel_id = 4
-                break;
-
-            case '3178':
-                hotel_id = 3
-                break;
-
-            case '3180':
-                hotel_id = 10
-                break;
-
-            case '3182':
-                hotel_id = 8
-                break;
-
-            case '3184':
-                hotel_id = 2
-                break;
-            default:
-                break;
-        }
+        const fechasConvertidas = separarDias(formateCheckin, formateCheckout)
+        console.log(fechasConvertidas)
+        const noches = calcularNoches(formateCheckin, formateCheckout)
+        const descripcion = `Reserva de ${noches.noches} noches`
 
         const datosLink = {
-            montoLink, nombre, apellido, email, telefono, hotel_id, descripcion, dealID, montoSinImpuestos, gLink, montoConImpuesto, porcentajeLink, booking_dates, fechasConvertidas
+            montoLink: porcentaje,
+            nombre: resultContact.result.NAME,
+            apellido: resultContact.result.LAST_NAME,
+            email: resultContact.result.EMAIL[0].VALUE,
+            telefono: (resultContact.result.PHONE[0].VALUE).replace(/\+/g, ""),
+            hotel_id: hotelId(hotel),
+            descripcion,
+            dealID: data.ID,
+            montoSinImpuestos: (data.UF_CRM_1719433377306).replace(/\|COP/g, ""),
+            gLink: data.UF_CRM_1719507093656,
+            montoConImpuesto,
+            porcentajeLink,
+            booking_dates,
+            fechasConvertidas
         }
 
-        // console.log(datosLink)
+        console.log(datosLink)
         await generarLink(datosLink)
 
     } catch (error) {

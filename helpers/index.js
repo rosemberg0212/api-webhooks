@@ -1,11 +1,13 @@
 const apiMail = require("../helpers/apiMail");
 const apiSMS = require("../helpers/spiSMS");
-const apiWhatSapp = require("../helpers/apiBotmaker");
-const monday = require("./monday");
+const bitrixMetodos = require("../helpers/bitrixMetodos");
+const hotel = require("../helpers/hotel");
+const fechas = require("../helpers/formatFechas");
 
 module.exports = {
   ...apiMail,
   ...apiSMS,
-  ...apiWhatSapp,
-  ...monday,
+  ...bitrixMetodos,
+  ...hotel,
+  ...fechas
 };

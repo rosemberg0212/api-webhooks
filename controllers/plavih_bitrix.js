@@ -33,7 +33,7 @@ const obtenerDatosUsuario = async (req, res) => {
         const email = resultContact.result.EMAIL[0].VALUE
         console.log(nombre, apellido, email)
 
-        crearUser(cc_sin_puntos, nombre, apellido, email)
+        await crearUser(cc_sin_puntos, nombre, apellido, email)
 
     } catch (error) {
         console.error(error);
