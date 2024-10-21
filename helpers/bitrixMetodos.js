@@ -53,7 +53,44 @@ const getContact = async (id) => {
         console.log(error)
     }
 }
+
+const getListDeal = async (id) => {
+
+    try {
+        let start = 0;
+        let allDeals = [];
+        let hasMore = true;
+        const api_key = process.env.APIKEY_BITRIX;
+
+        const requestOptions = {
+            method: "POST",
+            // headers: myHeaders,
+            redirect: "follow"
+        };
+        while (hasMore) {
+
+            const response = await fetch(`https://gehsuites.bitrix24.com/rest/14/${api_key}/crm.deal.list.json?FILTER[STAGE_ID]=C6:WON&SELECT[]=TITLE&SELECT[]=UF_CRM_6635150DE95EB&SELECT[]=UF_CRM_1715689729&start=${start}`, requestOptions)
+
+            const result = await response.json();
+            const data = result.result
+            allDeals = allDeals.concat(data);
+
+            // Si hay más resultados, 'next' tendrá un valor. Si no, será null.
+            if (result.next) {
+                start = result.next
+            } else {
+                hasMore = false;
+            }
+
+        }
+
+        return allDeals;
+    } catch (error) {
+        console.log(error)
+    }
+}
 module.exports = {
     getDeal,
-    getContact
+    getContact,
+    getListDeal
 }

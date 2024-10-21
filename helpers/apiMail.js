@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 const fs = require('fs');
 
-const probandoMail = async (cuerpo, mail, asunto) => {
+const enviarImail = async (cuerpo, mail, asunto) => {
 
     const config = {
         host: "smtp.gmail.com",
@@ -52,6 +52,6 @@ const invitacionWindor = async (cuerpo, mail, asunto) => {
 }
 
 module.exports = {
-    probandoMail,
+    enviarImail,
     invitacionWindor
 }

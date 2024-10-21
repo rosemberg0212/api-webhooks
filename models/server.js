@@ -9,6 +9,7 @@ class Server {
     this.paths = {
       bitrix: "/hook/bitrix",
       bitrixAutocore: "/hook/bitrixAutocore",
+      notificaciones: '/hook/notificacion'
     };
 
     //Middlewares
@@ -32,6 +33,7 @@ class Server {
   routes() {
     this.app.use(this.paths.bitrix, require("../routes/plavih_bitrix_R"));
     this.app.use(this.paths.bitrixAutocore, require("../routes/autocore_bitrix"));
+    this.app.use(this.paths.notificaciones, require("../routes/notificaciones.routes"));
   }
 
   listem() {
