@@ -27,7 +27,7 @@ const happyBirthday = async (req, res) => {
             return "No hay cumpleaños el día de hoy.";
         }
 
-        let message = "Buenos días equipo de Gestion Humana, Mañana estan cumpliendo los siguientes colaboradores:\n\n";
+        let message = "Buenos días equipo de Gestion Humana, hoy estan cumpliendo los siguientes colaboradores:\n\n";
 
         filteredData.forEach((deal, index) => {
             message += `${index + 1}. Nombre: ${deal.TITLE}\n`;
