@@ -15,7 +15,7 @@ const happyBirthday = async (req, res) => {
         const [year, month, day] = date.split('-');
 
         // Extraer mes y día de la fecha de referencia
-        const [refYear, refMonth, refDay] = '1997-10-22'.split('-');
+        const [refYear, refMonth, refDay] = dateNow.split('-');
 
         // Comparar solo mes y día
         return month === refMonth && day === refDay;
