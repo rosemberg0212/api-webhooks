@@ -1,4 +1,4 @@
-const { getListDeal, enviarImail } = require('../helpers/index')
+const { getListDeal, enviarImail, enviarMailInnovacion } = require('../helpers/index')
 const cron = require('node-cron');
 
 const happyBirthday = async (req, res) => {
@@ -39,7 +39,7 @@ const happyBirthday = async (req, res) => {
     // Construir el cuerpo del correo
     const emailMessage = buildEmailMessage(happyB);
     console.log(emailMessage)
-    await enviarImail(emailMessage, 'gestionhumana@gehsuites.com', 'Cumpleaños')
+    await enviarMailInnovacion(emailMessage, 'gestionhumana@gehsuites.com', 'Cumpleaños')
     
 
     // res.status(200).end();

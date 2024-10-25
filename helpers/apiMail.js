@@ -23,6 +23,27 @@ const enviarImail = async (cuerpo, mail, asunto) => {
     console.log(info)
 };
 
+const enviarMailInnovacion = async (cuerpo, mail, asunto) => {
+    const config = {
+        host: "smtp.gmail.com",
+        port: 587,
+        auth: {
+            user: "innovacion@gehsuites.com",
+            pass: process.env.MAIL_CONTRA_APP_INNOVACION,
+        },
+    };
+
+    const mensaje = {
+        from: "innovacion@gehsuites.com",
+        to: `${mail}`,
+        subject: `${asunto}`,
+        text: `${cuerpo}`,
+    };
+    const transport = nodemailer.createTransport(config);
+    const info = await transport.sendMail(mensaje);
+    console.log(info)
+}
+
 const invitacionWindor = async (cuerpo, mail, asunto) => {
     const config = {
         host: "smtp.gmail.com",
@@ -53,5 +74,6 @@ const invitacionWindor = async (cuerpo, mail, asunto) => {
 
 module.exports = {
     enviarImail,
-    invitacionWindor
+    invitacionWindor,
+    enviarMailInnovacion
 }
