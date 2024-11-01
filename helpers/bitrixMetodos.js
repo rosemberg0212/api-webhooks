@@ -89,8 +89,66 @@ const getListDeal = async (id) => {
         console.log(error)
     }
 }
+
+const fetchTimemanStatus = async (userIds) => {
+    const apiKey = process.env.APIKEY_BITRIX;
+
+    try {
+        // Mapea cada userID para crear una solicitud `fetch` y guarda todas las promesas en un array
+        const statusPromises = userIds.map(userId => {
+            const timestamp = new Date().getTime(); // Genera una marca de tiempo única para cada solicitud
+            return fetch(`https://gehsuites.bitrix24.com/rest/14/${apiKey}/timeman.status?USER_ID=${userId}&timestamp=${timestamp}`)
+                .then(response => response.json())
+                .then(data => ({
+                    userId: userId,
+                    status: data.result.STATUS,
+                    timeStart: data.result.TIME_START,
+                    timeFinish: data.result.TIME_FINISH,
+                    duration: data.result.DURATION
+                }))
+                .catch(error => ({
+                    userId: userId,
+                    error: `Error fetching status: ${error.message}`
+                }));
+        });
+
+        // Ejecuta todas las solicitudes en paralelo y espera a que terminen
+        const results = await Promise.all(statusPromises);
+        
+        // Muestra los resultados de cada usuario
+        console.log(results);
+        return results;
+    } catch (error) {
+        console.error("Error al obtener el estado de asistencia:", error);
+    }
+};
+
+// Función para enviar un mensaje a un usuario específico en Bitrix24
+const enviarMensajeBitrix = async (userId, mensaje) => {
+    const apiKey = process.env.APIKEY_BITRIX;
+    const payload = {
+        "USER_ID": userId, // ID del usuario que recibirá el mensaje
+        "MESSAGE": mensaje
+    };
+
+    try {
+        const response = await fetch(`https://gehsuites.bitrix24.com/rest/14/${apiKey}/im.message.add`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+        console.log(`Mensaje enviado a usuario ${userId}:`, result);
+    } catch (error) {
+        console.error("Error al enviar mensaje:", error);
+    }
+};
+
+
 module.exports = {
     getDeal,
     getContact,
-    getListDeal
+    getListDeal,
+    fetchTimemanStatus,
+    enviarMensajeBitrix
 }

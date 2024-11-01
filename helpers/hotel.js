@@ -46,6 +46,46 @@ const hotelId = (hotel) => {
     }
 }
 
+const userContac = [
+    {
+        name: 'Rosemberg',
+        id: 14
+    },
+    {
+        name: 'Angela',
+        id: 30
+    },
+    {
+        name: 'Wendy De Avila',
+        id: 8882
+    },
+    {
+        name: 'Sofia Garay',
+        id: 8874
+    },
+    {
+        name: 'Elvia Mendivil',
+        id: 6050
+    },
+    {
+        name: 'Leidys Johanna',
+        id: 4776
+    },
+    {
+        name: 'Maria Orozco',
+        id: 66
+    },
+    {
+        name: 'Briannys',
+        id: 42
+    },
+    {
+        name: 'Adriana Hernandez',
+        id: 28
+    }
+]
+
 module.exports = {
-    hotelId
+    hotelId,
+    userContac
 }
