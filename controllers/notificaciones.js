@@ -39,7 +39,7 @@ const happyBirthday = async (req, res) => {
 
     // Construir el cuerpo del correo
     const emailMessage = buildEmailMessage(happyB);
-    console.log(emailMessage)
+    // console.log(emailMessage)
     await enviarMailInnovacion(emailMessage, 'gestionhumana@gehsuites.com', 'Cumpleaños')
 
 

@@ -54,6 +54,53 @@ const getContact = async (id) => {
     }
 }
 
+const addDeal = async (hotelID, datos, url) => {
+    const api_key = process.env.APIKEY_BITRIX;
+    const apiUrl = `https://gehsuites.bitrix24.com/rest/14/${api_key}/crm.deal.add`;
+    const date = new Date()
+    const dealData = {
+        fields: {
+            TITLE: "Recibo Público", // Título de la negociación
+            TYPE_ID: "GOODS", 
+            CATEGORY_ID: '54',        
+            STAGE_ID: "NEW",            // Estado inicial de la negociación
+            OPPORTUNITY: datos.valor_total_a_pagar,   
+            // CURRENCY_ID: "USD",         // Moneda
+            BEGINDATE: date,    // Fecha de inicio
+            CONTACT_ID: hotelID,    
+            UF_CRM_1730310923: datos.empresa, //empresa servicio     
+            UF_CRM_1730310720: datos.tipo_servicio, //tipo servicio 
+            UF_CRM_1730308537: datos.numero_contrato, //n contrato
+            UF_CRM_1719500807709: datos.fecha_limite_pago, //fecha limite pago
+            UF_CRM_1730308870: datos.periodo_consumo,
+            UF_CRM_1730321299: datos.valor_consumo, //valor consumo
+            UF_CRM_1732038391218: datos.valor_servicios,
+            UF_CRM_1718739210: [datos.valor_total_a_pagar], //valor total
+            UF_CRM_1731705380746: url
+
+        },
+        params: { REGISTER_SONET_EVENT: "Y" } // Registra el evento en el flujo de actividades
+    };
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(dealData)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            console.log(`Negociación creada con ID: ${result.result}`);
+        } else {
+            console.error("Error al crear la negociación:", result);
+        }
+    } catch (error) {
+        console.error("Error en la solicitud:", error);
+    }
+}
+
 const getListDeal = async (id) => {
 
     try {
@@ -114,9 +161,9 @@ const fetchTimemanStatus = async (userIds) => {
 
         // Ejecuta todas las solicitudes en paralelo y espera a que terminen
         const results = await Promise.all(statusPromises);
-        
+
         // Muestra los resultados de cada usuario
-        console.log(results);
+        // console.log(results);
         return results;
     } catch (error) {
         console.error("Error al obtener el estado de asistencia:", error);
@@ -138,11 +185,12 @@ const enviarMensajeBitrix = async (userId, mensaje) => {
             body: JSON.stringify(payload)
         });
         const result = await response.json();
-        console.log(`Mensaje enviado a usuario ${userId}:`, result);
+        // console.log(`Mensaje enviado a usuario ${userId}:`, result);
     } catch (error) {
         console.error("Error al enviar mensaje:", error);
     }
 };
+
 
 
 module.exports = {
@@ -150,5 +198,6 @@ module.exports = {
     getContact,
     getListDeal,
     fetchTimemanStatus,
-    enviarMensajeBitrix
+    enviarMensajeBitrix,
+    addDeal
 }
