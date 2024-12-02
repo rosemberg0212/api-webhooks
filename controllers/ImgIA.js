@@ -11,7 +11,7 @@ const main = async (req, res) => {
         const { hotel, url, empresa } = req.body
         console.log(hotel, empresa)
         const prom = empresaRecibo(empresa)
-        // console.log(prom)
+        console.log(prom)
         const response = await openai.chat.completions.create({
             model: "gpt-4o-mini",
             messages: [

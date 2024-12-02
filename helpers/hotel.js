@@ -157,7 +157,7 @@ const empresaRecibo = (empresa) => {
             return prom;
 
         case 'Afinia':
-            prom = `En caso de que la empresa sea Afinia tomar los datos de la siguiente manera:
+            prom = `Te voy a mandar una imagen sobre un recibo público de la empresa Afinia, necesito que analices y me extraigas la siguiente información en formato json:
                 empresa": "nombre de la empresa".
                 "tipo_servicio": "tipo de servicio".
                 "numero_contrato": "numero de contrato o NIC o POLIZA".
@@ -169,7 +169,7 @@ const empresaRecibo = (empresa) => {
             return prom;
 
         case 'Vatia':
-            prom = `En caso de que la empresa sea Vatia tomar los datos de la siguiente manera:
+            prom = `Te voy a mandar una imagen sobre un recibo público de la empresa Vatia, necesito que analices y me extraigas la siguiente información en formato json:
                 empresa": "nombre de la empresa".
                 "tipo_servicio": "tipo de servicio".
                 "numero_contrato": "numero de contrato o NIC o POLIZA".
@@ -181,7 +181,7 @@ const empresaRecibo = (empresa) => {
             return prom;
 
         case 'Surtigas':
-            prom = `En caso de que la empresa sea Surtigas tomar los datos de la siguiente manera:
+            prom = `Te voy a mandar una imagen sobre un recibo público de la empresa Surtigas, necesito que analices y me extraigas la siguiente información en formato json:
                 empresa": "nombre de la empresa".
                 "tipo_servicio": "tipo de servicio".
                 "numero_contrato": "numero de contrato o NIC o POLIZA".
@@ -193,7 +193,7 @@ const empresaRecibo = (empresa) => {
             return prom;
 
         case 'Aire':
-            prom = `En caso de que la empresa sea Surtigas tomar los datos de la siguiente manera:
+            prom = `Te voy a mandar una imagen sobre un recibo público de la empresa Aire, necesito que analices y me extraigas la siguiente información en formato json:
                 empresa": "nombre de la empresa".
                 "tipo_servicio": "tipo de servicio".
                 "numero_contrato": "numero de contrato o NIC o POLIZA".
@@ -205,7 +205,7 @@ const empresaRecibo = (empresa) => {
             return prom;
 
         case 'Gases del caribe':
-            prom = `En caso de que la empresa sea Surtigas tomar los datos de la siguiente manera:
+            prom = `Te voy a mandar una imagen sobre un recibo público de la empresa Gases del caribe, necesito que analices y me extraigas la siguiente información en formato json:
                 empresa": "nombre de la empresa".
                 "tipo_servicio": "tipo de servicio".
                 "numero_contrato": "numero de contrato o NIC o POLIZA".
@@ -216,6 +216,68 @@ const empresaRecibo = (empresa) => {
                 valor_total_a_pagar: el valor total a pagar, (coloca solo los numeros, no pongas los puntos o comas), si no hay colocar 0`
             return prom;
 
+        case 'ESSMAR ESP':
+            prom = `Te voy a mandar una imagen sobre un recibo público de la empresa ESSMAR ESP, necesito que analices y me extraigas la siguiente información en formato json:
+            empresa": "nombre de la empresa".
+            "tipo_servicio": "tipo de servicio".
+            "numero_contrato": "numero de contrato o NIC o POLIZA".
+            "fecha_limite_pago": puede ser también fecha de corte o ultimo día de pago sin recargo o fecha de pago oportuno, en formato año/mes/dia.
+            "periodo_consumo": "año/mes/dia (si no hay dia colocar el primer dia del mes que se esta cobrando)".
+            valor_consumo: es el valor total que se encuentra en el item de Acueducto (coloca solo los numeros, y no tengas en cuenta lo que esta despues de un punto porque son decimales, solo toma encuenta lo que esta antes y despues de una coma)
+            valor_servicios: es el valor total que se encuentra en el item de Alcantarillado, (coloca solo los numeros, y no tengas en cuenta lo que esta despues de un punto porque son decimales, solo toma encuenta lo que esta antes y despues de una coma), 
+            valor_total_a_pagar: el valor total a pagar, (coloca solo los numeros, y no tengas en cuenta lo que esta despues de un punto porque son decimales, solo toma encuenta lo que esta antes y despues de una coma),`
+            return prom;
+
+        case 'CONECTATE - ISP':
+            prom = `Te voy a mandar una imagen sobre un recibo público de la empresa CONECTATE - ISP, necesito que analices y me extraigas la siguiente información en formato json:
+            empresa": "nombre de la empresa".
+            "tipo_servicio": "tipo de servicio".
+            "numero_contrato": "numero de contrato".
+            "fecha_limite_pago": puede ser también fecha de corte o ultimo día de pago sin recargo o fecha de pago oportuno, en formato año/mes/dia.
+            "periodo_consumo": "año/mes/dia (si no hay dia colocar el primer dia del mes que se esta cobrando)".
+            valor_consumo: el valor total a pagar
+            valor_servicios: 0
+            valor_total_a_pagar: el valor total a pagar`
+            return prom;
+
+        case 'Claro':
+            prom = `Te voy a mandar una imagen sobre un recibo público de la empresa Claro, necesito que analices y me extraigas la siguiente información en formato json:
+            empresa": "nombre de la empresa".
+            "tipo_servicio": "tipo de servicio".
+            "numero_contrato": "numero de contrato".
+            "fecha_limite_pago": puede ser también fecha de corte o ultimo día de pago sin recargo o fecha de pago oportuno, en formato año/mes/dia.
+            "periodo_consumo": "año/mes/dia (si no hay dia colocar el primer dia del mes que se esta cobrando)".
+            valor_consumo: el valor total a pagar
+            iva: valor total del iva
+            valor_servicios: 0
+            valor_total_a_pagar: el valor total a pagar`
+            return prom;
+
+        case 'IFX':
+            prom = `Te voy a mandar una imagen sobre un recibo público de la empresa ifx networks, necesito que analices y me extraigas la siguiente información en formato json:
+            empresa": "nombre de la empresa".
+            "tipo_servicio": "tipo de servicio".
+            "numero_contrato": "numero de contrato".
+            "fecha_limite_pago": puede ser también fecha de corte o ultimo día de pago sin recargo o fecha de pago oportuno, en formato año/mes/dia.
+            "periodo_consumo": "año/mes/dia (si no hay dia colocar el primer dia del mes que se esta cobrando)".
+            valor_consumo: el valor total a pagar
+            iva: valor total del iva
+            valor_servicios: 0
+            valor_total_a_pagar: el valor total a pagar`
+            return prom;
+
+        case 'Tigo':
+            prom = `Te voy a mandar una imagen sobre un recibo público de la empresa Tigo, necesito que analices y me extraigas la siguiente información en formato json:
+            empresa": "nombre de la empresa".
+            "tipo_servicio": "tipo de servicio".
+            "numero_contrato": "numero de contrato".
+            "fecha_limite_pago": puede ser también fecha de corte o ultimo día de pago sin recargo o fecha de pago oportuno, en formato año/mes/dia.
+            "periodo_consumo": "año/mes/dia (si no hay dia colocar el primer dia del mes que se esta cobrando)".
+            valor_consumo: el valor total a pagar
+            iva: valor total del iva
+            valor_servicios: 0
+            valor_total_a_pagar: el valor total a pagar`
+            return prom;
         default:
             return 'Empresa no valida o no esta registrado en sistema';
     }

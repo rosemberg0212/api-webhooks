@@ -76,7 +76,8 @@ const addDeal = async (hotelID, datos, url) => {
             UF_CRM_1730321299: datos.valor_consumo, //valor consumo
             UF_CRM_1732038391218: datos.valor_servicios,
             UF_CRM_1718739210: [datos.valor_total_a_pagar], //valor total
-            UF_CRM_1731705380746: url
+            UF_CRM_1731705380746: url,
+            UF_CRM_1732893904504: datos.iva || 0
 
         },
         params: { REGISTER_SONET_EVENT: "Y" } // Registra el evento en el flujo de actividades
