@@ -41,6 +41,14 @@ const hotelId = (hotel) => {
         case '3184':
             hotel_id = 2
             return hotel_id
+
+        case '12636':
+            hotel_id = 48
+            return hotel_id
+
+        case '12640':
+            hotel_id = 44
+            return hotel_id
         default:
             return 'Hotel no valido o no esta registrado en sistema';
     }
