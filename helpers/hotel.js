@@ -180,7 +180,7 @@ const empresaRecibo = (empresa) => {
             prom = `Te voy a mandar una imagen sobre un recibo público de la empresa Vatia, necesito que analices y me extraigas la siguiente información en formato json:
                 empresa": "nombre de la empresa".
                 "tipo_servicio": "tipo de servicio".
-                "numero_contrato": "numero de contrato o NIC o POLIZA".
+                "numero_contrato": "es el campo llamado Id interno".
                 "fecha_limite_pago": puede ser también fecha de corte o ultimo día de pago sin recargo o fecha de pago oportuno, en formato año/mes/dia.
                 "periodo_consumo": "año/mes/dia (si no hay dia colocar el primer dia del mes que se esta cobrando)".
                 valor_consumo: el valor total que se encuentra en la seccion Detalles cobros de energia en el item de Energia + contribución, (coloca solo los numeros, no pongas los puntos o comas), si no hay colocar 0
