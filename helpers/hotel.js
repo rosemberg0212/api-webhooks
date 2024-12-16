@@ -240,7 +240,7 @@ const empresaRecibo = (empresa) => {
             prom = `Te voy a mandar una imagen sobre un recibo público de la empresa CONECTATE - ISP, necesito que analices y me extraigas la siguiente información en formato json:
             empresa": "nombre de la empresa".
             "tipo_servicio": "tipo de servicio".
-            "numero_contrato": "numero de contrato".
+            "numero_contrato": "numero de contrato o NIC o POLIZA".
             "fecha_limite_pago": puede ser también fecha de corte o ultimo día de pago sin recargo o fecha de pago oportuno, en formato año/mes/dia.
             "periodo_consumo": "año/mes/dia (si no hay dia colocar el primer dia del mes que se esta cobrando)".
             valor_consumo: el valor total a pagar
@@ -252,7 +252,7 @@ const empresaRecibo = (empresa) => {
             prom = `Te voy a mandar una imagen sobre un recibo público de la empresa Claro, necesito que analices y me extraigas la siguiente información en formato json:
             empresa": "nombre de la empresa".
             "tipo_servicio": "tipo de servicio".
-            "numero_contrato": "numero de contrato".
+            "numero_contrato": "numero de contrato o NIC o POLIZA".
             "fecha_limite_pago": puede ser también fecha de corte o ultimo día de pago sin recargo o fecha de pago oportuno, en formato año/mes/dia.
             "periodo_consumo": "año/mes/dia (si no hay dia colocar el primer dia del mes que se esta cobrando)".
             valor_consumo: el valor total a pagar
@@ -265,7 +265,7 @@ const empresaRecibo = (empresa) => {
             prom = `Te voy a mandar una imagen sobre un recibo público de la empresa ifx networks, necesito que analices y me extraigas la siguiente información en formato json:
             empresa": "nombre de la empresa".
             "tipo_servicio": "tipo de servicio".
-            "numero_contrato": "numero de contrato".
+            "numero_contrato": "numero de contrato o NIC o POLIZA".
             "fecha_limite_pago": puede ser también fecha de corte o ultimo día de pago sin recargo o fecha de pago oportuno, en formato año/mes/dia.
             "periodo_consumo": "año/mes/dia (si no hay dia colocar el primer dia del mes que se esta cobrando)".
             valor_consumo: el valor total a pagar
@@ -278,7 +278,20 @@ const empresaRecibo = (empresa) => {
             prom = `Te voy a mandar una imagen sobre un recibo público de la empresa Tigo, necesito que analices y me extraigas la siguiente información en formato json:
             empresa": "nombre de la empresa".
             "tipo_servicio": "tipo de servicio".
-            "numero_contrato": "numero de contrato".
+            "numero_contrato": "numero de contrato o NIC o POLIZA".
+            "fecha_limite_pago": puede ser también fecha de corte o ultimo día de pago sin recargo o fecha de pago oportuno, en formato año/mes/dia.
+            "periodo_consumo": "año/mes/dia (si no hay dia colocar el primer dia del mes que se esta cobrando)".
+            valor_consumo: el valor total a pagar
+            iva: valor total del iva
+            valor_servicios: 0
+            valor_total_a_pagar: el valor total a pagar`
+            return prom;
+
+        case 'Vanti':
+            prom = `Te voy a mandar una imagen sobre un recibo público de la empresa Vanti, necesito que analices y me extraigas la siguiente información en formato json:
+            "empresa": "nombre de la empresa".
+            "tipo_servicio": "tipo de servicio".
+            "numero_contrato": "numero de contrato o NIC o POLIZA".
             "fecha_limite_pago": puede ser también fecha de corte o ultimo día de pago sin recargo o fecha de pago oportuno, en formato año/mes/dia.
             "periodo_consumo": "año/mes/dia (si no hay dia colocar el primer dia del mes que se esta cobrando)".
             valor_consumo: el valor total a pagar
@@ -289,6 +302,7 @@ const empresaRecibo = (empresa) => {
         default:
             return 'Empresa no valida o no esta registrado en sistema';
     }
+
 }
 
 module.exports = {
