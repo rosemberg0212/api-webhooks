@@ -119,7 +119,7 @@ const crearPasadias = async (req, res) => {
         }
         const negociacion = await crearNegociacion(datosNegociacion)
         const linkPago = await moveMoney(totalCotizacion.total, negociacion)
-        // console.log(linkPago)
+        console.log(linkPago)
         await enviarWhatSapp(params, linkPago.metadata.payment_link)
         const cuerpo = `
         Estimado/a ${params.name},
