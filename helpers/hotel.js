@@ -312,6 +312,9 @@ const empresaRecibo = (empresa) => {
             valor_servicios: es el total aseo
             valor_total_a_pagar: el valor total a pagar`
             return prom;
+
+        case '':
+        
         default:
             return 'Empresa no valida o no esta registrado en sistema';
     }

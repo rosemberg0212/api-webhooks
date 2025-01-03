@@ -1,6 +1,6 @@
 const {Router} = require('express');
 
-const { happyBirthday, userStatus } = require('../controllers/notificaciones');
+const { happyBirthday, userStatus } = require('../controllers/notificaciones.controller');
 
 const router = Router();
 

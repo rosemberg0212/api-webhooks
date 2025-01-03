@@ -1,6 +1,6 @@
 const {Router} = require('express');
 
-const { main } = require('../controllers/ImgIA');
+const { main } = require('../controllers/ImgIA.controller');
 
 const router = Router();
 

@@ -11,6 +11,7 @@ class Server {
       bitrixAutocore: "/hook/bitrixAutocore",
       notificaciones: '/hook/notificacion',
       imagenIa: '/hook/imgIa',
+      pasadia: '/hook/pasadia',
     };
 
     //Middlewares
@@ -32,10 +33,11 @@ class Server {
   }
 
   routes() {
-    this.app.use(this.paths.bitrix, require("../routes/plavih_bitrix_R"));
+    this.app.use(this.paths.bitrix, require("../routes/plavih_bitrix_R.routes"));
     this.app.use(this.paths.bitrixAutocore, require("../routes/autocore_bitrix"));
     this.app.use(this.paths.notificaciones, require("../routes/notificaciones.routes"));
     this.app.use(this.paths.imagenIa, require("../routes/imgIA.routes"));
+    this.app.use(this.paths.pasadia, require("../routes/pasadias.routes"));
   }
 
   listem() {

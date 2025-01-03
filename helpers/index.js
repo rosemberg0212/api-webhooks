@@ -3,11 +3,15 @@ const apiSMS = require("../helpers/spiSMS");
 const bitrixMetodos = require("../helpers/bitrixMetodos");
 const hotel = require("../helpers/hotel");
 const fechas = require("../helpers/formatFechas");
+const apiWhatSapp = require("../helpers/apiWhatSapp");
+const cobreMetodos = require("../helpers/cobreMetodos");
 
 module.exports = {
   ...apiMail,
   ...apiSMS,
   ...bitrixMetodos,
   ...hotel,
-  ...fechas
+  ...fechas,
+  ...apiWhatSapp,
+  ...cobreMetodos
 };

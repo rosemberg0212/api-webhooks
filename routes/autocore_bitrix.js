@@ -1,6 +1,6 @@
 const {Router} = require('express');
 
-const { obtenerDatosB, actualizarDatosPagos } = require('../controllers/autocore_bitrix');
+const { obtenerDatosB, actualizarDatosPagos } = require('../controllers/autocore_bitrix.controller');
 
 const router = Router();
 

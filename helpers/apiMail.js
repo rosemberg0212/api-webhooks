@@ -41,7 +41,7 @@ const enviarMailInnovacion = async (cuerpo, mail, asunto) => {
     };
     const transport = nodemailer.createTransport(config);
     const info = await transport.sendMail(mensaje);
-    console.log(info)
+    // console.log(info)
 }
 
 const invitacionWindor = async (cuerpo, mail, asunto) => {
