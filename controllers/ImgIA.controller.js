@@ -37,7 +37,7 @@ const main = async (req, res) => {
         // console.log(response.choices[0].message.content);
         console.log(jsonString)
         const hotelID = await hotelContacto(hotel)
-        await addDeal(hotelID, jsonString, url)
+        // await addDeal(hotelID, jsonString, url)
 
         res.json({
             msg: jsonString

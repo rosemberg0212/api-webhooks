@@ -313,8 +313,20 @@ const empresaRecibo = (empresa) => {
             valor_total_a_pagar: el valor total a pagar`
             return prom;
 
-        case '':
-        
+        case 'Acueducto':
+            prom = `Te voy a mandar una imagen sobre un recibo público de la empresa Acueducto, necesito que analices y me extraigas la siguiente información en formato json:
+            "empresa": "nombre de la empresa".
+            "tipo_servicio": "tipo de servicio".
+            "numero_contrato": "numero de cliente o numero de cuenta".
+            "fecha_limite_pago": puede ser también fecha de corte o ultimo día de pago sin recargo o fecha de pago oportuno, en formato año/mes/dia (el año no puede ser menor al año en el que estamos actualmente).
+            "periodo_consumo": "año/mes/dia (si no hay dia colocar el primer dia del mes que se esta cobrando, el año no puede ser menor al año en el que estamos actualmente)".
+            valor_consumo: NO TOMES EL VALOR TOTAL, PORQUE ESTE NO ES, el valor del consumo se encuentra en la seccion llamada Resumen de su cuenta, en el item Subtotal Acueducto, el valor se encuentra en la sexta o  ultima columna llamada Valor a pagar, no tomes los valores de ninguna de las otras columnas solo de la ultima (coloca solo los numeros, no pongas los puntos o comas).
+            iva: valor total del iva o 0 si no hay
+            valor_servicios: NO TOMES EL VALOR TOTAL, PORQUE ESTE NO ES, el valor del servicio se encuentra en la seccion llamada Resumen de su cuenta, en el item Subtotal Alcantarillado, el valor se encuentra en en la sexta o ultima columna llamada Valor a pagar, no tomes los valores de ninguna de las otras columnas solo de la ultima (coloca solo los numeros, no pongas los puntos o comas).
+            valor_total_a_pagar: el valor total a pagar`
+            return prom;
+
+
         default:
             return 'Empresa no valida o no esta registrado en sistema';
     }
