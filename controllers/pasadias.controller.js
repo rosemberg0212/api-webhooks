@@ -12,8 +12,8 @@ const crearPasadias = async (req, res) => {
     const contactoEncontrado = getContactos?.find((dato) =>
         dato?.EMAIL?.some((mail) => mail.VALUE === body.mail)
     );
-    const precioNinos = 100000;
-    const precioAdultos = 125000;
+    const precioNinos = 108000;
+    const precioAdultos = 135000;
 
     const cotizacion = (pNinos, pAdultos, cNinos, cAdultos) => {
         const totalNino = pNinos * cNinos;
