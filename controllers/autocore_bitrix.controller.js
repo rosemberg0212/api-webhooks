@@ -1,5 +1,5 @@
 const { getDeal, getContact, hotelId, separarDias, calcularNoches} = require('../helpers/index')
-
+//#region Obtener datos para generar link 
 const obtenerDatosB = async (req, res) => {
 
     const { id } = req.params
@@ -49,6 +49,7 @@ const obtenerDatosB = async (req, res) => {
     res.status(200).end();
 }
 
+//#region generar link
 const generarLink = async (datos) => {
     const api_key = process.env.APIKEY_BITRIX;
     console.log(datos)
@@ -172,6 +173,7 @@ const generarLink = async (datos) => {
 
 }
 
+//#region actualizar datos pagos
 const actualizarDatosPagos = async (req, res) => {
 
     const api_key = process.env.APIKEY_BITRIX;

@@ -12,6 +12,7 @@ class Server {
       notificaciones: '/hook/notificacion',
       imagenIa: '/hook/imgIa',
       pasadia: '/hook/pasadia',
+      pagos: '/hook/pagos/cobre',
     };
 
     //Middlewares
@@ -38,6 +39,7 @@ class Server {
     this.app.use(this.paths.notificaciones, require("../routes/notificaciones.routes"));
     this.app.use(this.paths.imagenIa, require("../routes/imgIA.routes"));
     this.app.use(this.paths.pasadia, require("../routes/pasadias.routes"));
+    this.app.use(this.paths.pagos, require("../routes/programarPagos.routes"));
   }
 
   listem() {

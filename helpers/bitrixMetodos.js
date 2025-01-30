@@ -58,6 +58,33 @@ const getContact = async (id) => {
     }
 }
 
+const getCompany = async (id) => {
+
+    try {
+        const api_key = process.env.APIKEY_BITRIX;
+
+        const requestOptions = {
+            method: "POST",
+            // headers: myHeaders,
+            redirect: "follow"
+        };
+
+        const prospecto = await fetch(`${URL}/${api_key}/crm.company.get.json?ID=${id}`, requestOptions);
+        if (prospecto.ok) {
+            const result = await prospecto.json();
+            const data = result.result
+            return data
+        } else {
+            console.error('Hubo un error en la solicitud.');
+            console.error('Código de estado:', prospecto.status);
+            const errorMessage = await prospecto.text();
+            console.error('Respuesta:', errorMessage);
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 const addDeal = async (hotelID, datos, url) => {
     const api_key = process.env.APIKEY_BITRIX;
     const apiUrl = `https://gehsuites.bitrix24.com/rest/14/${api_key}/crm.deal.add`;
@@ -386,6 +413,7 @@ const updateDeal = async (data) => {
 module.exports = {
     getDeal,
     getContact,
+    getCompany,
     getListDeal,
     fetchTimemanStatus,
     enviarMensajeBitrix,

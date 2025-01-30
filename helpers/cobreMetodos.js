@@ -51,6 +51,71 @@ const moveMoney = async (total, negociacionId) => {
     }
 }
 
+const obtainAllCounterparties = async (targetId, page = 0) => {
+    try {
+        const token = await authentication()
+        const myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${token}`);
+
+        const requestOptions = {
+            method: "GET",
+            headers: myHeaders,
+        };
+
+        const response = await fetch(`https://api.cobre.co/v1/counterparties?sensitive_data=true&page_number=${page}`, requestOptions)
+
+        const data = await response.json()
+        // Buscar la contraparte en la página actual
+        const found = data.contents.find(counterparty => counterparty.metadata.counterparty_id_number === targetId);
+        if (found) {
+            return found; // Retorna la contraparte si se encuentra
+        }
+        // Si no se encontró y hay más páginas, seguir buscando
+        if (!data.is_last_page) {
+            return await obtainAllCounterparties(targetId, page + 1);
+        }
+    } catch (error) {
+        console.error('Error al buscar la contraparte:', error);
+        return null;
+    }
+
+
+}
+
+const MoveMoneyACH = async (datos) => {
+    const token = await authentication()
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    const raw = JSON.stringify({
+        "source_id": datos.cuenta,
+        "destination_id": datos.counterparty,
+        "amount": datos.monto,
+        "metadata": {
+            "description": "Test integracion Amanda"
+        },
+        "external_id": datos.bitrixId,
+        "checker_approval": true
+    });
+
+    const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+    };
+
+    const response = await fetch("https://api.cobre.co/v1/money_movements", requestOptions)
+    if (response.ok) {
+        const data = await response.json()
+        return data
+    } else {
+        console.log('Error en la peticion')
+    }
+}
+
 module.exports = {
-    moveMoney
+    moveMoney,
+    obtainAllCounterparties,
+    MoveMoneyACH
 }
