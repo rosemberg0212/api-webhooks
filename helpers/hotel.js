@@ -333,9 +333,43 @@ const empresaRecibo = (empresa) => {
 
 }
 
+const empresaCobres = (empresa) => {
+    console.log('empresa que llego', empresa)
+    switch (empresa) {
+        case '1170':
+            return {
+                empresa: 'econo',
+                cuenta_cobre : 'acc_0yXKaILtbB'
+            }
+        case '1172':
+            return {
+                empresa: 'sociedad',
+                cuenta_cobre : 'acc_qIytEIBTjn'
+            }
+        case '1174':
+            return {
+                empresa: 'caribe',
+                cuenta_cobre : 'acc_udYnswZDl7'
+            }
+        case '1176':
+            return {
+                empresa: 'dt',
+                cuenta_cobre : 'acc_crYecLtqJq'
+            }
+        case '1182':
+            return {
+                empresa: 'smart',
+                cuenta_cobre : 'acc_Ix8U3ywSWN'
+            }
+        default:
+            return 'Empresa no validad'
+    }
+}
+
 module.exports = {
     hotelId,
     userContac,
     hotelContacto,
-    empresaRecibo
+    empresaRecibo,
+    empresaCobres
 }

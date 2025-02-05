@@ -410,6 +410,30 @@ const updateDeal = async (data) => {
     }
 }
 
+const updateDealGlobal = async (datos) => {
+    console.log(datos)
+
+    const url = `${URL}/${apiKey}/crm.deal.update.json`;
+
+    try {
+        const respuesta = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos)
+        });
+
+
+        const resultado = await respuesta.json();
+        if (respuesta.ok) {
+            console.log("Negociación actualizada con éxito.");
+        } else {
+            console.error("Error al actualizar la negociación:", resultado.error_description || resultado);
+        }
+    } catch (error) {
+        console.error("Error de red o servidor:", error.message);
+    }
+}
+
 module.exports = {
     getDeal,
     getContact,
@@ -422,5 +446,6 @@ module.exports = {
     crearContact,
     getListContact,
     crearNegociacion,
-    updateDeal
+    updateDeal,
+    updateDealGlobal
 }
