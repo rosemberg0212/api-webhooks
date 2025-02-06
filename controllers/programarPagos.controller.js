@@ -1,4 +1,4 @@
-const { getDeal, getCompany, obtainAllCounterparties, MoveMoneyACH, updateDealGlobal, empresaCobres } = require('../helpers/index')
+const { getDeal, getCompany, obtainAllCounterparties, MoveMoneyACH, updateDealGlobal, empresaCobres, enviarMensajeBitrix } = require('../helpers/index')
 const {authenticationMultiples} = require('../middleware/auth_cobre')
 
 const programarPagos = async (req, res) => {
@@ -31,6 +31,7 @@ const programarPagos = async (req, res) => {
         await MoveMoneyACH(datos)
     } else {
         console.log('No se encontro') 
+        await enviarMensajeBitrix(478, `Mensaje: No se pudo encontrar la contraparte`)
     }
     // console.log(deal)
     res.status(200).end();

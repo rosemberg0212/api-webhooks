@@ -1,4 +1,5 @@
 const { authentication } = require('../middleware/auth_cobre')
+const { enviarMensajeBitrix } = require('./bitrixMetodos')
 const { v4: uuidv4 } = require('uuid');
 
 const moveMoney = async (total, negociacionId) => {
@@ -111,9 +112,16 @@ const MoveMoneyACH = async (datos) => {
 
         const response = await fetch("https://api.cobre.co/v1/money_movements", requestOptions)
 
-        const data = await response.json()
-        console.log(data)
-        return data
+        if (response.ok) {
+            const data = await response.json()
+            console.log(data)
+            await enviarMensajeBitrix(478, `Pago subido corecctamente`)
+            return data
+        } else {
+            await enviarMensajeBitrix(478, `No se pudo subir el pago ACH`)
+            console.log('Error en el movimiento ACH')
+        }
+
 
 
     } catch (error) {

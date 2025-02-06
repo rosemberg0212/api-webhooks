@@ -217,7 +217,7 @@ const enviarMensajeBitrix = async (userId, mensaje) => {
             body: JSON.stringify(payload)
         });
         const result = await response.json();
-        // console.log(`Mensaje enviado a usuario ${userId}:`, result);
+        console.log(`Mensaje enviado a usuario ${userId}`);
     } catch (error) {
         console.error("Error al enviar mensaje:", error);
     }
