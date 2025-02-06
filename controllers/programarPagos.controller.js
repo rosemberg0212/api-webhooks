@@ -60,28 +60,6 @@ const obtenerDatosPago = async (req, res) => {
         }
     };
     await updateDealGlobal(datosUpdate)
-
-
-
-    const myHeaders = new Headers();
-myHeaders.append("", "");
-myHeaders.append("Content-Type", "application/json");
-
-const raw = JSON.stringify({
-  "id": 115006
-});
-
-const requestOptions = {
-  method: "POST",
-  headers: myHeaders,
-  body: raw,
-  redirect: "follow"
-};
-
-fetch("http://localhost:8080/hook/pagos/cobre?id=115006", requestOptions)
-  .then((response) => response.text())
-  .then((result) => console.log(result))
-  .catch((error) => console.error(error));
     // console.log(datos)
 }
 
