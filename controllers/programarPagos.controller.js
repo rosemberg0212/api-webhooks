@@ -7,7 +7,8 @@ const programarPagos = async (req, res) => {
     const deal = await getDeal(id);
     const company_id = deal.COMPANY_ID;
     const razonSocial = deal.UF_CRM_1714764463;
-    const monto = (deal.UF_CRM_1719433473082.replace(/\|COP/g, ""));
+    // const monto = (deal.UF_CRM_1719433473082.replace(/\|COP/g, ""));
+    const monto =( Number(deal.OPPORTUNITY)).toFixed(0);
     const company = await getCompany(company_id)
     const NIT = company.UF_CRM_1725986436
     const empresa = empresaCobres(razonSocial)
@@ -26,8 +27,8 @@ const programarPagos = async (req, res) => {
             bitrixId: deal.ID,
             tokenG : token
         }
+        console.log(datos)
         await MoveMoneyACH(datos)
-        // console.log(datos)
     } else {
         console.log('No se encontro') 
     }
@@ -59,6 +60,28 @@ const obtenerDatosPago = async (req, res) => {
         }
     };
     await updateDealGlobal(datosUpdate)
+
+
+
+    const myHeaders = new Headers();
+myHeaders.append("", "");
+myHeaders.append("Content-Type", "application/json");
+
+const raw = JSON.stringify({
+  "id": 115006
+});
+
+const requestOptions = {
+  method: "POST",
+  headers: myHeaders,
+  body: raw,
+  redirect: "follow"
+};
+
+fetch("http://localhost:8080/hook/pagos/cobre?id=115006", requestOptions)
+  .then((response) => response.text())
+  .then((result) => console.log(result))
+  .catch((error) => console.error(error));
     // console.log(datos)
 }
 

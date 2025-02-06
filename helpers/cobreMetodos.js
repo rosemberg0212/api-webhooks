@@ -95,7 +95,7 @@ const MoveMoneyACH = async (datos) => {
         const raw = JSON.stringify({
             "source_id": datos.cuenta,
             "destination_id": datos.counterparty,
-            "amount": datos.monto,
+            "amount": Number(datos.monto),
             "metadata": {
                 "description": "Test integracion Amanda"
             },
@@ -110,13 +110,11 @@ const MoveMoneyACH = async (datos) => {
         };
 
         const response = await fetch("https://api.cobre.co/v1/money_movements", requestOptions)
-        if (response.ok) {
-            const data = await response.json()
-            console.log(data)
-            return data
-        } else {
-            console.log('Error en la peticion')
-        }
+
+        const data = await response.json()
+        console.log(data)
+        return data
+
 
     } catch (error) {
         console.log('ocurrio un error al crear el movimiento', error)
