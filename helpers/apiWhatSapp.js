@@ -38,7 +38,27 @@ const confirmacionPago = async (datos) => {
     }
 }
 
+const mensajeAlex = async (datos) => {
+    console.log(datos)
+    try {
+        const requestOptions = {
+            method: "POST",
+        };
+
+        const response = await fetch(`http://143.198.118.131:8083/api/mensaje?botNum=573336025414&userNum=${datos.numeroUser}&templateName=pagos_cobre_alejandro&params={"hotel": "${datos.proveedor}", "empresa": "${datos.empresa}","monto":"${datos.monto}","fecha":"${datos.fecha}"}`, requestOptions)
+        if (response.ok) {
+            const data = await response.json()
+            console.log(data)
+        } else {
+            
+        }
+    } catch (error) {
+        console.log('Ocurrio un error', error)
+    }
+}
+
 module.exports = {
     enviarWhatSapp,
-    confirmacionPago
+    confirmacionPago,
+    mensajeAlex
 }

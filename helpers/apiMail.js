@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+const puppeteer = require("puppeteer");
 const fs = require('fs');
 
 const enviarImail = async (cuerpo, mail, asunto) => {
@@ -41,39 +42,50 @@ const enviarMailInnovacion = async (cuerpo, mail, asunto) => {
     };
     const transport = nodemailer.createTransport(config);
     const info = await transport.sendMail(mensaje);
-    // console.log(info)
+    console.log('Correo enviado')
 }
 
-const invitacionWindor = async (cuerpo, mail, asunto) => {
-    const config = {
-        host: "smtp.gmail.com",
-        port: 587,
-        auth: {
-            user: "reservas@gehsuites.com",
-            pass: process.env.MAIL_CONTRA_APP_RESERVAS,
-        },
-    };
-
-    const mensaje = {
-        from: "reservas@gehsuites.com",
-        to: `${mail}`,
-        subject: `${asunto}`,
-        text: `${cuerpo}`,
-        attachments: [
-            {
-                filename: 'Reapertura_Windsor.pdf',
-                path: 'public/modificado.pdf', // Ruta al archivo PDF que deseas adjuntar
-                encoding: 'base64', // Puedes cambiar el método de codificación según tus necesidades
+const correoProveedores = async (cuerpo, mail, asunto) => {
+    // 1️⃣ Convertir HTML a PDF con Puppeteer
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.setContent(cuerpo);
+    await page.pdf({ path: "comprobante.pdf", format: "A4" });
+    await browser.close();
+    try {
+        const config = {
+            host: "smtp.gmail.com",
+            port: 587,
+            auth: {
+                user: "operaciones@gehsuites.com",
+                pass: process.env.MAIL_CONTRA_APP_OPERACION,
             },
-        ],
-    };
-    const transport = nodemailer.createTransport(config);
-    const info = await transport.sendMail(mensaje);
-    console.log(info)
+        };
+
+        const mensaje = {
+            from: "operaciones@gehsuites.com",
+            to: `${mail}`,
+            subject: `${asunto}`,
+            html: `${cuerpo}`,
+            attachments: [
+                {
+                    filename: "comprobante.pdf",
+                    path: "comprobante.pdf",
+                    contentType: "application/pdf",
+                },
+            ],
+        };
+        const transport = nodemailer.createTransport(config);
+        const info = await transport.sendMail(mensaje);
+        console.log('Correo enviado')
+    } catch (error) {
+        console.log('Error al enviar correo:', error)
+    }
+
 }
 
 module.exports = {
     enviarImail,
-    invitacionWindor,
+    correoProveedores,
     enviarMailInnovacion
 }

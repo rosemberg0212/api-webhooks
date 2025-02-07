@@ -98,7 +98,7 @@ const MoveMoneyACH = async (datos) => {
             "destination_id": datos.counterparty,
             "amount": Number(datos.monto),
             "metadata": {
-                "description": "Test integracion Amanda"
+                "description": "Pago proveedores"
             },
             "external_id": datos.bitrixId,
             "checker_approval": true
@@ -115,7 +115,7 @@ const MoveMoneyACH = async (datos) => {
         if (response.ok) {
             const data = await response.json()
             console.log(data)
-            await enviarMensajeBitrix(478, `Pago subido corecctamente`)
+            // await enviarMensajeBitrix(478, `Pago subido corecctamente`)
             return data
         } else {
             await enviarMensajeBitrix(478, `No se pudo subir el pago ACH`)

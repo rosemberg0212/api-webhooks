@@ -339,27 +339,37 @@ const empresaCobres = (empresa) => {
         case '1170':
             return {
                 empresa: 'econo',
-                cuenta_cobre : 'acc_0yXKaILtbB'
+                cuenta_cobre : 'acc_0yXKaILtbB',
+                nombre_completo: 'ECONO HOTEL GROUP SAS',
+                nit: '901116843'
             }
-        case '1172':
+            case '1172':
             return {
                 empresa: 'sociedad',
-                cuenta_cobre : 'acc_qIytEIBTjn'
+                cuenta_cobre : 'acc_qIytEIBTjn',
+                nombre_completo: 'SOCIEDAD HOTELERA FAM SAS',
+                nit: '901718424'
             }
-        case '1174':
+            case '1174':
             return {
                 empresa: 'caribe',
-                cuenta_cobre : 'acc_udYnswZDl7'
+                cuenta_cobre : 'acc_udYnswZDl7',
+                nombre_completo: 'CARIBE HOTELES & SUITES SAS',
+                nit: '900801256'
             }
-        case '1176':
+            case '1176':
             return {
                 empresa: 'dt',
-                cuenta_cobre : 'acc_crYecLtqJq'
+                cuenta_cobre : 'acc_crYecLtqJq',
+                nombre_completo: 'DT HOTELES & INN SAS',
+                nit: '900725984'
             }
-        case '1182':
+            case '1182':
             return {
                 empresa: 'smart',
-                cuenta_cobre : 'acc_Ix8U3ywSWN'
+                cuenta_cobre : 'acc_Ix8U3ywSWN',
+                nombre_completo: 'SMART STAY SAS',
+                nit: '901691840'
             }
         default:
             return 'Empresa no validad'
