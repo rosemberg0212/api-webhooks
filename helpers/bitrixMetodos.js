@@ -411,7 +411,7 @@ const updateDeal = async (data) => {
 }
 
 const updateDealGlobal = async (datos) => {
-    console.log(datos)
+    // console.log(datos)
 
     const url = `${URL}/${apiKey}/crm.deal.update.json`;
 
