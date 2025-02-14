@@ -57,7 +57,7 @@ const obtenerDatosPago = async (req, res) => {
     }
 
     let datosUpdate
-    if (datos.status == 'completed') {
+    if (body.content.status.state == 'completed') {
         datosUpdate = {
             id: datos.id, // ID de la negociación a actualizar
             fields: {
