@@ -326,6 +326,17 @@ const empresaRecibo = (empresa) => {
             valor_total_a_pagar: el valor total a pagar`
             return prom;
 
+        case 'Movistar':
+            prom = `Te voy a mandar una imagen sobre un recibo público de la empresa movistar, necesito que analices y me extraigas la siguiente información en formato json:
+                "empresa": "nombre de la empresa".
+                "tipo_servicio": "tipo de servicio".
+                "numero_contrato": "numero para pagos".
+                "fecha_limite_pago": puede ser también fecha de corte o ultimo día de pago sin recargo o fecha de pago oportuno o fecha de vencimiento, en formato año/mes/dia (el año no puede ser menor al año en el que estamos actualmente).
+                "periodo_consumo": "año/mes/dia (si no hay dia colocar el primer dia del mes que se esta cobrando, el año no puede ser menor al año en el que estamos actualmente)".
+                valor_consumo: el valor total a pagar, (coloca solo los numeros, no pongas los puntos o comas), si no hay colocar 0
+                valor_servicios: colocalo en 0
+                valor_total_a_pagar: el valor total a pagar, (coloca solo los numeros, no pongas los puntos o comas), si no hay colocar 0`
+            return prom;
 
         default:
             return 'Empresa no valida o no esta registrado en sistema';
@@ -339,35 +350,35 @@ const empresaCobres = (empresa) => {
         case '1170':
             return {
                 empresa: 'econo',
-                cuenta_cobre : 'acc_0yXKaILtbB',
+                cuenta_cobre: 'acc_0yXKaILtbB',
                 nombre_completo: 'ECONO HOTEL GROUP SAS',
                 nit: '901116843'
             }
-            case '1172':
+        case '1172':
             return {
                 empresa: 'sociedad',
-                cuenta_cobre : 'acc_qIytEIBTjn',
+                cuenta_cobre: 'acc_qIytEIBTjn',
                 nombre_completo: 'SOCIEDAD HOTELERA FAM SAS',
                 nit: '901718424'
             }
-            case '1174':
+        case '1174':
             return {
                 empresa: 'caribe',
-                cuenta_cobre : 'acc_udYnswZDl7',
+                cuenta_cobre: 'acc_udYnswZDl7',
                 nombre_completo: 'CARIBE HOTELES & SUITES SAS',
                 nit: '900801256'
             }
-            case '1176':
+        case '1176':
             return {
                 empresa: 'dt',
-                cuenta_cobre : 'acc_crYecLtqJq',
+                cuenta_cobre: 'acc_crYecLtqJq',
                 nombre_completo: 'DT HOTELES & INN SAS',
                 nit: '900725984'
             }
-            case '1182':
+        case '1182':
             return {
                 empresa: 'smart',
-                cuenta_cobre : 'acc_Ix8U3ywSWN',
+                cuenta_cobre: 'acc_Ix8U3ywSWN',
                 nombre_completo: 'SMART STAY SAS',
                 nit: '901691840'
             }
