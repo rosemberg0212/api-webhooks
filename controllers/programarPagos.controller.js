@@ -56,53 +56,20 @@ const obtenerDatosPago = async (req, res) => {
         referencia: body.content.id
     }
 
-    let datosUpdate
-    if (body.content.status.state == 'completed') {
-        datosUpdate = {
-            id: datos.id, // ID de la negociación a actualizar
-            fields: {
-                STAGE_ID: 'C54:WON',
-                UF_CRM_1718396179138: Number(datos.amount / 100),
-                UF_CRM_1718396297448: datos.fecha_evento,
-                UF_CRM_1718397018945: datos.referencia,
-                UF_CRM_1719519638392: datos.status,
-                UF_CRM_1718394865311: "12600",
-                UF_CRM_1718396464904: "12604"
-            }
-        };
-        let emailHTML = `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd;">
-    <img src='https://www.gehsuites.com/images/geh_suites_logo_1_naranja.png'></img>
-      <h2 style="text-align: center; color: #ba721c;">Geh Suites te informa que se acaba de realizar el siguiente pago</h2>
-      
-      <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px;">
-        <p><strong>ID transacción :</strong> ${body.content.id}</p>
-      </div>
+    let datosUpdate = {
+        id: datos.id, // ID de la negociación a actualizar
+        fields: {
+            // STAGE_ID: 'C54:WON',
+            UF_CRM_1718396179138: Number(datos.amount / 100),
+            UF_CRM_1718396297448: datos.fecha_evento,
+            UF_CRM_1718397018945: datos.referencia,
+            UF_CRM_1719519638392: datos.status,
+            UF_CRM_1718394865311: "12600",
+            UF_CRM_1718396464904: "12604"
+        }
+    };
 
-      <h3 style="text-align: center; color: #007bff;">VALOR PAGADO: ${convertidorMoneda(Number(body.content.amount) / 100)} COP</h3>
-
-      <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px;">
-        <p><strong>Fecha / Hora:</strong> ${body.created_at}</p>
-        <p><strong>Estado de la transacción:</strong> <span style="color: green;">Aprobada</span></p>
-        <p><strong>Razón social que emite:</strong> PEXTO COLOMBIA SAS</p>
-        <p><strong>Razón social que realiza el pago:</strong> ${empresa.nombre_completo}</p>
-        <p><strong>NIT:</strong> ${empresa.nit}</p>
-        <p><strong>Numero de factura:</strong> ${n_factura}</p>
-      </div>
-
-      <div style="text-align: center; margin-top: 20px;">
-        <a href="#" style="display: inline-block; background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
-          Descargar Recibo
-        </a>
-      </div>
-
-      <p style="text-align: center; font-size: 12px; color: gray; margin-top: 20px;">
-        Si tiene alguna pregunta o queja, contacte a <a href="mailto:contabilidad@gehsuites.com">contabilidad@gehsuites.com</a>
-      </p>
-      <p style="text-align: center; font-size: 12px; color: gray; margin-top: 20px;"><a href="https://www.gehsuites.com/es">https://www.gehsuites.com/es</a>
-      </p>
-    </div>
-  `;
+    if (datos.status == 'completed') {
         const datosAlex = {
             numeroUser: '573114033174',
             numeroBot: '573336025414',
@@ -112,25 +79,46 @@ const obtenerDatosPago = async (req, res) => {
             proveedor: company.TITLE,
             fecha: body.created_at
         }
+
+        let emailHTML = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd;">
+    <img src='https://www.gehsuites.com/images/geh_suites_logo_1_naranja.png'></img>
+     <h2 style="text-align: center; color: #ba721c;">Geh Suites te informa que se acaba de realizar el siguiente pago</h2>
+    
+     <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px;">
+        <p><strong>ID transacción :</strong> ${body.content.id}</p>
+     </div>
+
+     <h3 style="text-align: center; color: #007bff;">VALOR PAGADO: ${convertidorMoneda(Number(body.content.amount) / 100)} COP</h3>
+
+     <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px;">
+        <p><strong>Fecha / Hora:</strong> ${body.created_at}</p>
+        <p><strong>Estado de la transacción:</strong> <span style="color: green;">Aprobada</span></p>
+        <p><strong>Razón social que emite:</strong> PEXTO COLOMBIA SAS</p>
+        <p><strong>Razón social que realiza el pago:</strong> ${empresa.nombre_completo}</p>
+        <p><strong>NIT:</strong> ${empresa.nit}</p>
+        <p><strong>Numero de factura:</strong> ${n_factura}</p>
+     </div>
+
+     <div style="text-align: center; margin-top: 20px;">
+        <a href="#" style="display: inline-block; background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+         Descargar Recibo
+        </a>
+     </div>
+
+     <p style="text-align: center; font-size: 12px; color: gray; margin-top: 20px;">
+        Si tiene alguna pregunta o queja, contacte a <a href="mailto:contabilidad@gehsuites.com">contabilidad@gehsuites.com</a>
+     </p>
+     <p style="text-align: center; font-size: 12px; color: gray; margin-top: 20px;"><a href="https://www.gehsuites.com/es">https://www.gehsuites.com/es</a>
+     </p>
+    </div>
+`;
         await correoProveedores(emailHTML, mail, 'Confirmación de pago Geh Suites')
         await mensajeAlex(datosAlex)
-
+        await updateDealGlobal(datosUpdate)
     } else {
-        datosUpdate = {
-            id: datos.id, // ID de la negociación a actualizar
-            fields: {
-                UF_CRM_1718396179138: Number(datos.amount / 100),
-                UF_CRM_1718396297448: datos.fecha_evento,
-                UF_CRM_1718397018945: datos.referencia,
-                UF_CRM_1719519638392: datos.status,
-                UF_CRM_1718394865311: "12600",
-                UF_CRM_1718396464904: "12604"
-            }
-        };
+        await updateDealGlobal(datosUpdate)
     }
-
-
-    await updateDealGlobal(datosUpdate)
     // console.log(datosUpdate)
     res.status(200).end();
 }
