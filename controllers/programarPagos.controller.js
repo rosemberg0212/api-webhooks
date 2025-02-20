@@ -28,7 +28,7 @@ const programarPagos = async (req, res) => {
             bitrixId: deal.ID,
             tokenG: token
         }
-        console.log(datos)
+        // console.log(datos)
         await MoveMoneyACH(datos)
     } else {
         console.log('No se encontro')
@@ -47,7 +47,7 @@ const obtenerDatosPago = async (req, res) => {
     const razonSocial = deal.UF_CRM_1714764463;
     const empresa = empresaCobres(razonSocial)
     const n_factura = deal.UF_CRM_1726088234584;
-    console.log(mail)
+    console.log(body)
     const datos = {
         id: body.content.external_id,
         status: body.content.status.state,
@@ -74,7 +74,7 @@ const obtenerDatosPago = async (req, res) => {
             numeroUser: '573114033174',
             numeroBot: '573336025414',
             template: 'pagos_cobre_alejandro',
-            monto: datos.amount,
+            monto: Number(datos.amount / 100),
             empresa: body.content.source.alias,
             proveedor: company.TITLE,
             fecha: body.created_at
@@ -94,7 +94,7 @@ const obtenerDatosPago = async (req, res) => {
      <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px;">
         <p><strong>Fecha / Hora:</strong> ${body.created_at}</p>
         <p><strong>Estado de la transacción:</strong> <span style="color: green;">Aprobada</span></p>
-        <p><strong>Razón social que emite:</strong> PEXTO COLOMBIA SAS</p>
+        <p><strong>Razón social que emite el pago:</strong> PEXTO COLOMBIA SAS</p>
         <p><strong>Razón social que realiza el pago:</strong> ${empresa.nombre_completo}</p>
         <p><strong>NIT:</strong> ${empresa.nit}</p>
         <p><strong>Numero de factura:</strong> ${n_factura}</p>
@@ -116,7 +116,9 @@ const obtenerDatosPago = async (req, res) => {
         await correoProveedores(emailHTML, mail, 'Confirmación de pago Geh Suites')
         await mensajeAlex(datosAlex)
         await updateDealGlobal(datosUpdate)
+        await enviarMensajeBitrix(10, `Entreo al if`)
     } else {
+        await enviarMensajeBitrix(10, `Entro al else`)
         await updateDealGlobal(datosUpdate)
     }
     // console.log(datosUpdate)
