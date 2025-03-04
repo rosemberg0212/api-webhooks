@@ -83,7 +83,7 @@ const obtenerDatosPago = async (req, res) => {
             proveedor: company.TITLE,
             fecha: body.created_at
         }
-
+        await mensajeAlex(datosAlex)
         let emailHTML = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd;">
     <img src='https://www.gehsuites.com/images/geh_suites_logo_1_naranja.png'></img>
@@ -118,7 +118,6 @@ const obtenerDatosPago = async (req, res) => {
     </div>
 `;
         await correoProveedores(emailHTML, mail, 'Confirmación de pago Geh Suites')
-        await mensajeAlex(datosAlex)
       
     } else {
         await enviarMensajeBitrix(10, `Entro al else`)
