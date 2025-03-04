@@ -6,7 +6,7 @@ const programarPagos = async (req, res) => {
     const { id } = req.query
     const deal = await getDeal(id);
     const company_id = deal.COMPANY_ID;
-    const razonSocial = deal.UF_CRM_1714764463;
+    const razonSocial = deal.UF_CRM_1714764463; 
     // const monto = (deal.UF_CRM_1719433473082.replace(/\|COP/g, ""));
     const monto = (Number(deal.OPPORTUNITY)).toFixed(0);
     const company = await getCompany(company_id)
@@ -15,6 +15,7 @@ const programarPagos = async (req, res) => {
     const token = await authenticationMultiples(empresa.empresa)
     const counterparties = await obtainAllCounterparties(NIT, token)
     const mail = company.EMAIL[0].VALUE
+    const numeroFactura = deal.UF_CRM_1726088234584;
     console.log(mail)
 
 
@@ -26,7 +27,8 @@ const programarPagos = async (req, res) => {
             counterparty: counterparties.id,
             monto: `${monto}00`,
             bitrixId: deal.ID,
-            tokenG: token
+            tokenG: token,
+            numeroF: numeroFactura
         }
         // console.log(datos)
         await MoveMoneyACH(datos)

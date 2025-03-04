@@ -98,7 +98,7 @@ const MoveMoneyACH = async (datos) => {
             "destination_id": datos.counterparty,
             "amount": Number(datos.monto),
             "metadata": {
-                "description": "Pago proveedores"
+                "description": `numero factura - ${datos.numeroF}`
             },
             "external_id": datos.bitrixId,
             "checker_approval": true
