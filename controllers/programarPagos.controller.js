@@ -6,7 +6,7 @@ const programarPagos = async (req, res) => {
     const { id } = req.query
     const deal = await getDeal(id);
     const company_id = deal.COMPANY_ID;
-    const razonSocial = deal.UF_CRM_1714764463; 
+    const razonSocial = deal.UF_CRM_1714764463;
     // const monto = (deal.UF_CRM_1719433473082.replace(/\|COP/g, ""));
     const monto = (Number(deal.OPPORTUNITY)).toFixed(0);
     const company = await getCompany(company_id)
@@ -58,20 +58,22 @@ const obtenerDatosPago = async (req, res) => {
         referencia: body.content.id
     }
 
-    let datosUpdate = {
-        id: datos.id, // ID de la negociación a actualizar
-        fields: {
-            // STAGE_ID: 'C54:WON',
-            UF_CRM_1718396179138: Number(datos.amount / 100),
-            UF_CRM_1718396297448: datos.fecha_evento,
-            UF_CRM_1718397018945: datos.referencia,
-            UF_CRM_1719519638392: datos.status,
-            UF_CRM_1718394865311: "12600",
-            UF_CRM_1718396464904: "12604"
-        }
-    };
+    let datosUpdate = ''
 
     if (datos.status == 'completed') {
+
+        datosUpdate = {
+            id: datos.id, // ID de la negociación a actualizar
+            fields: {
+                STAGE_ID: 'C54:WON',
+                UF_CRM_1718396179138: Number(datos.amount / 100),
+                UF_CRM_1718396297448: datos.fecha_evento,
+                UF_CRM_1718397018945: datos.referencia,
+                UF_CRM_1719519638392: datos.status,
+                UF_CRM_1718394865311: "12600",
+                UF_CRM_1718396464904: "12604"
+            }
+        };
         await updateDealGlobal(datosUpdate)
         await enviarMensajeBitrix(10, `Entreo al if`)
         const datosAlex = {
@@ -118,8 +120,20 @@ const obtenerDatosPago = async (req, res) => {
     </div>
 `;
         await correoProveedores(emailHTML, mail, 'Confirmación de pago Geh Suites')
-      
+
     } else {
+        datosUpdate = {
+            id: datos.id, // ID de la negociación a actualizar
+            fields: {
+                // STAGE_ID: 'C54:WON',
+                UF_CRM_1718396179138: Number(datos.amount / 100),
+                UF_CRM_1718396297448: datos.fecha_evento,
+                UF_CRM_1718397018945: datos.referencia,
+                UF_CRM_1719519638392: datos.status,
+                UF_CRM_1718394865311: "12600",
+                UF_CRM_1718396464904: "12604"
+            }
+        };
         await enviarMensajeBitrix(10, `Entro al else`)
         await updateDealGlobal(datosUpdate)
     }

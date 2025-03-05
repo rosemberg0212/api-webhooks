@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-const puppeteer = require("puppeteer");
+// const puppeteer = require("puppeteer");
 const fs = require('fs');
 
 const enviarImail = async (cuerpo, mail, asunto) => {
@@ -47,11 +47,11 @@ const enviarMailInnovacion = async (cuerpo, mail, asunto) => {
 
 const correoProveedores = async (cuerpo, mail, asunto) => {
     // 1️⃣ Convertir HTML a PDF con Puppeteer
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.setContent(cuerpo);
-    await page.pdf({ path: "comprobante.pdf", format: "A4" });
-    await browser.close();
+    // const browser = await puppeteer.launch();
+    // const page = await browser.newPage();
+    // await page.setContent(cuerpo);
+    // await page.pdf({ path: "comprobante.pdf", format: "A4" });
+    // await browser.close();
     try {
         const config = {
             host: "smtp.gmail.com",
@@ -67,13 +67,13 @@ const correoProveedores = async (cuerpo, mail, asunto) => {
             to: `${mail}`,
             subject: `${asunto}`,
             html: `${cuerpo}`,
-            attachments: [
-                {
-                    filename: "comprobante.pdf",
-                    path: "comprobante.pdf",
-                    contentType: "application/pdf",
-                },
-            ],
+            // attachments: [
+            //     {
+            //         filename: "comprobante.pdf",
+            //         path: "comprobante.pdf",
+            //         contentType: "application/pdf",
+            //     },
+            // ],
         };
         const transport = nodemailer.createTransport(config);
         const info = await transport.sendMail(mensaje);
