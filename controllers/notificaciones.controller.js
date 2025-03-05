@@ -46,10 +46,42 @@ const happyBirthday = async (req, res) => {
     // res.status(200).end();
 }
 
+const notificacionContratosVencidos = async (req, res) => {
+    const list = await getListDeal()
+    // console.log(list)
+
+    const hoy = new Date();
+    let listaEmpleados = [];
+
+    list.forEach(empleado => {
+        const fechaVencimiento = new Date(empleado.UF_CRM_1714769594);
+        const diferenciaDias = Math.ceil((fechaVencimiento - hoy) / (1000 * 60 * 60 * 24));
+
+        if (diferenciaDias === 15 || diferenciaDias === 7 || diferenciaDias === 1 || diferenciaDias === 0) {
+            listaEmpleados.push({
+                TITLE: empleado.TITLE,
+                fecha: fechaVencimiento.toISOString().split('T')[0]
+            });
+        }
+    });
+
+    if (listaEmpleados.length === 0) {
+        console.log('No hay empleados proximos a vencer')
+        return;
+    } // No hay empleados para notificar
+
+    const mensaje = listaEmpleados.map(emp =>
+        `- ${emp.TITLE} (Vence el ${emp.fecha})`
+    ).join('\n');
+
+    await enviarMailInnovacion(`Los siguientes contratos están próximos a vencer:\n\n${mensaje}`, 'gestionhumana@gehsuites.com', `⚠️ Alerta: Contratos próximos a vencer`)
+}
+
 // Programar la ejecución diaria a las 8:00 AM
 cron.schedule('00 7 * * *', () => {
     console.log('Ejecutando tarea programada a las 7:00 AM');
     happyBirthday();
+    notificacionContratosVencidos();
 }, {
     timezone: "America/Bogota" // Ajustar según la zona horaria
 });
@@ -88,5 +120,6 @@ cron.schedule('*/5 * * * *', userStatus);
 
 module.exports = {
     happyBirthday,
-    userStatus
+    userStatus,
+    notificacionContratosVencidos
 }

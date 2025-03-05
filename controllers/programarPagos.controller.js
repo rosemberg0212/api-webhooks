@@ -14,9 +14,18 @@ const programarPagos = async (req, res) => {
     const empresa = empresaCobres(razonSocial)
     const token = await authenticationMultiples(empresa.empresa)
     const counterparties = await obtainAllCounterparties(NIT, token)
-    const mail = company.EMAIL[0].VALUE
+    const mail = company?.EMAIL?.[0]?.VALUE
     const numeroFactura = deal.UF_CRM_1726088234584;
     console.log(mail)
+
+    if (!mail) {
+        res.status(404).json({
+            msj: 'Usuario no cuenta con correo'
+        })
+        console.log('Usuario no cuenta con correo')
+        await enviarMensajeBitrix(478, 'ERROR - Usuario no cuenta con correo')
+        return
+    }
 
 
     if (counterparties) {

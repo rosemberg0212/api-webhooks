@@ -148,7 +148,7 @@ const getListDeal = async (id) => {
         };
         while (hasMore) {
 
-            const response = await fetch(`https://gehsuites.bitrix24.com/rest/14/${api_key}/crm.deal.list.json?FILTER[STAGE_ID]=C6:WON&SELECT[]=TITLE&SELECT[]=UF_CRM_6635150DE95EB&SELECT[]=UF_CRM_1715689729&start=${start}`, requestOptions)
+            const response = await fetch(`https://gehsuites.bitrix24.com/rest/14/${api_key}/crm.deal.list.json?FILTER[STAGE_ID]=C6:WON&SELECT[]=TITLE&SELECT[]=UF_CRM_6635150DE95EB&SELECT[]=UF_CRM_1715689729&SELECT[]=UF_CRM_1714769594&start=${start}`, requestOptions)
 
             const result = await response.json();
             const data = result.result
