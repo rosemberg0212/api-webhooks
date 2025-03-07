@@ -45,7 +45,7 @@ const mensajeAlex = async (datos) => {
             method: "POST",
         };
 
-        const response = await fetch(`http://143.198.118.131:8083/api/mensaje?botNum=573336025414&userNum=${datos.numeroUser}&templateName=pagos_cobre_alejandro&params={"hotel": "${datos.proveedor}", "empresa": "${datos.empresa}","monto":"${datos.monto}","fecha":"${datos.fecha}"}`, requestOptions)
+        const response = await fetch(`http://143.198.118.131:8083/api/mensaje?botNum=573336025414&userNum=${datos.numeroUser}&templateName=notificacion_pago_alex&params={"hotel": "${datos.proveedor}", "empresa": "${datos.empresa}","monto":"${datos.monto}","fecha":"${datos.fecha}"}`, requestOptions)
         if (response.ok) {
             const data = await response.json()
             console.log(data)
