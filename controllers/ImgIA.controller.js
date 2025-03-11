@@ -9,9 +9,9 @@ const main = async (req, res) => {
 
     try {
         const { hotel, url, empresa } = req.body
-        console.log(hotel, empresa)
+        // console.log(hotel, empresa)
         const prom = empresaRecibo(empresa)
-        console.log(prom)
+        // console.log(prom)
         const response = await openai.chat.completions.create({
             model: "gpt-4o-mini",
             messages: [
@@ -35,7 +35,7 @@ const main = async (req, res) => {
         const jsonString = JSON.parse(jsonData.match(/{[^]*}/)?.[0]);
 
         // console.log(response.choices[0].message.content);
-        console.log(jsonString)
+        // console.log(jsonString)
         const hotelID = await hotelContacto(hotel)
         await addDeal(hotelID, jsonString, url)
 

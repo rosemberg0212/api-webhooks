@@ -84,7 +84,7 @@ const obtenerDatosPago = async (req, res) => {
             }
         };
         await updateDealGlobal(datosUpdate)
-        await enviarMensajeBitrix(10, `Entreo al if`)
+        // await enviarMensajeBitrix(10, `Entreo al if`)
         const datosAlex = {
             numeroUser: '573114033174',
             numeroBot: '573336025414',
@@ -143,7 +143,7 @@ const obtenerDatosPago = async (req, res) => {
                 UF_CRM_1718396464904: "12604"
             }
         };
-        await enviarMensajeBitrix(10, `Entro al else`)
+        // await enviarMensajeBitrix(10, `Entro al else`)
         await updateDealGlobal(datosUpdate)
     }
     // console.log(datosUpdate)

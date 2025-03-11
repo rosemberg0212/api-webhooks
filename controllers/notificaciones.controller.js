@@ -81,6 +81,11 @@ const notificacionContratosVencidos = async (req, res) => {
 cron.schedule('00 7 * * *', () => {
     console.log('Ejecutando tarea programada a las 7:00 AM');
     happyBirthday();
+}, {
+    timezone: "America/Bogota" // Ajustar según la zona horaria
+});
+cron.schedule('00 7 * * *', () => {
+    console.log('Ejecutando tarea programada a las 7:00 AM');
     notificacionContratosVencidos();
 }, {
     timezone: "America/Bogota" // Ajustar según la zona horaria
@@ -111,7 +116,7 @@ const userStatus = async (req, res) => {
         // Envía el mensaje al usuario admin especificado
         await enviarMensajeBitrix(adminId, `Usuarios en pausa:\n${mensaje}`);
     } else {
-        console.log("No hay usuarios en estado de pausa.");
+        // console.log("No hay usuarios en estado de pausa.");
     }
     // res.status(200).end();
 }
