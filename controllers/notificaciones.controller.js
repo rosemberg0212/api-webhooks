@@ -78,13 +78,13 @@ const notificacionContratosVencidos = async (req, res) => {
 }
 
 // Programar la ejecución diaria a las 8:00 AM
-cron.schedule('00 7 * * *', () => {
+cron.schedule('00 8 * * *', () => {
     console.log('Ejecutando tarea programada a las 7:00 AM');
     happyBirthday();
 }, {
     timezone: "America/Bogota" // Ajustar según la zona horaria
 });
-cron.schedule('00 7 * * *', () => {
+cron.schedule('00 8 * * *', () => {
     console.log('Ejecutando tarea programada a las 7:00 AM');
     notificacionContratosVencidos();
 }, {

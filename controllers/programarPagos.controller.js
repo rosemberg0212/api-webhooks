@@ -16,7 +16,6 @@ const programarPagos = async (req, res) => {
     const counterparties = await obtainAllCounterparties(NIT, token)
     const mail = company?.EMAIL?.[0]?.VALUE
     const numeroFactura = deal.UF_CRM_1726088234584;
-    console.log(mail)
 
     if (!mail) {
         res.status(404).json({

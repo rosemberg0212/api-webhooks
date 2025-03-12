@@ -70,7 +70,7 @@ const obtainAllCounterparties = async (targetId, token, page = 0) => {
         const data = await response.json()
         // console.log(data)
         // Buscar la contraparte en la página actual
-        const found = data.contents.find(counterparty => counterparty.metadata.counterparty_id_number === targetId);
+        const found = data.contents.find(counterparty => counterparty.metadata.counterparty_id_number == targetId);
         if (found) {
             return found; // Retorna la contraparte si se encuentra
         }
@@ -112,20 +112,16 @@ const MoveMoneyACH = async (datos) => {
 
         const response = await fetch("https://api.cobre.co/v1/money_movements", requestOptions)
 
-        if (response.ok) {
-            const data = await response.json()
-            console.log(data)
-            await enviarMensajeBitrix(478, `Pago subido corecctamente`)
-            return data
-        } else {
-            await enviarMensajeBitrix(478, `No se pudo subir el pago ACH`)
-            console.log('Error en el movimiento ACH')
-        }
 
-
+        const data = await response.json()
+        console.log(data)
+        await enviarMensajeBitrix(478, `Pago subido corecctamente`)
+        return data
 
     } catch (error) {
         console.log('ocurrio un error al crear el movimiento', error)
+        await enviarMensajeBitrix(478, `No se pudo subir el pago ACH`)
+        // console.log('Error en el movimiento ACH')
     }
 
 }
