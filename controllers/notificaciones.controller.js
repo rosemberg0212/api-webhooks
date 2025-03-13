@@ -40,7 +40,7 @@ const happyBirthday = async (req, res) => {
     // Construir el cuerpo del correo
     const emailMessage = buildEmailMessage(happyB);
     // console.log(emailMessage)
-    await enviarMailInnovacion(emailMessage, 'gestionhumana@gehsuites.com', 'Cumpleaños')
+    enviarMailInnovacion(emailMessage, 'gestionhumana@gehsuites.com', 'Cumpleaños')
 
 
     // res.status(200).end();
@@ -74,17 +74,17 @@ const notificacionContratosVencidos = async (req, res) => {
         `- ${emp.TITLE} (Vence el ${emp.fecha})`
     ).join('\n');
 
-    await enviarMailInnovacion(`Los siguientes contratos están próximos a vencer:\n\n${mensaje}`, 'gestionhumana@gehsuites.com', `⚠️ Alerta: Contratos próximos a vencer`)
+    enviarMailInnovacion(`Los siguientes contratos están próximos a vencer:\n\n${mensaje}`, 'gestionhumana@gehsuites.com', `⚠️ Alerta: Contratos próximos a vencer`)
 }
 
 // Programar la ejecución diaria a las 8:00 AM
-cron.schedule('00 8 * * *', () => {
+cron.schedule('00 7 * * *', () => {
     console.log('Ejecutando tarea programada a las 7:00 AM');
     happyBirthday();
 }, {
     timezone: "America/Bogota" // Ajustar según la zona horaria
 });
-cron.schedule('00 8 * * *', () => {
+cron.schedule('00 7 * * *', () => {
     console.log('Ejecutando tarea programada a las 7:00 AM');
     notificacionContratosVencidos();
 }, {

@@ -13,6 +13,7 @@
     "license": "ISC",
     "dependencies": {
         "@formkit/tempo": "^0.1.2",
+        "@sendgrid/mail": "^8.1.4",
         "axios": "^1.7.1",
         "bcryptjs": "^2.4.3",
         "cloudinary": "^1.26.3",

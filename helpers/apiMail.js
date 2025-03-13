@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
 // const puppeteer = require("puppeteer");
 const fs = require('fs');
+const sgMail = require('@sendgrid/mail')
 
 const enviarImail = async (cuerpo, mail, asunto) => {
 
@@ -24,25 +25,43 @@ const enviarImail = async (cuerpo, mail, asunto) => {
     console.log(info)
 };
 
-const enviarMailInnovacion = async (cuerpo, mail, asunto) => {
-    const config = {
-        host: "smtp.gmail.com",
-        port: 587,
-        auth: {
-            user: "innovacion@gehsuites.com",
-            pass: process.env.MAIL_CONTRA_APP_INNOVACION,
-        },
-    };
+// const enviarMailInnovacion = async (cuerpo, mail, asunto) => {
+//     const config = {
+//         host: "smtp.gmail.com",
+//         port: 587,
+//         auth: {
+//             user: "innovacion@gehsuites.com",
+//             pass: process.env.MAIL_CONTRA_APP_INNOVACION,
+//         },
+//     };
 
-    const mensaje = {
-        from: "innovacion@gehsuites.com",
-        to: `${mail}`,
-        subject: `${asunto}`,
-        text: `${cuerpo}`,
-    };
-    const transport = nodemailer.createTransport(config);
-    const info = await transport.sendMail(mensaje);
-    console.log('Correo enviado')
+//     const mensaje = {
+//         from: "innovacion@gehsuites.com",
+//         to: `${mail}`,
+//         subject: `${asunto}`,
+//         text: `${cuerpo}`,
+//     };
+//     const transport = nodemailer.createTransport(config);
+//     const info = await transport.sendMail(mensaje);
+//     console.log('Correo enviado')
+// }
+
+const enviarMailInnovacion = (cuerpo, mail, asunto) => {
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+    const msg = {
+        to: mail, // Change to your recipient
+        from: 'innovacion@gehsuites.com', // Change to your verified sender
+        subject: asunto,
+        text: cuerpo,
+    }
+    sgMail
+        .send(msg)
+        .then(() => {
+            console.log('Email sent')
+        })
+        .catch((error) => {
+            console.error(error)
+        })
 }
 
 const correoProveedores = async (cuerpo, mail, asunto) => {

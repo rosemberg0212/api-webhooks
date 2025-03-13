@@ -127,7 +127,7 @@ const obtenerDatosPago = async (req, res) => {
      </p>
     </div>
 `;
-        await correoProveedores(emailHTML, mail, 'Confirmación de pago Geh Suites')
+        // await correoProveedores(emailHTML, mail, 'Confirmación de pago Geh Suites')
 
     } else {
         datosUpdate = {
