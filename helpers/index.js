@@ -5,6 +5,7 @@ const hotel = require("../helpers/hotel");
 const fechas = require("../helpers/formatFechas");
 const apiWhatSapp = require("../helpers/apiWhatSapp");
 const cobreMetodos = require("../helpers/cobreMetodos");
+const autocore = require("../helpers/autocore");
 
 module.exports = {
   ...apiMail,
@@ -13,5 +14,6 @@ module.exports = {
   ...hotel,
   ...fechas,
   ...apiWhatSapp,
-  ...cobreMetodos
+  ...cobreMetodos,
+  ...autocore
 };

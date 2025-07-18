@@ -13,6 +13,7 @@ class Server {
       imagenIa: '/hook/imgIa',
       pasadia: '/hook/pasadia',
       pagos: '/hook/pagos/cobre',
+      fontumi: '/hook/fontumi/reservar',
     };
 
     //Middlewares
@@ -40,6 +41,7 @@ class Server {
     this.app.use(this.paths.imagenIa, require("../routes/imgIA.routes"));
     this.app.use(this.paths.pasadia, require("../routes/pasadias.routes"));
     this.app.use(this.paths.pagos, require("../routes/programarPagos.routes"));
+    this.app.use(this.paths.fontumi, require("../routes/fontumi_ia.routes"));
   }
 
   listem() {
