@@ -1,10 +1,10 @@
 const {
   reservarAutocore,
   enviarMailInnovacion,
-  enviarEmailGlobal
+  enviarEmailGlobal,
 } = require("../helpers/index");
 
-const {enviarMensajeGlobal} = require('../helpers/apiWhatSapp')
+const { enviarMensajeGlobal } = require("../helpers/apiWhatSapp");
 
 const realizarReserva = async (req, res) => {
   const {
@@ -65,22 +65,31 @@ const realizarReserva = async (req, res) => {
 };
 
 const enviarCorreoReservas = async (req, res) => {
-  const { hotel, fechaCheckin, nombre, tipoDetalle, numContacto } = req.body;
+  const { hotel, fechaEntrada, fechaSalida, nombre, tipoDetalle, numContacto } =
+    req.body;
 
-  const mensaje = `Estimado equipo de reservas, 
-  Hemos recibido una solicitud de decoración por parte de ${nombre}, los detalles son los siguientes:
+  const mensaje = `Estimado equipo de reservas:
 
-  Hotel: ${hotel}
-  Fecha de ingreso: ${fechaCheckin}
-  Tipo de detalle: ${tipoDetalle} 
-  Número de contacto: ${numContacto}
+Se ha recibido una nueva solicitud de decoración especial con los siguientes detalles:
 
-  Ponerse en contacto con el cliente para cualquier validación 
-  `;
+INFORMACIÓN DEL CLIENTE
+• Cliente: ${nombre}
+• Teléfono: ${numContacto}
+
+DETALLES DE LA RESERVA
+• Hotel: ${hotel}
+• Check-in: ${fechaEntrada}
+• Check-out: ${fechaSalida}
+• Tipo de decoración: ${tipoDetalle}
+
+Por favor, contactar al cliente para confirmar los detalles y coordinar la decoración solicitada.
+
+Saludos cordiales,
+Equipo de Reservas Automatizadas`;
 
   const correoEnviado = await enviarEmailGlobal(
     mensaje,
-    "innovacion@gehsuites.com",
+    "reservas@gehsuites.com",
     "Nueva solicitud de decoración"
   );
   res.json({
@@ -92,16 +101,14 @@ const envioContenidoMultimedia = async (req, res) => {
   const { nombre, url, numero } = req.body;
 
   const urlBot = `?botNum=573336025021&userNum=${numero}&templateName=envio_contenido_multimedia&params={"name":"${nombre}","url":"${url}"}`;
-  const mensaje = await enviarMensajeGlobal(urlBot)
+  const mensaje = await enviarMensajeGlobal(urlBot);
   res.json({
-    mensaje
-  })
+    mensaje,
+  });
 };
-
-
 
 module.exports = {
   realizarReserva,
   enviarCorreoReservas,
-  envioContenidoMultimedia
+  envioContenidoMultimedia,
 };

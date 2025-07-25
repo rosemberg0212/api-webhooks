@@ -105,6 +105,7 @@ const enviarEmailGlobal = async (cuerpo, mail, asunto) => {
     return info;
   } catch (error) {
     console.log('Error al enviar el correo', error);
+    return error
   }
 };
 
