@@ -65,7 +65,7 @@ const mensajeAlex = async (datos) => {
 };
 
 const enviarMensajeGlobal = async (datos) => {
-//   console.log(datos);
+  console.log(datos);
   try {
     const requestOptions = {
       method: "POST",
@@ -74,6 +74,7 @@ const enviarMensajeGlobal = async (datos) => {
     const response = await fetch(`http://143.198.118.131:8083/api/mensaje${datos}`, requestOptions);
     if (response.ok) {
       const data = await response.json();
+      console.log(data);
       return data
     } else {
       console.log("Ocurrio un error al enviar ws", error);
