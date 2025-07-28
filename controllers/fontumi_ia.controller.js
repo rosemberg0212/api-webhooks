@@ -23,6 +23,7 @@ const realizarReserva = async (req, res) => {
     rateId,
     rooms,
     hotel_id,
+    monto_link
   } = req.body;
 
   const datos = {
@@ -41,6 +42,7 @@ const realizarReserva = async (req, res) => {
       nights: nights,
       notes: `Reserva de ${nights} noches - agente de ia`,
       rooms: rooms,
+      monto_link: monto_link,
       roomsData: [
         {
           adults: adults,

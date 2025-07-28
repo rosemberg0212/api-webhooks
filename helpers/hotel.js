@@ -387,6 +387,19 @@ const empresaCobres = (empresa) => {
     }
 }
 
+const roomcloudIdTobookingId = (id) =>{
+    switch (id) {
+        case 13645:
+            return {
+                name: 'azuan',
+                id: ''
+            }
+    
+        default:
+            break;
+    }
+}
+
 module.exports = {
     hotelId,
     userContac,
