@@ -389,14 +389,64 @@ const empresaCobres = (empresa) => {
 
 const roomcloudIdTobookingId = (id) =>{
     switch (id) {
-        case 13645:
+        case '13645':
             return {
                 name: 'azuan',
-                id: ''
+                id: 1
+            }
+        case '13633':
+            return {
+                name: 'aixo',
+                id: 4
+            }
+        case '13644':
+            return {
+                name: 'avexi',
+                id: 6
+            }
+        case '13643':
+            return {
+                name: 'marina',
+                id: 9
+            }
+        case '14364':
+            return {
+                name: 'bocagrande',
+                id: 7
+            }
+        case '17644':
+            return {
+                name: 'abi',
+                id: 5
+            }
+        case '18004':
+            return {
+                name: 'windsor house',
+                id: 10
+            }
+        case '16255':
+            return {
+                name: 'madisson inn',
+                id: 3
+            }
+        case '17491':
+            return {
+                name: 'rodadero inn',
+                id: 8
+            }
+        case '19629':
+            return {
+                name: 'axis inn',
+                id: 48
+            }
+        case '15740':
+            return {
+                name: 'sansiraka',
+                id: 44
             }
     
         default:
-            break;
+            return 'Id no valido';
     }
 }
 
@@ -405,5 +455,6 @@ module.exports = {
     userContac,
     hotelContacto,
     empresaRecibo,
-    empresaCobres
+    empresaCobres,
+    roomcloudIdTobookingId
 }

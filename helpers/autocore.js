@@ -1,4 +1,5 @@
 const { enviarMensajeGlobal } = require("../helpers/apiWhatSapp");
+const { roomcloudIdTobookingId } = require("./hotel");
 const accses_key = process.env.ACCESS_KEY;
 const secret_key = process.env.SECRET_KEY;
 
@@ -20,22 +21,23 @@ const reservarAutocore = async (datos, hotel_id) => {
     };
 
     console.log(datos);
-    console.log(hotel_id);
-    // await generarLinkPago(datos);
-    // const response = await fetch(
-    //   `https://api.autocore.pro/v2/bookings/hotel_id=${hotel_id}`,
-    //   requestOptions
-    // );
+    // console.log(hotel_id);
+    // await generarLinkPago(datos, hotel_id, 'data.chatbot_id');
+    const response = await fetch(
+      `https://api.autocore.pro/v2/bookings/hotel_id=${hotel_id}`,
+      requestOptions
+    );
 
-    // const data = await response.json();
-    // console.log(data);
-    // if (
-    //   data.msg ==
-    //   "Reserva registrada exitosamente. Por favor realice su pago para confirmar la reserva"
-    // ) {
-    //   await obtenerLinkPago(data.chatbot_id, datos);
-    // }
-    // return data;
+    const data = await response.json();
+    console.log(data);
+    if (
+      data.msg ==
+      "Reserva registrada exitosamente. Por favor realice su pago para confirmar la reserva"
+    ) {
+      // await obtenerLinkPago(data.chatbot_id, datos);
+      await generarLinkPago(datos, hotel_id, data.chatbot_id);
+    }
+    return data;
   } catch (error) {
     console.log("error al tratar de hacer la reserva: ", error);
   }
@@ -65,7 +67,7 @@ const obtenerLinkPago = async (id, datos) => {
   }
 };
 
-const generarLinkPago = async (datos) => {
+const generarLinkPago = async (datos, hotel_id, id) => {
   try {
     const myHeaders = new Headers();
     myHeaders.append("access_key", accses_key);
@@ -73,13 +75,13 @@ const generarLinkPago = async (datos) => {
     myHeaders.append("Content-Type", "application/json");
 
     const raw = JSON.stringify({
-      hotel_id: 9,
-      guest_name: `${datos.firstName} ${datos.lastName}`,
+      hotel_id: roomcloudIdTobookingId(hotel_id).id,
+      guest_name: `${datos.reservation.firstName} ${datos.reservation.lastName}`,
       email: "innovacion@gehsuites.com",
-      phone: datos.telephone,
-      amount: datos.monto_link,
-      booking_dates: `${datos.checkin} - ${datos.checkout}`,
-      description: `Reserva de ${datos.nights} - agente de IA`,
+      phone: datos.reservation.telephone,
+      amount: datos.reservation.monto_link,
+      booking_dates: `${datos.reservation.checkin} - ${datos.reservation.checkout}`,
+      description: `Reserva de ${datos.reservation.nights} - agente de IA`,
       available_hours: 100,
       source: "Bitrix24 GehSuites",
       external_ref_id: "test",
@@ -103,7 +105,10 @@ const generarLinkPago = async (datos) => {
       requestOptions
     );
     const data = await response.json();
+    const url = `?botNum=573336025021&userNum=${datos.reservation.telephone}&templateName=confirmacion_link_reserva&params={"id_reserva":"${id}","link_pago":"${data.url}"}`;
+    const mensaje = await enviarMensajeGlobal(url);
     console.log(data);
+    console.log(mensaje);
   } catch (error) {
     console.log("error al generar el link de pago: ", error);
   }
