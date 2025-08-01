@@ -92,7 +92,7 @@ cron.schedule('00 7 * * *', () => {
 });
 
 const userStatus = async (req, res) => {
-    const userIds = [14, 30, 8882, 8874, 6050, 4776, 66, 42, 28];
+    const userIds = [14, 30, 8882, 8874, 6050, 4776, 66, 42, 28, 84, 40, 102, 18068, 11492];
     const adminId = 38
 
     // Función para obtener el nombre de usuario basado en el ID
