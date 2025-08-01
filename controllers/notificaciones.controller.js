@@ -102,6 +102,7 @@ const userStatus = async (req, res) => {
     };
 
     const usuarios = await fetchTimemanStatus(userIds);
+    // console.log(usuarios);
 
     // Filtra los usuarios en estado "PAUSED"
     const usuariosEnPausa = usuarios.filter(user => user.status === "PAUSED");
@@ -110,13 +111,14 @@ const userStatus = async (req, res) => {
         // Construye el mensaje con los nombres de los usuarios en pausa
         const mensaje = usuariosEnPausa.map(user => {
             const nombre = obtenerNombreUsuario(user.userId);
-            return `${nombre}, En pausa desde: ${format(user.timeStart, { time: "short" })}`;
+            return `${nombre}, En pausa desde: ${format(user.timeFinish, { time: "short" })}`;
         }).join("\n");
 
         // Envía el mensaje al usuario admin especificado
         await enviarMensajeBitrix(adminId, `Usuarios en pausa:\n${mensaje}`);
+        console.log(mensaje);
     } else {
-        // console.log("No hay usuarios en estado de pausa.");
+        console.log("No hay usuarios en estado de pausa.");
     }
     // res.status(200).end();
 }
