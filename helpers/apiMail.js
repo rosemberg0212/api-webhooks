@@ -2,6 +2,8 @@ const nodemailer = require("nodemailer");
 // const puppeteer = require("puppeteer");
 const fs = require("fs");
 const sgMail = require("@sendgrid/mail");
+const { Resend } = require('resend');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const enviarImail = async (cuerpo, mail, asunto) => {
   const config = {
@@ -82,20 +84,13 @@ const correoProveedores = async (cuerpo, mail, asunto) => {
 };
 
 const enviarEmailGlobal = async (cuerpo, mail, asunto) => {
-  const { SMTPClient } = await import('emailjs');
   try {
-    const client = new SMTPClient({
-      user: process.env.EMAIL_USER,
-      password: process.env.EMAIL_PASS,
-      host: process.env.EMAIL_HOST || "smtp.gmail.com",
-      ssl: true, // Usa SSL (puerto 465)
-    });
 
-    const message = await client.sendAsync({
-      text: `${cuerpo}`,
-      from: process.env.EMAIL_USER,
-      to: `${mail}`,
+     const message = await resend.emails.send({
+      from: 'innovacion@gehsuitesapps.com', // Cambia esto si ya verificaste dominio
+      to: [`${mail}`],
       subject: `${asunto}`,
+      text: `${cuerpo}`
     });
 
     console.log("Correo enviado", message);
