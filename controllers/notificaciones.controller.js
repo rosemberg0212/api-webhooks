@@ -1,4 +1,4 @@
-const { getListDeal, enviarMailInnovacion, fetchTimemanStatus, enviarMensajeBitrix, userContac } = require('../helpers/index')
+const { getListDeal, enviarMailInnovacion, fetchTimemanStatus, enviarMensajeBitrix, userContac, enviarEmailGlobal } = require('../helpers/index')
 const cron = require('node-cron');
 const { format, diffDays } = require("@formkit/tempo")
 
@@ -40,7 +40,7 @@ const happyBirthday = async (req, res) => {
     // Construir el cuerpo del correo
     const emailMessage = buildEmailMessage(happyB);
     // console.log(emailMessage)
-    enviarMailInnovacion(emailMessage, 'gestionhumana@gehsuites.com', 'Cumpleaños')
+    enviarEmailGlobal(emailMessage, 'gestionhumana@gehsuites.com', 'Cumpleaños')
 
 
     // res.status(200).end();
@@ -74,7 +74,7 @@ const notificacionContratosVencidos = async (req, res) => {
         `- ${emp.TITLE} (Vence el ${emp.fecha})`
     ).join('\n');
 
-    enviarMailInnovacion(`Los siguientes contratos están próximos a vencer:\n\n${mensaje}`, 'gestionhumana@gehsuites.com', `⚠️ Alerta: Contratos próximos a vencer`)
+    enviarEmailGlobal(`Los siguientes contratos están próximos a vencer:\n\n${mensaje}`, 'gestionhumana@gehsuites.com', `⚠️ Alerta: Contratos próximos a vencer`)
 }
 
 // Programar la ejecución diaria a las 8:00 AM

@@ -2,6 +2,7 @@ const nodemailer = require("nodemailer");
 // const puppeteer = require("puppeteer");
 const fs = require("fs");
 const sgMail = require("@sendgrid/mail");
+const { SMTPClient } = require("emailjs");
 
 const enviarImail = async (cuerpo, mail, asunto) => {
   const config = {
@@ -83,29 +84,25 @@ const correoProveedores = async (cuerpo, mail, asunto) => {
 
 const enviarEmailGlobal = async (cuerpo, mail, asunto) => {
   try {
-    const config = {
+    const client = new SMTPClient({
+      user: process.env.EMAIL_USER,
+      password: process.env.EMAIL_PASS,
       host: process.env.EMAIL_HOST || "smtp.gmail.com",
-      port: process.env.EMAIL_PORT || 587,
-      secure: false,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    };
+      ssl: true, // Usa SSL (puerto 465)
+    });
 
-    const mensaje = {
+    const message = await client.sendAsync({
+      text: `${cuerpo}`,
       from: process.env.EMAIL_USER,
       to: `${mail}`,
       subject: `${asunto}`,
-      text: `${cuerpo}`,
-    };
-    const transport = nodemailer.createTransport(config);
-    const info = transport.sendMail(mensaje);
-    console.log('Correo enviado');
-    return info;
+    });
+
+    console.log("Correo enviado", message);
+    return message;
   } catch (error) {
-    console.log('Error al enviar el correo', error);
-    return error
+    console.log("Error al enviar el correo", error);
+    return error;
   }
 };
 
