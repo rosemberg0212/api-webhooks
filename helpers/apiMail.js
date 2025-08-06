@@ -2,7 +2,6 @@ const nodemailer = require("nodemailer");
 // const puppeteer = require("puppeteer");
 const fs = require("fs");
 const sgMail = require("@sendgrid/mail");
-const { SMTPClient } = require("emailjs");
 
 const enviarImail = async (cuerpo, mail, asunto) => {
   const config = {
@@ -83,6 +82,7 @@ const correoProveedores = async (cuerpo, mail, asunto) => {
 };
 
 const enviarEmailGlobal = async (cuerpo, mail, asunto) => {
+  const { SMTPClient } = await import('emailjs');
   try {
     const client = new SMTPClient({
       user: process.env.EMAIL_USER,
