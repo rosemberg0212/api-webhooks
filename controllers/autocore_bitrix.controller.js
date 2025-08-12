@@ -1,4 +1,6 @@
 const { getDeal, getContact, hotelId, separarDias, calcularNoches} = require('../helpers/index')
+const accses_key = process.env.ACCESS_KEY;
+const secret_key = process.env.SECRET_KEY;
 //#region Obtener datos para generar link 
 const obtenerDatosB = async (req, res) => {
 
@@ -36,7 +38,8 @@ const obtenerDatosB = async (req, res) => {
             montoConImpuesto,
             porcentajeLink,
             booking_dates,
-            fechasConvertidas
+            fechasConvertidas,
+            localizador: data.UF_CRM_1755027828331
         }
 
         console.log(datosLink)
@@ -69,7 +72,8 @@ const generarLink = async (datos) => {
             "available_hours": 100,
             "source": "Bitrix24 GehSuites",
             "external_ref_id": datos.dealID,
-            "booking_dates": datos.booking_dates
+            "booking_dates": datos.booking_dates,
+            "reservation_id": datos.localizador
         });
     } else {
         raw = JSON.stringify({
@@ -82,7 +86,8 @@ const generarLink = async (datos) => {
             "available_hours": 3652,
             "source": "Bitrix24 GehSuites",
             "external_ref_id": datos.dealID,
-            "booking_dates": datos.booking_dates
+            "booking_dates": datos.booking_dates,
+            "reservation_id": datos.localizador
         });
     }
 
@@ -91,8 +96,8 @@ const generarLink = async (datos) => {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "access_key": "75Aatc4Z8lLM0cLE",
-            "secret_key": "tdQ61vQwvFXlKjh0E9meowYxMnfCi0bC"
+            "access_key": accses_key,
+            "secret_key": secret_key
         },
         body: raw,
     };
