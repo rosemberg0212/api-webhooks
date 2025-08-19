@@ -14,6 +14,7 @@ class Server {
       pasadia: '/hook/pasadia',
       pagos: '/hook/pagos/cobre',
       fontumi: '/hook/fontumi/reservar',
+      openia: '/hook/openia',
     };
 
     //Middlewares
@@ -42,6 +43,7 @@ class Server {
     this.app.use(this.paths.pasadia, require("../routes/pasadias.routes"));
     this.app.use(this.paths.pagos, require("../routes/programarPagos.routes"));
     this.app.use(this.paths.fontumi, require("../routes/fontumi_ia.routes"));
+    this.app.use(this.paths.openia, require("../routes/agentes_openia.routes"));
   }
 
   listem() {
