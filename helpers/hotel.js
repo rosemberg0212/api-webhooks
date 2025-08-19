@@ -59,10 +59,10 @@ const userContac = [
         name: 'Rosemberg',
         id: 14
     },
-    {
-        name: 'Angela',
-        id: 30
-    },
+    // {
+    //     name: 'Angela',
+    //     id: 30
+    // },
     {
         name: 'Wendy De Avila',
         id: 8882
@@ -90,7 +90,39 @@ const userContac = [
     {
         name: 'Adriana Hernandez',
         id: 28
-    }
+    },
+    {
+        name: 'Yaislusmar Moreno',
+        id: 84
+    },
+    {
+        name: 'Brenda De la Espriella',
+        id: 40
+    },
+    {
+        name: 'Eyleen Margarita',
+        id: 102
+    },
+    {
+        name: 'Daniela Bermudez',
+        id: 11492
+    },
+    {
+        name: 'Marys Rosales',
+        id: 11638
+    },
+    {
+        name: 'Yineth Tamara',
+        id: 18068
+    },
+    {
+        name: 'Maureen Mora',
+        id: 26998
+    },
+    {
+        name: 'Belcy Pérez',
+        id: 38
+    },
 ]
 
 const hotelContacto = (hotel) => {

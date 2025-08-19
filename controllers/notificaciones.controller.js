@@ -125,8 +125,29 @@ const userStatus = async (req, res) => {
 
 cron.schedule('*/5 * * * *', userStatus);
 
+const getUsersStatus = async (req, res) => {
+    const userIds = [14, 8882, 8874, 6050, 4776, 66, 42, 28, 84, 40, 102, 18068, 11492, 11638,26998, 38];
+     const obtenerNombreUsuario = (userId) => {
+        const usuario = userContac.find(user => user.id === userId);
+        return usuario ? usuario.name : `Usuario ID: ${userId}`;
+    };
+    
+    try {
+        const usuarios = await fetchTimemanStatus(userIds);
+        const usuariosConNombres = usuarios.map(user => ({
+            ...user,
+            nombre: obtenerNombreUsuario(user.userId)
+        }));
+        
+        res.json(usuariosConNombres);
+    } catch (error) {
+        res.status(500).json({ error: "Error al obtener estados" });
+    }
+};
+
 module.exports = {
     happyBirthday,
     userStatus,
-    notificacionContratosVencidos
+    notificacionContratosVencidos,
+    getUsersStatus
 }
