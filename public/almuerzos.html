@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Almuerzos - GEH Suites</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f4e8d0 0%, #f9f2e2 30%, #fdf8ef 60%, #fff9f0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(80, 60, 40, 0.12), 0 10px 30px rgba(70, 50, 30, 0.08);
+            max-width: 520px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #9f6118 0%, #d4941f 50%, #f4b942 100%);
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #9f6118;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #9f6118;
+            box-shadow: 0 0 0 3px rgba(80, 60, 40, 0.15);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #9f6118 0%, #d4941f 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(70, 50, 30, 0.25);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #8a5516 0%, #bf8420 100%);
+            box-shadow: 0 6px 18px rgba(70, 50, 30, 0.35);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .resultado {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .resultado.success {
+            background: linear-gradient(135deg, #f8f4e6 0%, #fff8e1 100%);
+            border: 2px solid #d4941f;
+            color: #9f6118;
+        }
+
+        .resultado.error {
+            background-color: #ffeaa7;
+            border: 2px solid #e17055;
+            color: #d63031;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .info-item {
+            padding: 12px;
+            background: linear-gradient(135deg, rgba(159, 97, 24, 0.1) 0%, rgba(212, 148, 31, 0.1) 100%);
+            border: 1px solid rgba(159, 97, 24, 0.2);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #8a5516;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .info-value {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 5px;
+            color: #9f6118;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #9f6118;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .meses-disponibles {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #8a5516;
+            background: rgba(159, 97, 24, 0.05);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #d4941f;
+        }
+
+        .footer-branding {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(159, 97, 24, 0.2);
+            font-size: 12px;
+            color: #8a5516;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="https://space-img.sfo3.digitaloceanspaces.com/Agencias/gehlogo.png" alt="GEH Suites Logo" class="logo">
+        </div>
+        <h1>🍽️ Consulta de Almuerzos</h1>
+        
+        <form id="consultaForm">
+            <div class="form-group">
+                <label for="cedula">Número de Cédula:</label>
+                <input 
+                    type="text" 
+                    id="cedula" 
+                    name="cedula"
+                    placeholder="Ej: 1043490938"
+                    required
+                    autocomplete="off"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="month">Mes (opcional):</label>
+                <input 
+                    type="month" 
+                    id="month" 
+                    name="month"
+                    title="Deja vacío para consultar el mes actual"
+                />
+            </div>
+
+            <button type="submit">
+                Consultar Almuerzos
+            </button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Consultando información...</p>
+        </div>
+
+        <div class="resultado" id="resultado">
+            <div id="resultadoContent"></div>
+        </div>
+
+        <div class="meses-disponibles" id="mesesInfo">
+            <small>💡 Tip: Deja el campo "Mes" vacío para consultar el mes actual</small>
+        </div>
+
+        <div class="footer-branding">
+            <strong>GEH Suites Hotels Colombia</strong><br>
+            Sistema de Gestión de Almuerzos
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('consultaForm');
+            const loading = document.getElementById('loading');
+            const resultado = document.getElementById('resultado');
+            const resultadoContent = document.getElementById('resultadoContent');
+
+            // Cargar meses disponibles
+            loadAvailableMonths();
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const cedula = document.getElementById('cedula').value.trim();
+                const month = document.getElementById('month').value;
+
+                if (!cedula) {
+                    showError('Por favor ingresa tu número de cédula');
+                    return;
+                }
+
+                // Mostrar loading
+                loading.style.display = 'block';
+                resultado.style.display = 'none';
+
+                try {
+                    // Construir URL
+                    const queryParams = month ? `?month=${encodeURIComponent(month)}` : '';
+                    const url = `/api/almuerzos/${encodeURIComponent(cedula)}${queryParams}`;
+
+                    const response = await fetch(url);
+                    const data = await response.json();
+
+                    loading.style.display = 'none';
+
+                    if (response.ok && data.success) {
+                        showSuccess(data);
+                    } else {
+                        showError(data.mensaje || 'Error desconocido');
+                    }
+
+                } catch (error) {
+                    loading.style.display = 'none';
+                    showError('Error de conexión. Intenta nuevamente.');
+                    console.error('Error:', error);
+                }
+            });
+
+            async function loadAvailableMonths() {
+                try {
+                    const response = await fetch('/api/almuerzos/');
+                    const data = await response.json();
+                    
+                    if (data.success && data.meses && data.meses.length > 0) {
+                        const mesesInfo = document.getElementById('mesesInfo');
+                        
+                        // Ordenar meses por año y mes
+                        const sortedMeses = data.meses.sort((a, b) => {
+                            const [monthA, yearA] = a.split(' ');
+                            const [monthB, yearB] = b.split(' ');
+                            
+                            if (yearA !== yearB) {
+                                return parseInt(yearB) - parseInt(yearA); // Año más reciente primero
+                            }
+                            
+                            const monthsOrder = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+                            return monthsOrder.indexOf(monthB) - monthsOrder.indexOf(monthA); // Mes más reciente primero
+                        });
+                        
+                        mesesInfo.innerHTML = `
+                            <small>📅 <strong>Meses disponibles (${data.meses.length}):</strong> ${sortedMeses.join(', ')}</small>
+                            <br>
+                            <small>💡 <strong>Mes actual:</strong> ${data.mesActual}</small>
+                        `;
+                    } else {
+                        const mesesInfo = document.getElementById('mesesInfo');
+                        mesesInfo.innerHTML = `
+                            <small>⚠️ No se encontraron hojas de meses disponibles</small>
+                            <br>
+                            <small>💡 Tip: Deja el campo "Mes" vacío para consultar el mes actual</small>
+                        `;
+                    }
+                } catch (error) {
+                    console.log('No se pudieron cargar los meses disponibles');
+                    const mesesInfo = document.getElementById('mesesInfo');
+                    mesesInfo.innerHTML = `
+                        <small>💡 Tip: Deja el campo "Mes" vacío para consultar el mes actual</small>
+                    `;
+                }
+            }
+
+            function showSuccess(data) {
+                resultado.className = 'resultado success';
+                resultado.style.display = 'block';
+                
+                resultadoContent.innerHTML = `
+                    <h3>✅ Información encontrada</h3>
+                    <p><strong>Empleado:</strong> ${data.nombre || data.cedula}</p>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Usados</div>
+                            <div class="info-value">${data.usados}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Restantes</div>
+                            <div class="info-value">${data.restantes}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Límite</div>
+                            <div class="info-value">${data.limite}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Mes</div>
+                            <div class="info-value" style="font-size: 14px;">${data.mes}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function showError(message) {
+                resultado.className = 'resultado error';
+                resultado.style.display = 'block';
+                
+                resultadoContent.innerHTML = `
+                    <h3>❌ Error</h3>
+                    <p>${message}</p>
+                `;
+            }
+
+            // Auto-limpiar resultado cuando se empiece a escribir una nueva cédula
+            document.getElementById('cedula').addEventListener('input', function() {
+                if (resultado.style.display !== 'none') {
+                    resultado.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

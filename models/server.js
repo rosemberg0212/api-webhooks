@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 
 class Server {
   constructor() {
@@ -15,6 +16,7 @@ class Server {
       pagos: '/hook/pagos/cobre',
       fontumi: '/hook/fontumi/reservar',
       openia: '/hook/openia',
+      almuerzos: '/api/almuerzos',
     };
 
     //Middlewares
@@ -44,6 +46,12 @@ class Server {
     this.app.use(this.paths.pagos, require("../routes/programarPagos.routes"));
     this.app.use(this.paths.fontumi, require("../routes/fontumi_ia.routes"));
     this.app.use(this.paths.openia, require("../routes/agentes_openia.routes"));
+    this.app.use(this.paths.almuerzos, require("../routes/almuerzos.routes"));
+    
+    // Ruta específica para la página de almuerzos
+    this.app.get('/almuerzos', (req, res) => {
+      res.sendFile(path.join(__dirname, '../public', 'almuerzos.html'));
+    });
   }
 
   listem() {
