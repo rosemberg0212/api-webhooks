@@ -71,6 +71,7 @@ const generarLink = async (datos) => {
             "description": datos.descripcion,
             "available_hours": 100,
             "source": "Bitrix24 GehSuites",
+            "temp_webhook_url": "https://de840f5f2618.ngrok-free.app/hook/bitrixAutocore/update/pago",
             "external_ref_id": datos.dealID,
             "booking_dates": datos.booking_dates,
             "reservation_id": datos.localizador
@@ -85,6 +86,7 @@ const generarLink = async (datos) => {
             "description": datos.descripcion,
             "available_hours": 3652,
             "source": "Bitrix24 GehSuites",
+            "temp_webhook_url": "https://de840f5f2618.ngrok-free.app/hook/bitrixAutocore/update/pago",
             "external_ref_id": datos.dealID,
             "booking_dates": datos.booking_dates,
             "reservation_id": datos.localizador
@@ -182,9 +184,9 @@ const generarLink = async (datos) => {
 const actualizarDatosPagos = async (req, res) => {
 
     const api_key = process.env.APIKEY_BITRIX;
-    const { payment_status, amount, payment_date, company, hotel, voucher_url, transaction_id, external_ref_id } = req.body
+    const { payment_status, amount, payment_date, company, hotel, voucher_url, transaction_id, external_ref_id, ...body } = req.body
     let company_id
-
+    console.log(body);
     switch (company) {
         case 'CARIBE HOTELES':
             company_id = '6144'
