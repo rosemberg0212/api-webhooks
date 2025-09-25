@@ -71,7 +71,7 @@ const generarLink = async (datos) => {
             "description": datos.descripcion,
             "available_hours": 100,
             "source": "Bitrix24 GehSuites",
-            "temp_webhook_url": "https://de840f5f2618.ngrok-free.app/hook/bitrixAutocore/update/pago",
+            "temp_webhook_url": "http://143.198.118.131:8085/hook/bitrixAutocore/update/pago",
             "external_ref_id": datos.dealID,
             "booking_dates": datos.booking_dates,
             "reservation_id": datos.localizador
@@ -86,7 +86,7 @@ const generarLink = async (datos) => {
             "description": datos.descripcion,
             "available_hours": 3652,
             "source": "Bitrix24 GehSuites",
-            "temp_webhook_url": "https://de840f5f2618.ngrok-free.app/hook/bitrixAutocore/update/pago",
+            "temp_webhook_url": "http://143.198.118.131:8085/hook/bitrixAutocore/update/pago",
             "external_ref_id": datos.dealID,
             "booking_dates": datos.booking_dates,
             "reservation_id": datos.localizador
