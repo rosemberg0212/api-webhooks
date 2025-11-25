@@ -173,7 +173,9 @@ const hotelContacto = (hotel) => {
 
         case 'Hotel Windsor':
             return hotel_id = 48644
-
+            
+        case 'Hotel Playa Salguero':
+            return hotel_id = 150770
 
         default:
             return 'Hotel no valido o no esta registrado en sistema';
