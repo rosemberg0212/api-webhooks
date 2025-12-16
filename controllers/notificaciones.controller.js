@@ -60,7 +60,8 @@ const notificacionContratosVencidos = async (req, res) => {
         if (diferenciaDias === 15 || diferenciaDias === 7 || diferenciaDias === 1 || diferenciaDias === 0) {
             listaEmpleados.push({
                 TITLE: empleado.TITLE,
-                fecha: fechaVencimiento.toISOString().split('T')[0]
+                fecha: fechaVencimiento.toISOString().split('T')[0],
+                tiempoContrato: empleado.UF_CRM_1743425226608
             });
         }
     });
@@ -71,10 +72,12 @@ const notificacionContratosVencidos = async (req, res) => {
     } // No hay empleados para notificar
 
     const mensaje = listaEmpleados.map(emp =>
-        `- ${emp.TITLE} (Vence el ${emp.fecha})`
+        `- ${emp.TITLE} (Vence el ${emp.fecha}) - el tiempo del contrato actual es de ${emp.tiempoContrato} meses.`
     ).join('\n');
 
-    enviarEmailGlobal(`Los siguientes contratos están próximos a vencer:\n\n${mensaje}`, 'gestionhumana@gehsuites.com', `⚠️ Alerta: Contratos próximos a vencer`)
+    console.log(mensaje);
+
+    enviarEmailGlobal(`Los siguientes contratos están próximos a vencer:\n\n${mensaje}`, 'innovacion@gehsuites.com', `⚠️ Alerta: Contratos próximos a vencer`)
 }
 
 // Programar la ejecución diaria a las 8:00 AM
