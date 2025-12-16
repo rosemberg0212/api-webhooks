@@ -77,7 +77,7 @@ const notificacionContratosVencidos = async (req, res) => {
 
     console.log(mensaje);
 
-    enviarEmailGlobal(`Los siguientes contratos están próximos a vencer:\n\n${mensaje}`, 'innovacion@gehsuites.com', `⚠️ Alerta: Contratos próximos a vencer`)
+    enviarEmailGlobal(`Los siguientes contratos están próximos a vencer:\n\n${mensaje}`, 'gestionhumana@gehsuites.com', `⚠️ Alerta: Contratos próximos a vencer`)
 }
 
 // Programar la ejecución diaria a las 8:00 AM
