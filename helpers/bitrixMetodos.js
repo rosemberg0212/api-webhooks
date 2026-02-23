@@ -262,15 +262,19 @@ const getListPasadias = async () => {
 const crearContact = async (info) => {
   const url = `${URL}/${apiKey}/crm.contact.add.json`;
 
+  // Accept both spanish and generic keys
+  const nombre = info.nombre || info.name || "";
+  const apellido = info.apellido || info.last_name || info.lastName || "";
+  const email = info.email || info.mail || "";
+  const telefono = info.telefono || info.celular || info.phone || "";
+
   const datos = {
     fields: {
-      NAME: info.name,
-      LAST_NAME: "",
+      NAME: nombre,
+      LAST_NAME: apellido,
       SECOND_NAME: "",
-      EMAIL: [{ VALUE: info.mail, VALUE_TYPE: "WORK" }],
-      PHONE: [{ VALUE: info.celular, VALUE_TYPE: "MOBILE" }],
-      // ASSIGNED_BY_ID: 14,
-      // COMMENTS: "Nuevo cliente potencial"
+      EMAIL: [{ VALUE: email, VALUE_TYPE: "OTHER" }],
+      PHONE: [{ VALUE: telefono, VALUE_TYPE: "WORK" }],
     },
   };
 
@@ -291,9 +295,51 @@ const crearContact = async (info) => {
         "Error al crear el contacto:",
         resultado.error_description || resultado
       );
+      return null;
     }
   } catch (error) {
     console.error("Error de red o servidor:", error.message);
+    return null;
+  }
+};
+
+const crearCompany = async (info) => {
+  const url = `${URL}/${apiKey}/crm.company.add.json`;
+
+  const nombre = info.nombre || info.name || "";
+  const email = info.email || info.mail || "";
+  const telefono = info.telefono || info.celular || info.phone || "";
+
+  const datos = {
+    fields: {
+      TITLE: nombre,
+      PHONE: [{ VALUE: telefono, VALUE_TYPE: "WORK" }],
+      EMAIL: [{ VALUE: email, VALUE_TYPE: "OTHER" }],
+    },
+  };
+
+  try {
+    const respuesta = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datos),
+    });
+
+    const resultado = await respuesta.json();
+
+    if (respuesta.ok) {
+      console.log("Compañía creada con éxito, ID:", resultado.result);
+      return resultado.result;
+    } else {
+      console.error(
+        "Error al crear la compañía:",
+        resultado.error_description || resultado
+      );
+      return null;
+    }
+  } catch (error) {
+    console.error("Error de red o servidor:", error.message);
+    return null;
   }
 };
 
@@ -459,6 +505,7 @@ module.exports = {
   addDeal,
   getListPasadias,
   crearContact,
+  crearCompany,
   getListContact,
   crearNegociacion,
   updateDeal,

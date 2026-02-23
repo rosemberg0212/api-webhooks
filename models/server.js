@@ -9,6 +9,7 @@ class Server {
 
     this.paths = {
       bitrix: "/hook/bitrix",
+      anato: "/hook/anato",
       bitrixAutocore: "/hook/bitrixAutocore",
       notificaciones: '/hook/notificacion',
       imagenIa: '/hook/imgIa',
@@ -47,6 +48,7 @@ class Server {
     this.app.use(this.paths.fontumi, require("../routes/fontumi_ia.routes"));
     this.app.use(this.paths.openia, require("../routes/agentes_openia.routes"));
     this.app.use(this.paths.almuerzos, require("../routes/almuerzos.routes"));
+    this.app.use(this.paths.anato, require("../routes/anato.routes"));
     
     // Ruta específica para la página de almuerzos
     this.app.get('/almuerzos', (req, res) => {

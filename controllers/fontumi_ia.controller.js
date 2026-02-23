@@ -7,63 +7,51 @@ const {
 const { enviarMensajeGlobal } = require("../helpers/apiWhatSapp");
 
 const realizarReserva = async (req, res) => {
-  const {
-    adults,
-    checkin,
-    checkout,
-    children,
-    children_ages,
-    city,
-    email,
-    firstName,
-    lastName,
-    nights,
-    telephone,
-    roomId,
-    rateId,
-    rooms,
-    hotel_id,
-    monto_link
-  } = req.body;
+  
+  // const { reservation } = parsed;
+  console.log(req.body);
+  // const datos = {
+  //   reservation: {
+  //     adults: adults,
+  //     checkin: checkin,
+  //     checkout: checkout,
+  //     children: children,
+  //     children_ages: children_ages,
+  //     city: city,
+  //     country: "COL",
+  //     currency: "COP",
+  //     email: email,
+  //     firstName: firstName,
+  //     lastName: lastName,
+  //     nights: nights,
+  //     notes: `Reserva de ${nights} noches - agente de ia`,
+  //     rooms: rooms,
+  //     monto_link: monto_link,
+  //     roomsData: [
+  //       {
+  //         adults: adults,
+  //         checkin: checkin,
+  //         checkout: checkout,
+  //         children: children,
+  //         currency: "COP",
+  //         id: roomId,
+  //         quantity: "1",
+  //         rateId: rateId,
+  //       },
+  //     ],
+  //     telephone: telephone,
+  //   },
+  // };
 
-  const datos = {
-    reservation: {
-      adults: adults,
-      checkin: checkin,
-      checkout: checkout,
-      children: children,
-      children_ages: children_ages,
-      city: city,
-      country: "COL",
-      currency: "COP",
-      email: email,
-      firstName: firstName,
-      lastName: lastName,
-      nights: nights,
-      notes: `Reserva de ${nights} noches - agente de ia`,
-      rooms: rooms,
-      monto_link: monto_link,
-      roomsData: [
-        {
-          adults: adults,
-          checkin: checkin,
-          checkout: checkout,
-          children: children,
-          currency: "COP",
-          id: roomId,
-          quantity: "1",
-          rateId: rateId,
-        },
-      ],
-      telephone: telephone,
-    },
-  };
+ 
+  // const respuesta = await reservarAutocore(datos, hotel_id);
+  // res.json({
+  //   respuesta,
+  // });
 
-  // console.log(datos);
-  const respuesta = await reservarAutocore(datos, hotel_id);
-  res.json({
-    respuesta,
-  });
+  // res.json({
+  //   body
+  // })
 };
 
 const enviarCorreoReservas = async (req, res) => {
@@ -92,7 +80,7 @@ Equipo de Reservas Automatizadas`;
   const correoEnviado = await enviarEmailGlobal(
     mensaje,
     "reservas@gehsuites.com",
-    "Nueva solicitud de decoración"
+    "Nueva solicitud de decoración",
   );
   res.json({
     correoEnviado,

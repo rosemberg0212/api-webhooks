@@ -19,7 +19,7 @@ const reservarAutocore = async (datos, hotel_id) => {
       headers: myHeaders,
       body: raw,
     };
-
+ 
     console.log(datos);
     // console.log(hotel_id);
     // await generarLinkPago(datos, hotel_id, 'data.chatbot_id');
