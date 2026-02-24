@@ -1,5 +1,6 @@
 const { OpenAI } = require('openai');
 const { crearContact, crearCompany, crearNegociacion, updateDealGlobal } = require('../helpers/bitrixMetodos');
+const { sendGmailMessage } = require('../helpers/gmailApi');
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
@@ -60,6 +61,22 @@ const validationAgency = async (req, res) => {
     };
 
     const dealResult = await crearNegociacion(dealPayload);
+
+    // Enviar correo de agradecimiento a la agencia / contacto
+    try {
+      const asunto = 'Agradecimiento por su tiempo - Anato 2026';
+      const nombreContacto = nombre_contacto || '';
+      const nombreEmpresa = nombre_agencia || '';
+      const cuerpo = `Estimado/a ${nombreContacto},\n\nQuiero agradecerle sinceramente por el valioso tiempo que nos dedicó durante el marco de la feria de turismo anato 2026 para conocer más sobre geh Suites y escuchar nuestra presentación. Fue un gran placer conversar con usted y entender un poco más sobre ${nombreEmpresa}.\n\nNos encantaría tener la oportunidad de profundizar en cómo podemos colaborar y resolver cualquier duda que haya quedado pendiente. Para facilitar el proceso, le comparto un enlace donde puede revisar nuestra disponibilidad y agendar una breve reunión virtual en el horario que mejor se adapte a su agenda:\n\n📅 https://calendly.com/reservas-gehsuites/30min\n\nQuedamos a su entera disposición y esperamos poder conversar nuevamente muy pronto.\n\nAtentamente,\nGeh Suites Hoteles`;
+
+      if (email) {
+        await sendGmailMessage(email, asunto, cuerpo);
+      } else {
+        console.log('validationAgency: no hay email para enviar agradecimiento');
+      }
+    } catch (mailErr) {
+      console.error('Error enviando correo de agradecimiento:', mailErr);
+    }
 
     return res.json({ success: true, contactId, companyId, dealResult });
   } catch (error) {
@@ -171,6 +188,21 @@ const extractAgencyFromImage = async (req, res) => {
       };
 
       const dealResult = await crearNegociacion(dealPayload);
+      // Enviar correo de agradecimiento si existe email
+      try {
+        const asunto = 'Agradecimiento por su tiempo - Anato 2026';
+        const nombreContacto = nombre_contacto || '';
+        const nombreEmpresa = nombre_agencia || '';
+        const cuerpo = `Estimado/a ${nombreContacto},\n\nQuiero agradecerle sinceramente por el valioso tiempo que nos dedicó durante el marco de la feria de turismo anato 2026 para conocer más sobre geh Suites y escuchar nuestra presentación. Fue un gran placer conversar con usted y entender un poco más sobre ${nombreEmpresa}.\n\nNos encantaría tener la oportunidad de profundizar en cómo podemos colaborar y resolver cualquier duda que haya quedado pendiente. Para facilitar el proceso, le comparto un enlace donde puede revisar nuestra disponibilidad y agendar una breve reunión virtual en el horario que mejor se adapte a su agenda:\n\n📅 https://calendly.com/reservas-gehsuites/30min\n\nQuedamos a su entera disposición y esperamos poder conversar nuevamente muy pronto.\n\nAtentamente,\nGeh Suites Hoteles`;
+
+        if (email) {
+          await sendGmailMessage(email, asunto, cuerpo);
+        } else {
+          console.log('extractAgencyFromImage: no hay email para enviar agradecimiento');
+        }
+      } catch (mailErr) {
+        console.error('Error enviando correo de agradecimiento desde imagen:', mailErr);
+      }
 
       return res.json({ 
         success: true, 
