@@ -495,6 +495,72 @@ const updateDealGlobal = async (datos) => {
   }
 };
 
+const updateContact = async (contactId, fields) => {
+  const url = `${URL}/${apiKey}/crm.contact.update.json`;
+  
+  const datos = {
+    id: contactId,
+    fields: fields,
+  };
+
+  try {
+    const respuesta = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datos),
+    });
+
+    const resultado = await respuesta.json();
+
+    if (respuesta.ok) {
+      console.log(`Contacto ${contactId} actualizado con éxito.`);
+      return resultado.result;
+    } else {
+      console.error(
+        "Error al actualizar el contacto:",
+        resultado.error_description || resultado
+      );
+      return null;
+    }
+  } catch (error) {
+    console.error("Error de red o servidor:", error.message);
+    return null;
+  }
+};
+
+const updateCompany = async (companyId, fields) => {
+  const url = `${URL}/${apiKey}/crm.company.update.json`;
+  
+  const datos = {
+    id: companyId,
+    fields: fields,
+  };
+
+  try {
+    const respuesta = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datos),
+    });
+
+    const resultado = await respuesta.json();
+
+    if (respuesta.ok) {
+      console.log(`Compañía ${companyId} actualizada con éxito.`);
+      return resultado.result;
+    } else {
+      console.error(
+        "Error al actualizar la compañía:",
+        resultado.error_description || resultado
+      );
+      return null;
+    }
+  } catch (error) {
+    console.error("Error de red o servidor:", error.message);
+    return null;
+  }
+};
+
 module.exports = {
   getDeal,
   getContact,
@@ -510,4 +576,6 @@ module.exports = {
   crearNegociacion,
   updateDeal,
   updateDealGlobal,
+  updateContact,
+  updateCompany,
 };

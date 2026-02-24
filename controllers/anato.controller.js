@@ -1,4 +1,32 @@
-const { crearContact, crearCompany, crearNegociacion } = require('../helpers/bitrixMetodos');
+const { OpenAI } = require('openai');
+const { crearContact, crearCompany, crearNegociacion, updateDealGlobal } = require('../helpers/bitrixMetodos');
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
+
+// Prompt para extraer información de tarjeta de agencia
+const getBusinessCardPrompt = () => `
+Analiza la imagen de una tarjeta de agencia y extrae los siguientes datos:
+- nombre_contacto: nombre de la persona
+- apellido_contacto: apellido de la persona
+- email: correo electrónico
+- telefono: número de teléfono (solo el número)
+- nombre_agencia: nombre de la agencia/empresa
+- notas: cualquier información adicional relevante (servicios, ubicación, etc.)
+
+Responde SIEMPRE en formato JSON válido con la estructura:
+{
+  "nombre_contacto": "nombre o vacío si no encontraste",
+  "apellido_contacto": "apellido o vacío si no encontraste",
+  "email": "email o vacío si no encontraste",
+  "telefono": "teléfono o vacío si no encontraste",
+  "nombre_agencia": "nombre o vacío si no encontraste",
+  "notas": "información adicional o vacío"
+}
+
+Si no puedes leer la imagen o no es una tarjeta, devuelve todos los campos vacíos pero mantén la estructura JSON.
+`;
 
 const validationAgency = async (req, res) => {
   const { nombre_contacto, apellido_contacto, email, telefono, nombre_agencia, notas } = req.body;
@@ -40,4 +68,181 @@ const validationAgency = async (req, res) => {
   }
 };
 
-module.exports = { validationAgency };
+const extractAgencyFromImage = async (req, res) => {
+  try {
+    const { imagen_url } = req.body;
+
+    if (!imagen_url) {
+      return res.status(400).json({ message: 'imagen_url es requerido' });
+    }
+
+    // Llamar a OpenAI con la imagen
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: getBusinessCardPrompt()
+            },
+            {
+              type: "image_url",
+              image_url: {
+                "url": imagen_url,
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    const textResponse = response.choices[0].message.content;
+    
+    // Extraer JSON de la respuesta
+    const jsonMatch = textResponse.match(/{[^]*}/);
+    if (!jsonMatch) {
+      return res.status(400).json({ message: 'No se pudo extraer datos de la imagen' });
+    }
+
+    const extractedData = JSON.parse(jsonMatch[0]);
+
+    // Si todos los campos están vacíos, devolver advertencia
+    const hasData = Object.values(extractedData).some(val => val && val.trim());
+    if (!hasData) {
+      return res.json({ 
+        success: false, 
+        message: 'No se encontraron datos en la imagen',
+        extracted: extractedData 
+      });
+    }
+
+    // Si hay datos, proceder a crear contacto, compañía y negociación
+    try {
+      const { nombre_contacto, apellido_contacto, email, telefono, nombre_agencia, notas } = extractedData;
+
+      // Validar que al menos tengamos nombre de agencia
+      if (!nombre_agencia || !nombre_agencia.trim()) {
+        return res.json({ 
+          success: false, 
+          message: 'Nombre de agencia no encontrado en la imagen',
+          extracted: extractedData 
+        });
+      }
+
+      // Crear contacto
+      const contactId = await crearContact({ 
+        nombre: nombre_contacto || '', 
+        apellido: apellido_contacto || '', 
+        email: email || '', 
+        telefono: telefono || '' 
+      });
+
+      // Crear compañia
+      const companyId = await crearCompany({ 
+        nombre: nombre_agencia, 
+        email: email || '', 
+        telefono: telefono || '' 
+      });
+
+      if (!companyId) {
+        return res.status(500).json({ 
+          message: 'Error creando compañía en Bitrix',
+          extracted: extractedData 
+        });
+      }
+
+      // Crear negociacion (deal)
+      const dealPayload = {
+        fields: {
+          TITLE: nombre_agencia,
+          TYPE_ID: 'SALE',
+          STAGE_ID: 'C34:NEW',
+          CURRENCY_ID: 'COP',
+          OPPORTUNITY: 0,
+          CONTACT_ID: contactId || 0,
+          COMPANY_ID: companyId,
+          CATEGORY_ID: '34',
+          UF_CRM_1718396768717: notas || '',
+          UF_CRM_1720560646984: '13842',
+        },
+        params: { REGISTER_SONET_EVENT: 'Y' },
+      };
+
+      const dealResult = await crearNegociacion(dealPayload);
+
+      return res.json({ 
+        success: true, 
+        message: 'Agencia registrada desde imagen',
+        extracted: extractedData,
+        contactId: contactId || null,
+        companyId, 
+        dealResult 
+      });
+    } catch (error) {
+      console.error('Error en registro de agencia:', error);
+      return res.json({ 
+        success: false,
+        message: 'Datos extraídos pero hubo error al registrar en Bitrix',
+        error: error.message,
+        extracted: extractedData 
+      });
+    }
+
+  } catch (error) {
+    console.error('anato.extractAgencyFromImage error', error);
+    return res.status(500).json({ 
+      message: 'Error procesando imagen', 
+      error: error.message || error 
+    });
+  }
+};
+
+const updateAgency = async (req, res) => {
+  try {
+    const { deal_id, notas } = req.body;
+
+    if (!deal_id) {
+      return res.status(400).json({ 
+        message: 'deal_id es requerido',
+        example: {
+          deal_id: '123',
+          notas: 'Nuevas notas para la negociación'
+        }
+      });
+    }
+
+    try {
+      const dealPayload = {
+        id: deal_id,
+        fields: {
+          UF_CRM_1718396768717: notas || '',
+        },
+      };
+
+      await updateDealGlobal(dealPayload);
+
+      return res.json({ 
+        success: true, 
+        message: 'Notas de negociación actualizadas correctamente',
+        deal_id,
+        notas: notas || ''
+      });
+    } catch (error) {
+      console.error(`Error actualizando notas de negociación:`, error);
+      return res.status(500).json({ 
+        message: 'Error actualizando notas en Bitrix', 
+        error: error.message || error 
+      });
+    }
+  } catch (error) {
+    console.error('anato.updateAgency error', error);
+    return res.status(500).json({ 
+      message: 'Error procesando actualización', 
+      error: error.message || error 
+    });
+  }
+};
+
+module.exports = { validationAgency, extractAgencyFromImage, updateAgency };
