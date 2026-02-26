@@ -13,7 +13,6 @@ Analiza la imagen de una tarjeta de agencia y extrae los siguientes datos:
 - apellido_contacto: apellido de la persona
 - email: correo electrónico
 - telefono: número de teléfono (solo el número)
-- nombre_agencia: nombre de la agencia/empresa
 - notas: cualquier información adicional relevante (servicios, ubicación, etc.)
 
 Responde SIEMPRE en formato JSON válido con la estructura:
@@ -22,7 +21,6 @@ Responde SIEMPRE en formato JSON válido con la estructura:
   "apellido_contacto": "apellido o vacío si no encontraste",
   "email": "email o vacío si no encontraste",
   "telefono": "teléfono o vacío si no encontraste",
-  "nombre_agencia": "nombre o vacío si no encontraste",
   "notas": "información adicional o vacío"
 }
 
@@ -87,10 +85,13 @@ const validationAgency = async (req, res) => {
 
 const extractAgencyFromImage = async (req, res) => {
   try {
-    const { imagen_url } = req.body;
+    const { imagen_url, deal_title } = req.body;
 
     if (!imagen_url) {
       return res.status(400).json({ message: 'imagen_url es requerido' });
+    }
+    if (!deal_title || !deal_title.trim()) {
+      return res.status(400).json({ message: 'deal_title es requerido para el título de la negociación' });
     }
 
     // Llamar a OpenAI con la imagen
@@ -135,18 +136,9 @@ const extractAgencyFromImage = async (req, res) => {
       });
     }
 
-    // Si hay datos, proceder a crear contacto, compañía y negociación
+    // Si hay datos, proceder a crear contacto y compañía; la negociación usará deal_title del body
     try {
-      const { nombre_contacto, apellido_contacto, email, telefono, nombre_agencia, notas } = extractedData;
-
-      // Validar que al menos tengamos nombre de agencia
-      if (!nombre_agencia || !nombre_agencia.trim()) {
-        return res.json({ 
-          success: false, 
-          message: 'Nombre de agencia no encontrado en la imagen',
-          extracted: extractedData 
-        });
-      }
+      const { nombre_contacto, apellido_contacto, email, telefono, notas } = extractedData;
 
       // Crear contacto
       const contactId = await crearContact({ 
@@ -158,7 +150,7 @@ const extractAgencyFromImage = async (req, res) => {
 
       // Crear compañia
       const companyId = await crearCompany({ 
-        nombre: nombre_agencia, 
+        nombre: deal_title, 
         email: email || '', 
         telefono: telefono || '' 
       });
@@ -173,7 +165,7 @@ const extractAgencyFromImage = async (req, res) => {
       // Crear negociacion (deal)
       const dealPayload = {
         fields: {
-          TITLE: nombre_agencia,
+          TITLE: deal_title,
           TYPE_ID: 'SALE',
           STAGE_ID: 'C34:NEW',
           CURRENCY_ID: 'COP',
@@ -192,7 +184,7 @@ const extractAgencyFromImage = async (req, res) => {
       try {
         const asunto = 'Pendientes feria Anato 2026';
         const nombreContacto = nombre_contacto || '';
-        const nombreEmpresa = nombre_agencia || '';
+        const nombreEmpresa = deal_title || '';
         const cuerpo = `Estimados ${nombreEmpresa},\n\nQuiero agradecerle sinceramente por el valioso tiempo que nos dedicó durante el marco de la feria de turismo anato 2026 para conocer más sobre geh Suites y escuchar nuestra presentación. Fue un gran placer conversar con usted y entender un poco más sobre ${nombreEmpresa}.\n\nNos encantaría tener la oportunidad de profundizar en cómo podemos colaborar y resolver cualquier duda que haya quedado pendiente. Para facilitar el proceso, le comparto un enlace donde puede revisar nuestra disponibilidad y agendar una breve reunión virtual en el horario que mejor se adapte a su agenda:\n\n📅 https://calendly.com/reservas-gehsuites/30min\n\nQuedamos a su entera disposición y esperamos poder conversar nuevamente muy pronto.\n\nAtentamente,\nGeh Suites Hoteles`;
 
         if (email) {
