@@ -59,25 +59,9 @@ const userContac = [
         name: 'Rosemberg',
         id: 14
     },
-    // {
-    //     name: 'Angela',
-    //     id: 30
-    // },
     {
         name: 'Wendy De Avila',
         id: 8882
-    },
-    {
-        name: 'Sofia Garay',
-        id: 8874
-    },
-    {
-        name: 'Elvia Mendivil',
-        id: 6050
-    },
-    {
-        name: 'Leidys Johanna',
-        id: 4776
     },
     {
         name: 'Maria Orozco',
@@ -116,12 +100,12 @@ const userContac = [
         id: 18068
     },
     {
-        name: 'Maureen Mora',
-        id: 26998
-    },
-    {
         name: 'Belcy Pérez',
         id: 38
+    },
+    {
+        name: 'Eimy Jimenez',
+        id: 32692
     },
 ]
 

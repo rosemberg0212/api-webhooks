@@ -129,7 +129,7 @@ const userStatus = async (req, res) => {
 // cron.schedule('*/5 * * * *', userStatus);
 
 const getUsersStatus = async (req, res) => {
-    const userIds = [14, 8882, 8874, 6050, 4776, 66, 42, 28, 84, 40, 102, 18068, 11492, 11638,26998, 38];
+    const userIds = [14, 8882, 66, 42, 28, 84, 40, 102, 18068, 11492, 11638, 38, 32692];
      const obtenerNombreUsuario = (userId) => {
         const usuario = userContac.find(user => user.id === userId);
         return usuario ? usuario.name : `Usuario ID: ${userId}`;
