@@ -174,7 +174,7 @@ const extractAgencyFromImage = async (req, res) => {
           COMPANY_ID: companyId,
           CATEGORY_ID: '34',
           UF_CRM_1718396768717: notas || '',
-          UF_CRM_1720560646984: '13842',
+          UF_CRM_1720560646984: '13940',
         },
         params: { REGISTER_SONET_EVENT: 'Y' },
       };
